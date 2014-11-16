@@ -1,0 +1,201 @@
+<!DOCTYPE html><html>
+<head>
+	<link rel="stylesheet" type="text/css" href="/template3.css" />
+	<link rel="stylesheet" type="text/css" href="/includes/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="/includes/jquery-linedtextarea.css" />
+	<link rel="stylesheet" type="text/css" href="/menu.css" />
+	<link rel="stylesheet" href="/includes/jquery-ui.css" />
+	<link rel="image/gif" href="/includes/loading.gif" />
+	
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+	<script src="/includes/jquery-linedtextarea.js"></script>
+	<script src="/includes/expanding.js"></script>
+	<script src="/includes/library.js"></script>
+	<script>
+
+	</script>
+	<title>
+	Welcome.	</title>
+</head>
+<body>
+	<div class="container-start">
+		<div class="container-header">
+			<img src="http://galacticarc.ca/images/logo.png" /><br />
+		
+			<div class="container-top">
+				<div class="HorizontalMenu">
+					<ul><li><a href="/index.php">Home</a></li><li><a href="/news/">News</a></li><li class='sub'><a href="/index.php/page/community/">Community</a><ul><li><a href="/groups/view/1">Forums</a></li><li><a href="/index.php?page=blog">Blogs</a></li><li><a href="/downloads/">Downloads</a></li><li><a href="/groups">Groups</a></li><li><a href="/index.php?page=gallery">Gallery</a></li></ul></li><li class='sub'><a href="#">Information</a><ul><li><a href="/index.php/page/moddedserver/">Modded Server</a></li><li><a href="/index.php/page/about/">About</a></li><li><a href="/index.php/page/wiki/">Wiki</a></li></ul></li></ul>				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container-body">
+		<div class="container-body-bg">
+						<div class="container-body-left">
+				<div class="box-left userpanel"><h2>User panel</h2><div class='sidemenu'><a href='/index.php?page=login'>Login</a><a href='/index.php?page=register'>Register</a><a href='/index.php?page=userlist'>Users</a></div></div>
+<div class="box-left userpanel">
+<h2>Friendly Links</h2>
+Here are some other websites you should check out!<Br />
+<br />
+<a href="http://www.mynprofile.com/">http://www.mynprofile.com</a><Br />
+<br />
+(All listed websites above are not associated with Galactic Arc)<br />
+
+<h2>Other</h2>
+These are links which are associated with Galactic Arc in some way.
+<a href="http://shiftclickgaming.org">http://shiftclickgaming.org</a><Br />
+</div>
+			</div>
+			<div class="container-body-center">
+				<div id='pageContainer'><div id='page_content' style='overflow:auto;text-overflow:clip;'><h3> Welcome to Galactic Arc! </h3><br />
+For more information on our website, please visit the about page under Information.<br />
+<br />
+If you are having troubles logging in or registering, please email <a href="mailto:support@galacticarc.ca" class="bbcode_email">support@galacticarc.ca</a>.<br />
+<br />
+<span style="color:red"><b>Please note </b></span>: some features are not visible while not logged in.</div></div><script>	
+	jQuery.fn.exists = function(){return this.length>0;}
+	var prev = "";
+	
+	function EditPage() {
+		prev = $("#page_content").html();
+		$("#page_content").html("<img src='/includes/loading.gif' /> Loading, please wait ...");
+		var request = $.ajax({
+		  url: "/index.php?nonpage=pages&action=loadedit&index=index",
+		  type: "GET",
+		  dataType: "html"
+		});
+		
+		request.done(function(msg) {
+			
+			$("#page_content").html(msg);
+			// alert($("#getPageEditor").val());
+			$("#ButtonDone").click(function(){
+				var request = $.ajax({
+					type: "POST",
+					url: "index.php?nonpage=pages&action=modify",
+					data: {"index":"index", "content": $("#getPageEditor").val() },
+					dataType: "html"
+				});
+				
+				$("#page_content").html("<img src='/includes/loading.gif' /> Loading, please wait ...");
+				 
+				request.done(function(msg) {
+					$("#page_content").html(msg);
+					$("#getPageEditor").expanding();
+				});
+			});
+		});
+
+	}
+	
+	function cancelEdit(){
+		$("#page_content").html(prev);
+	}
+	
+
+</script><div id='news_left'><h1>Recent News </h1><a class="aButton" href="/news/page/2">Next</a><div class="box-item" id="article_192">
+				<h2><a href="#article192" onclick="_news_loadArticle(192);">Modpack update 1.8.1 & 1.8.2</a></h2>
+				<p>The update is just for fixing id conflicts between forestry, and FoodPlus.<br />
+<br />
+Also, I am working on adding ExtraUtilities, and ChiselMod<br />
+<br />
+~Sema</p><div id='a_content' class='box-shadow-bottom'><b>Posted May 20, 2014 at 1:03 PM by 
+				 <a href='/index.php/user/semaphorism'>semaphorism</a></b><br />
+				 0 comment(s).   |   category: <a href='/news/category/minecraft'>minecraft</a>
+				 </div></div><div class="box-item" id="article_191">
+				<h2><a href="#article191" onclick="_news_loadArticle(191);">Youtube embedding!</a></h2>
+				<p>I have now configured a youtube tag to be used in BBCode!<br />
+<br />
+How do you use it?<br />
+Get the url of the video you want to embed (Youtube only works)
+<div class="bbcode_code">
+<div class="bbcode_code_head">Code:</div>
+<div class="bbcode_code_body" style="white-space:pre">http://www.youtube.com/watch?v=YuOBzWF0Aws</div>
+</div>
+Get the last text after ?v= on the url.
+<div class="bbcode_code">
+<div class="bbcode_code_head">Code:</div>
+<div class="bbcode_code_body" style="white-space:pre">YuOBzWF0Aws</div>
+</div>
+<br />
+Then add the youtube tag like so
+<div class="bbcode_code">
+<div class="bbcode_code_head">Code:</div>
+<div class="bbcode_code_body" style="white-space:pre">[youtube]YuOBzWF0Aws[/youtube]</div>
+</div>
+<br />
+<iframe width="560" height="315" src="//www.youtube.com/embed/YuOBzWF0Aws" frameborder="0" allowfullscreen></iframe><br />
+<br />
+I hope you enjoy!</p><div id='a_content' class='box-shadow-bottom'><b>Posted May 14, 2014 at 10:00 AM by 
+				 <a href='/index.php/user/semaphorism'>semaphorism</a></b><br />
+				 3 comment(s).   |   category: <a href='/news/category/website'>website</a>
+				 </div></div><div class="box-item" id="article_190">
+				<h2><a href="#article190" onclick="_news_loadArticle(190);">Updated Privacy Policy</a></h2>
+				<p>We have updated our privacy policy, you can read it at <a href="http://galacticarc.ca/page/privacy/" class="bbcode_url"> http://galacticarc.ca/page/privacy/</a><br />
+<br />
+Also, you can now Like any image on the gallery section!</p><div id='a_content' class='box-shadow-bottom'><b>Posted May 12, 2014 at 1:30 AM by 
+				 <a href='/index.php/user/semaphorism'>semaphorism</a></b><br />
+				 0 comment(s).   |   category: <a href='/news/category/website'>website</a>
+				 </div></div><div class="box-item" id="article_189">
+				<h2><a href="#article189" onclick="_news_loadArticle(189);">Website Update 4/28/2014 - </a></h2>
+				<p>I haven't posted any updates on the news, though I have been updating the website.<br />
+<br />
+So to start off, I changed the template (Quite obvious). I mainly created a new template for better looks, and to support mobile devices better. If you have any further comments/suggestions please comment below!<br />
+<br />
+I also started a <b>new Activity page</b> which will show the most recent activity from the users. The page can only be viewed when you are logged in, but it will allow people to see what is going on around the website easily. I do not intend on making this website a private place to post statuses, instead I want to make it an open place for people to post/upload for public use.<br />
+<b>(Which also means profile activity/statuses are publicly viewable)</b><br />
+<br />
+I do eventually plan to get the Gallery feature going as well.<br />
+<br />
+<b>Full change log:</b>
+<div class="bbcode_code">
+<div class="bbcode_code_head">Code:</div>
+<div class="bbcode_code_body" style="white-space:pre">+ Created a new template for the website
+* A lot of changes to the way the webpage is loaded for more efficient use. (A ton of changes, but will be unlisted.)
++ Added a Recent Activity viewing page. 
+* Fixed bug not being able to comment on other peoples blogs.
+* Added max forum post size, and reply size. 
++ Added max size to profile statuses.
+* Removed a few links on the main menu bar, and placed them on the user-panel instead.
++ Added support for a 3 column page
+* Changed &quot;Files&quot; link under community to &quot;Downloads&quot;
++ Added max size to News posts
++ Added max size to comments posted on News.
++ Posting comments on Blogs will now display in activity.
++ Posting new Articles and comments on News will now display in activity.
++ Added more user feed functions for future features.</div>
+</div>
+</p><div id='a_content' class='box-shadow-bottom'><b>Posted April 28, 2014 at 6:56 PM by 
+				 <a href='/index.php/user/semaphorism'>semaphorism</a></b><br />
+				 0 comment(s).   |   category: <a href='/news/category/website'>website</a>
+				 </div></div><div class="box-item" id="article_188">
+				<h2><a href="#article188" onclick="_news_loadArticle(188);">Profile changes!</a></h2>
+				<p>After some work, an entirely new profile has been created.<br />
+What features does it hold?<br />
+- All news posts by a user will be added to their activity.<br />
+- People can post comments for any activity.<br />
+- People can post new status updates on their profile.<br />
+- People can post statuses on other peoples profiles, as a conversation type thing towards another.<br />
+<br />
+Once I get around to it, peoples blogs, files, gallery images, and other content will also be added to their activity.<br />
+</p><div id='a_content' class='box-shadow-bottom'><b>Posted April 17, 2014 at 7:53 PM by 
+				 <a href='/index.php/user/semaphorism'>semaphorism</a></b><br />
+				 1 comment(s).   |   category: <a href='/news/category/website'>website</a>
+				 </div></div><a class="aButton" href="/news/page/2">Next</a></div><div id='news_right'></div><script>_news_load(); </script>			</div>
+			<div class="container-body-right">
+							</div>
+			<div class="container-body-bottom">
+							</div>
+		</div>
+	</div>
+	<div class="container-footer">
+		
+<center>
+	<a href="/page/privacy/">Privacy Policy</a> | 
+	<a href="/page/privacy/">Terms of Service</a>
+	<br />
+	<p> Copyright (C) - Galactic Arc - All Rights reserved
+	<br />Developed by Dakota S (Semaphorism@galacticarc.ca) 
+	Page created in 0.020120 seconds.<!-- 2 queries executed. --></center>	</div>
+</body>
+</html>
