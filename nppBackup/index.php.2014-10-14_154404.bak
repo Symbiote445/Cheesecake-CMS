@@ -1,0 +1,22 @@
+<?php
+	error_reporting(E_ALL); ini_set('display_errors', 1);
+	define("CCore", true);
+	session_start();
+	//Load files...
+	require_once('include/scripts/settings.php');
+	require_once('include/scripts/version.php');
+	require_once('include/scripts/core.class.php');
+	require_once('include/scripts/nbbc_main.php');
+	$parser = new BBCode;
+	$main = new blog;
+	$core = new core;
+	require_once('include/scripts/layout.php');
+	require_once('include/scripts/page.php');
+	//Set Variables...
+	global $dbc, $parser, $layout, $main;
+	$page = new pageGeneration;
+	$page->Generate();
+	
+	
+	
+?>

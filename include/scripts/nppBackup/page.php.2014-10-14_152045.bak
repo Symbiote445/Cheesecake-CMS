@@ -1,0 +1,10 @@
+<?php
+//Page Generation
+class pageGeneration{
+echo sprintf($headerFormat);
+sidebar();
+	if($_GET['action'] === 'blog'){
+	$main->viewblog($blogFormat);
+	}
+}
+?>

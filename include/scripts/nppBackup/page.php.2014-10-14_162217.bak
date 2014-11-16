@@ -1,0 +1,15 @@
+<?php
+//Page Generation
+class pageGeneration {
+public function Generate(){
+global $dbc, $parser, $layout, $main, $settings, $core;
+echo sprintf($layout['header-begin'], $settings['site_name'], $settings['style'], $settings['style'], $settings['style'], $settings['style'], $settings['site_name']);
+$core->loadModule("nav");
+print($layout['header-end']);
+sidebar();
+	if($_GET['action'] === 'blog'){
+	$main->viewblog($layout['blog']);
+	}
+}
+}
+?>

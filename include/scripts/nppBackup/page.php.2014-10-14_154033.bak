@@ -1,0 +1,13 @@
+<?php
+//Page Generation
+class pageGeneration {
+public function Generate(){
+global $dbc, $parser, $layout;
+sprintf($headerFormat);
+sidebar();
+	if($_GET['action'] === 'blog'){
+	$main->viewblog($blogFormat);
+	}
+}
+}
+?>

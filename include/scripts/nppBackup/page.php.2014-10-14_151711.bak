@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html><head>
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<?php
+echo
+	'<title>'.$settings['site_name']. '</title>
+	<link rel="stylesheet" type="text/css" href="include/style/'.$settings['style'].'/style.css">
+	<link rel="stylesheet" type="text/css" href="include/style/'.$settings['style'].'/template.css">
+	<script src="include/style/'.$settings['style'].'/jquery.js"></script>
+	<script src="include/style/'.$settings['style'].'/bootstrap.js"></script>';
+	?>
+	<script>
+	function Redirect()
+{
+    window.location="index.php";
+}
+	</script>
+<style>
+
+.grayout {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+    opacity: .8;
+    background: #DDDDDD;
+	z-index:100;
+}
+
+.imgHolder { 
+	display:none;
+    position: absolute;
+    display: block;
+    border: 3px solid red;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+	z-index:1000;
+	border-radius:16px;
+	background:#E9EAED;
+overflow:hidden;
+ }
+
+.close { padding:5px; }
+</style>
+</head>
+<body>
+	<div class="row header">
+		<div class="col-md-1"></div>
+		<div class="col-md-3 logo">
+			<img src="include/images/logo.png">
+		</div>
+		<div class="col-md-7">
+			<div class="navbar-start">
+				<div class="navbar-container">
+					<nav class="navbar-inverse pad5" role="navigation">
+						<div class="navbar-header">
+							 <a href="#" class="navbar-brand"><?php echo $settings['site_name']; ?></a>
+							</div>
+						  <ul class="nav navbar-nav">
+								<li><a href="index.php">Home</a></li>
+								<li><a href="index.php?action=vn">News</a></li>
+								<li><a href="index.php?action=pages">Pages</a></li>
+
+								<?php
+								loadModule('nav');
+								?>
+						  </ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-1"></div>
+	</div>
+	<div class="grayout" style="display:none;"></div>
+	<div class="row content">
+		
+		<div class="col-md-3">
+			<div class="shadowbar">
+				<?php
+				// Generate the navigation menu
+				if (isset($_SESSION['username'])) {
+				$query = "SELECT picture FROM user WHERE `user_id` = ".$_SESSION['user_id']."";
+				$data = mysqli_query($dbc, $query);
+				$row = mysqli_fetch_array($data);
+				echo '
+				
+				<h3>'.$_SESSION['username'].'</h3>
+				<img style="max-height:120px;" class="postedBy" src="'.MM_UPLOADPATH.''.$row['picture'].'">
+				<div class="btn-group-vertical width100">';
+				$uid = $_SESSION['username'];
+				$query = "SELECT * FROM pm WHERE `to` = '$uid'";
+				$data = mysqli_query($dbc, $query);
+					echo ' <a class="btn btn-default width100" href="index.php?action=ucp">View Profile</a>';
+					echo ' <a class="btn btn-default width100" href="index.php?action=ucp&mode=ep">Edit Profile</a>';
+					echo ' <a class="btn btn-default width100" href="index.php?action=ucp&mode=postnote">Post Note</a>';
+					echo ' <a class="btn btn-default width100" href="index.php?action=ucp&mode=p">Post Topic</a> ';
+					echo ' <a class="btn btn-default width100" href="index.php?action=ucp&mode=vm">Inbox <div class="badge">'.mysqli_num_rows($data).'</div></a> ';
+					echo ' <a class="btn btn-default width100" href="index.php?action=ucp&mode=sm">Compose Message</a> ';
+					echo ' <a class="btn btn-default width100" href="index.php?action=ucp&mode=logout">Log Out (' . $_SESSION['username'] . ')</a> ';
+
+
+
+					if(verify("O")){
+						echo '<a class="btn btn-default width100" href="index.php?action=acp">Admin Panel</a>';
+						echo ' <a class="btn btn-default width100" href="index.php?action=mcp&mode=pn">Post News</a>';
+					}
+
+					if(verify("O") || verify("M")){
+						echo '<a class="btn btn-default width100" href="index.php?action=mcp">Moderator Panel</a>';
+					}
+					echo '</div>';
+				}
+				else {
+					echo ' <a class="btn btn-default width100" href="index.php?action=ucp&mode=login">Log In</a> ';
+					echo ' <a class="btn btn-default width100" href="index.php?action=ucp&mode=signup">Sign Up</a> ';
+				}
+				?>
+			</div>
+		</div>
+		<div class="col-md-7">
+	<?php
+		if(!isset($_GET['action'])){
+		if($settings['home_display'] === 'none'){
+		about();
+		} else {
+		if($settings['home_display'] === 'home'){
+		about();
+		vnews();
+		} else {
+		pages();
+		}
+		}
+		}
+	
+		if(isset($_GET['action'])){
+		if($_GET['action'] === 'vn'){
+		vnews($parser);
+		}
+		if($_GET['action'] === 'pages' && isset($_GET['page'])){
+		pages();
+		} elseif ($_GET['action'] === 'pages' && !isset($_GET['page'])) {
+		pagelist();
+		}
+		if($_GET['action'] === 'ucp'){
+		ucp();
+		}
+		if($_GET['action'] === 'acp'){
+		acp();
+		
+		}
+		if($_GET['action'] === 'mcp'){
+		mcp();
+		
+		}
+		}
+		loadModule('initialLoad');
+	
+	?>
+
+	</div>
+	</div>
+	
+	<div class="row footer">
+		<div class="col-md-12">
+			<div class="bottom-right">
+				Template designed by <a href="http://cheesecakebb.org/">Cheesecake Productions</a>
+			</div>
+			<div class="col-md-5">
+			Copyright <a href="http://ccp2.us/">CheeseCake Productions</a> - All Rights Reserved<br>
+			</div>
+			<div class="col-md-4">
+			Cheesecake Portal version <?php echo $version['core']; ?>
+			</div>
+		</div>
+	</div>
+	
+
+</body></html>
