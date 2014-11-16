@@ -350,8 +350,13 @@ class core {
 				}
 			}
 			if($option === 'sidebar'){
-				foreach($modules as $name => $module) if ($module['enabled']) {
+				foreach($modules as $name => $module) if ($module['enabled'] && ($module['admin'] == '0')) {
 					echo '<a class="btn btn-default width100" href="'.$module['sidebar'].'">'.$module['sidebarDesc'].'</a>';
+				}
+			}
+			if($option === 'acp'){
+				foreach($modules as $name => $module) if ($module['enabled'] && ($module['admin'] == '1')) {
+					echo '<a class="btn btn-default width100" href="'.$module['acp'].'">'.$module['sidebarDesc'].'</a>';
 				}
 			}
 		}
@@ -509,7 +514,6 @@ class core {
 			$row = mysqli_fetch_array($data);
 			echo '<div class="shadowbar"><table class="table">';
 			echo '<tr><td>Username:</td><td>' . $row['username'] . '</td></tr>';
-			echo '<a class="Link LButton" href="index.php?action=ucp&mode=rm&to1='.$row['username'].'">PM This User</a><br>';
 			echo '<a class="Link LButton" href="index.php?action=ucp&mode=notes&u='.$row['uid'].'">View User Notes</a><br>';
 			echo '</td></tr>';
 			echo '<tr><td>Email:</td><td>' . $row['email'] . '</td></tr>';

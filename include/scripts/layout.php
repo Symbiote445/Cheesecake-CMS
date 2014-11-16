@@ -215,7 +215,7 @@ global $dbc, $core;
 				$uid = $_SESSION['uid'];
 					echo ' <a class="btn btn-default width100" href="index.php?action=ucp">View Profile</a>';
 					echo ' <a class="btn btn-default width100" href="index.php?action=logout">Log Out (' . $row['username'] . ')</a> ';
-
+					$core->loadModule("sidebar");
 
 
 					if($core->verify("4")){
@@ -224,7 +224,7 @@ global $dbc, $core;
 
 					if($core->verify("4") || $core->verify("2")){
 						//echo '<a class="btn btn-default width100" href="index.php?action=mcp">Blog Entry</a>';
-						$core->loadModule("sidebar");
+						$core->loadModule("acp");
 					}
 					echo '</div>';
 				}
