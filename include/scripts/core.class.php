@@ -254,7 +254,7 @@ $dbc=mysqli_connect($settings[\'db_host\'],$settings[\'db_user\'],$settings[\'db
 		if(!isset($_GET['mode'])){
 			global $version;
 			$localVersion = $version['core'];
-			$remoteVersion = 'http://cheesecakebb.org/versions/blog.dat';
+			$remoteVersion = 'http://cheesecakebb.org/versions/core.dat';
 			if(!$core->Version($localVersion, $remoteVersion)){
 				echo '<div class="shadowbar">
 Your Cheesecake Core version is out of date.
@@ -372,7 +372,7 @@ class core {
 			exit();
 		}
 		else {
-			echo('<p class="login">You are logged in as ' . $_SESSION['uid'] . '. <a href="index.php?action=ucp&mode=logout">Log out</a>.</p>');
+			echo('<p class="login">You are logged in as ' . $_SESSION['username'] . '. <a href="index.php?action=logout">Log out</a>.</p>');
 		}
 		echo '</div>';
 	}
@@ -384,11 +384,12 @@ class core {
 				$username = mysqli_real_escape_string($dbc, trim($_POST['email']));
 				$password = mysqli_real_escape_string($dbc, trim($_POST['password']));
 				if(!empty($username) && !empty($password)){
-					$query = "SELECT uid, email, password FROM users WHERE email = '$username' AND password = SHA('$password') ";
+					$query = "SELECT uid, email, username, password FROM users WHERE email = '$username' AND password = SHA('$password') ";
 					$data = mysqli_query($dbc, $query);
 					if((mysqli_num_rows($data) === 1)){
 						$row = mysqli_fetch_array($data);
 						$_SESSION['uid'] = $row['uid'];
+						$_SESSION['username'] = $row['username'];
 						echo "<div class=\"shadowbar\"><script type=\"text/javascript\">document.write(\"You will be redirected to main page in 5 seconds.\");
 				setTimeout('Redirect()', 5000);</script> if not click <a href=\"index.php\">here</a></div>";
 						exit();

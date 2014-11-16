@@ -31,9 +31,12 @@ class pageGeneration {
 			}
 		} else {
 			if(!isset($_GET['action'])){
-				echo '<div class="shadowbar">';
-				print($settings['about']);
-				echo '</div>';
+				if($settings['home_display'] == 'none' || $settings['home_display'] == 'about'){
+					echo '<div class="shadowbar">';
+					$parsed = $parser->parse($settings['about']);
+					print($parsed);
+					echo '</div>';
+				}
 			}
 		}
 		$core->loadModule("initialLoad");
