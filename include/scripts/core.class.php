@@ -307,6 +307,16 @@ Database
 
 
 class core {
+	public function checkLogin(){
+		if(!isset($_SESSION['uid']) && isset($_COOKIE['ID'])){
+			global $dbc;
+			$_SESSION['uid'] = $_COOKIE['ID'];
+			$query = "SELECT username FROM users WHERE uid = '" . $_SESSION['uid'] . "'";
+			$data = mysqli_query($dbc, $query);
+			$row = mysqli_fetch_array($data);	
+			$_SESSION['username'] = $row['username'];
+		}
+	}
 	public function Version($local, $remote){
 		$remoteVersion=trim(file_get_contents($remote));
 		return version_compare($local, $remoteVersion, 'ge');
@@ -363,7 +373,7 @@ class core {
 	}
 	public function logout(){
 		session_destroy();
-		//setcookie('username', "", time()-10, "/");
+		setcookie('ID', "", time()-86400, "/");
 		//setcookie('user_id', "", time()-10, "/");
 
 		$home_url = 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/index.php';
@@ -395,6 +405,7 @@ class core {
 						$row = mysqli_fetch_array($data);
 						$_SESSION['uid'] = $row['uid'];
 						$_SESSION['username'] = $row['username'];
+						setcookie("ID", $row['uid'], time()+3600*24);
 						echo "<div class=\"shadowbar\"><script type=\"text/javascript\">document.write(\"You will be redirected to main page in 5 seconds.\");
 				setTimeout('Redirect()', 5000);</script> if not click <a href=\"index.php\">here</a></div>";
 						exit();
