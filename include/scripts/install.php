@@ -25,7 +25,7 @@ class cheeseInstall {
 		
 		$newSettings = array (         // the default settings array
 		'home_display'=>'home',
-		'style'=>'cheesecakebb',
+		'style'=>'core',
 		'db_host'=>''.$dbh.'',
 		'db_user'=>''.$dbu.'',
 		'db_password'=>''.$dbp.'',
@@ -183,7 +183,7 @@ MODIFY `reply_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
 ALTER TABLE `users`
 MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 
-INSERT INTO users (username, password, email, ip, adminlevel) VALUES ('$username', SHA('$password1'), '$email', '$uip', '4')
+INSERT INTO users (username, password, email, ip, adminlevel, activated) VALUES ('$username', SHA('$password1'), '$email', '$uip', '4', '1')
 ";
 				if (!empty($username) && !empty($password1) && !empty($password2) && !empty($email) && ($password1 == $password2)) {								
 					mysqli_multi_query($dbc, $query);	
