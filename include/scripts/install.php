@@ -24,7 +24,7 @@ class cheeseInstall {
 		$mySettingsFile = 'include/scripts/settings.php';
 		
 		$newSettings = array (         // the default settings array
-		'home_display'=>'home',
+		'home_display'=>'about',
 		'style'=>'core',
 		'db_host'=>''.$dbh.'',
 		'db_user'=>''.$dbu.'',
