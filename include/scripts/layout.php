@@ -51,7 +51,7 @@ $layout = array(
 		<h3>%s</h3>
 		<div class="row">
 		<div class="col-md-12">
-		<img style="max-height:100px;" class="img-square" src="include/images/profile/%s" /> By <a href="">%s</a> On <a href="">%s</a>
+		<img style="max-height:100px;" class="img-square" src="include/images/profile/%s" /> By <a href="index.php?action=ucp&uid=%s">%s</a> On <a href="">%s</a>
 		<hr />
 		</div>
 		<div class="col-md-10">

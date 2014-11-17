@@ -259,7 +259,7 @@ class Forums{
 				echo'<td>';
 				if((mysqli_num_rows($count) > 0)){
 					echo'<a href="index.php?action=viewpost&post_id='.$rc['post_id'].'">'.$rc['title'].'</a><br>';
-					echo'By: <a href="index.php?action=ucp&id='.$rc['uid'].'">' . $rc['username'] . '</a>';
+					echo'By: <a href="index.php?action=ucp&uid='.$rc['uid'].'">' . $rc['username'] . '</a>';
 				}
 				echo'</td></tr>';
 			}
@@ -319,7 +319,7 @@ class Forums{
 				echo'</td>';
 				echo'<td>';
 				echo'Posted By:';
-				echo '<a href="index.php?action=ucp&id='.$row['uid'].'">' . $row['username'] . '</a>';
+				echo '<a href="index.php?action=ucp&uid='.$row['uid'].'">' . $row['username'] . '</a>';
 				echo'</td>';
 			}
 			
@@ -351,7 +351,7 @@ class Forums{
 			}
 			$titler = $row['title'];
 			$parsed = $parser->parse($row['post']);
-			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed);
+			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed);
 		}
 		
 		//error_reporting(E_ALL);
@@ -361,7 +361,7 @@ class Forums{
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
 			$parsed = $parser->parse($row['reply']);
-			echo sprintf($layout['blogViewFormat'], $replyTitle, $row['picture'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed);	
+			echo sprintf($layout['blogViewFormat'], $replyTitle, $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed);	
 		}
 
 		echo '</div></div></div><br />';
@@ -658,7 +658,7 @@ class Forums{
 			// Update the post data in the database
 			if (!empty($reply)) {
 				// Only set the picture column if there is a new picture
-				$query = "INSERT INTO reply (`post_id`, `user_id`, `reply`) VALUES ('$replyid', '$username', '$reply')";
+				$query = "INSERT INTO reply (`post_id`, `user_id`, `reply`, `date`) VALUES ('$replyid', '$username', '$reply', NOW())";
 				mysqli_query($dbc, $query) or die(mysqli_error($dbc));
 				// Confirm success with the user
 				echo '<div class="shadowbar"><p>Your post has been successfully added. Would you like to <a href="index.php?action=viewcategory">view all of the posts</a>?</p></div>';

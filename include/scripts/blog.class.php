@@ -57,12 +57,12 @@ $offyBlog->postBlog();
 
 	public function viewBlog(){
 	global $dbc, $parser, $layout, $main, $settings, $core;
-		$query = "SELECT blog.id, blog.title, blog.content, blog.date, users.picture, users.username FROM blog INNER JOIN users ON users.uid = blog.user order by blog.id DESC";
+		$query = "SELECT blog.*, users.* FROM blog INNER JOIN users ON users.uid = blog.user order by blog.id DESC";
 		$data = mysqli_query($dbc, $query);
 
 		while ($row = mysqli_fetch_array($data)) {
 			$parsed = $parser->parse($row['content']);
-			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed);
+			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed);
 		}
 	}
 	

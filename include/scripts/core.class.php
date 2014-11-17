@@ -373,7 +373,7 @@ class core {
 	public function isLoggedIn(){
 		echo '<div class="shadowbar">';
 		if (!isset($_SESSION['uid'])) {
-			echo '<p class="login">Please <a href="index.php?action=ucp&mode=login">log in</a> to access this page.</p>';
+			echo '<p class="login">Please <a href="index.php?action=login">log in</a> to access this page.</p>';
 			exit();
 		}
 		else {
@@ -389,7 +389,7 @@ class core {
 				$username = mysqli_real_escape_string($dbc, trim($_POST['email']));
 				$password = mysqli_real_escape_string($dbc, trim($_POST['password']));
 				if(!empty($username) && !empty($password)){
-					$query = "SELECT uid, email, username, password FROM users WHERE email = '$username' AND password = SHA('$password') ";
+					$query = "SELECT uid, email, username, password FROM users WHERE email = '$username' AND password = SHA('$password') AND activated = '1'";
 					$data = mysqli_query($dbc, $query);
 					if((mysqli_num_rows($data) === 1)){
 						$row = mysqli_fetch_array($data);
@@ -399,10 +399,10 @@ class core {
 				setTimeout('Redirect()', 5000);</script> if not click <a href=\"index.php\">here</a></div>";
 						exit();
 					} else {
-						echo '';
+						echo '<div class="shadowbar">It seems we have run into a problem... Either your username or password are incorrect or you haven\'t activated your account yet.</div>' ;
 					}
 				} else {
-					echo 'You must enter both your username AND password.';
+					echo '<div class="shadowbar">You must enter both your username AND password.</div>';
 				}
 			}
 			print($layout['login']);
@@ -418,7 +418,7 @@ class core {
 			$email = mysqli_real_escape_string($dbc, trim($_POST["email"]));
 
 			if (!empty($_FILES["new_picture"]["name"])) {
-				$query = "SELECT * FROM users";
+				$query = "SELECT * FROM users WHERE uid = ".$_SESSION['uid']."";
 				$data = mysqli_query($dbc, $query);
 				$row = mysqli_fetch_array($data);
 				$pnum = mysqli_num_rows($data);
@@ -500,6 +500,7 @@ class core {
 	}
 	public function ucp(){
 		global $dbc, $parser, $layout, $main, $settings, $core; 
+		$core->isLoggedIn();
 		if (!isset($_GET['uid'])) {
 			$query = "SELECT * FROM users WHERE uid = '" . $_SESSION['uid'] . "'";
 		}
