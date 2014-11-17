@@ -376,7 +376,7 @@ class core {
 		setcookie('ID', "", time()-86400, "/");
 		//setcookie('user_id', "", time()-10, "/");
 
-		$home_url = 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/index.php';
+		$home_url = 'http://'.$settings['b_url'].'/index.php';
 
 		header('Location: ' . $home_url);
 	}
