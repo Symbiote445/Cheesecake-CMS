@@ -427,7 +427,7 @@ class core {
 			// Grab the profile data from the POST
 			$filename = mysqli_real_escape_string($dbc, trim($_FILES["new_picture"]["name"]));
 			$email = mysqli_real_escape_string($dbc, trim($_POST["email"]));
-
+			$sig = mysqli_real_escape_string($dbc, trim($_POST["sig"]));
 			if (!empty($_FILES["new_picture"]["name"])) {
 				$query = "SELECT * FROM users WHERE uid = ".$_SESSION['uid']."";
 				$data = mysqli_query($dbc, $query);
@@ -460,14 +460,14 @@ class core {
 					echo 'Error: Invalid File.';
 				}
 				if(!empty($email)){
-					$query = "UPDATE users SET `email` = '$email' WHERE uid = '".$_SESSION['uid']."'";
+					$query = "UPDATE users SET `email` = '$email', `sig` = '$sig' WHERE uid = '".$_SESSION['uid']."'";
 					mysqli_query($dbc, $query);	
 					echo'Profile Updated';
 					exit();
 				}
 			} else {
 				if(!empty($email)){
-					$query = "UPDATE users SET `email` = '$email' WHERE uid = '".$_SESSION['uid']."'";
+					$query = "UPDATE users SET `email` = '$email', `sig` = '$sig' WHERE uid = '".$_SESSION['uid']."'";
 					mysqli_query($dbc, $query);	
 					echo'Profile Updated';
 					exit();
@@ -484,6 +484,7 @@ class core {
 				}
 				$email = $row['email'];
 				$old_picture = $row['picture'];
+				$sig = $row['sig'];
 			}
 			else {
 				echo '<p class="error">There was a problem accessing your profile.</p>';
@@ -503,7 +504,9 @@ class core {
 		}
 		echo'<input type="file" id="new_picture" name="new_picture" />
 	<label for="email">E-Mail:</label>
-	<input type="text" id="email" name="email" />
+	<input type="text" id="email" name="email" value="'.$email.'"/>
+	<label for="sig">Signature:</label>
+	<textarea cols="6" rows="20" placeholder="Signature..." name="sig">'.$sig.'</textarea>
 		</fieldset>
 		<input type="submit" value="Save Profile" name="submit" /> <a class="button" href="index.php?action=ucp">Cancel</a>
 	</form>

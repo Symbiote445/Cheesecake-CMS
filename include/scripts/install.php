@@ -137,6 +137,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 `uid` int(11) NOT NULL,
 `username` varchar(32) NOT NULL,
 `email` text NOT NULL,
+`sig` text NOT NULL,
 `hash` text NOT NULL,
 `password` text NOT NULL,
 `activated` int(11) NOT NULL DEFAULT '0',
