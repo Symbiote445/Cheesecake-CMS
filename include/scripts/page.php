@@ -3,6 +3,7 @@
 class pageGeneration {
 	public function Generate(){
 		global $dbc, $parser, $layout, $settings, $core, $admin, $version;
+		$parser->SetSmileyURL("http://".$settings['b_url']."/include/images/smileys");
 		$core->checkLogin();
 		echo sprintf($layout['header-begin'], $settings['site_name'], $settings['style'], $settings['style'], $settings['style'], $settings['style'], $settings['site_name']);
 		$core->loadModule("nav");

@@ -86,8 +86,12 @@ class gallery{
 		if($core->verify("4") || $core->verify("2")){
 		echo '<a class="Link LButton" href="index.php?action=uploadphoto">Upload File To Gallery </a><br>';
 		}
+		if(isset($_GET['limit'])){
 		$secureLimit = preg_replace("/[^0-9]/", "", $_GET['limit']);
 		$limit = mysqli_real_escape_string($dbc, $secureLimit);
+		} else {
+		$limit = 0;
+		}
 		$query = "SELECT * FROM gallery ORDER BY p_id LIMIT $limit,1";
 		mysqli_query($dbc, $query);
 		$data = mysqli_query($dbc, $query);
@@ -105,20 +109,14 @@ class gallery{
 			
 			echo '</div>';
 		}
-		echo '<a class="Link LButton" href="index.php?action=vg&limit='.($limit - 1).'">Previous </a><a class="Link LButton" href="index.php?action=vg&limit='.($limit + 1).'"> Next</a>';
+		echo '<a class="Link LButton" href="index.php?action=viewgallery&limit='.($limit - 1).'">Previous </a><a class="Link LButton" href="index.php?action=viewgallery&limit='.($limit + 1).'"> Next</a>';
 		echo '</div>';
 	}
 	
 	function uloadp(){
 	
 		global $dbc, $parser, $layout, $main, $settings, $core;
-		if (!isset($_SESSION['user_id'])) {
-			echo '<p class="login">Please <a href="ucp.php?action=login">log in</a> to access this page.</p>';
-			exit();
-		}
-		else {
-			echo('<p class="login">You are logged in as ' . $_SESSION['username'] . '. <a href="ucp.php?action=logout">Log out</a>.</p>');
-		}
+		$core->isLoggedIn();
 		if($core->verify("4") || $core->verify("2")){
 		echo '<div class="shadowbar">
 		<h3>Photo Upload</h3>';
@@ -134,7 +132,6 @@ class gallery{
 			$name = mysqli_real_escape_string($dbc, trim($_POST['name']));
 			$desc = mysqli_real_escape_string($dbc, trim($_POST['desc']));
 			$pnumname = 'galleryUploadNumber'.$pnumu.'.'.$extension;
-			$user = $_SESSION['user_id'];
 			if ((($_FILES["file"]["type"] == "image/gif")
 						|| ($_FILES["file"]["type"] == "image/jpeg")
 						|| ($_FILES["file"]["type"] == "image/jpg")
@@ -150,8 +147,6 @@ class gallery{
 						echo '<p class="error">' . $_FILES["file"]["name"] . ' already exists.</p>';
 						exit();
 					} else {
-					$query = "INSERT INTO gallery SET `picture` = '$pnumname' WHERE user_id = '".$_SESSION['user_id']."'";
-					mysqli_query($dbc, $query);
 						move_uploaded_file($_FILES["file"]["tmp_name"],
 						"include/images/" . $pnumname);
 						$query = "INSERT INTO gallery (name, descr, filename) VALUES ('$name', '$desc', '$pnumname')";
@@ -166,7 +161,7 @@ class gallery{
 		}
 		
 		
-		echo'<form enctype="multipart/form-data" method="post" action="index.php?action=up">
+		echo'<form enctype="multipart/form-data" method="post" action="index.php?action=uploadphoto">
 		<fieldset>
 		<legend>Picture Upload</legend>
 		<label for="name">Picture Name:</label><br />
