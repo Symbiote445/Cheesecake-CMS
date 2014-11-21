@@ -63,6 +63,10 @@ $layout = array(
 		<div class="col-md-10">
 		%s
 		</div>
+		<div class="col-md-10" style="font-size:7pt;">
+		<hr />
+		%s
+		</div>
 		</div>
 		</div>
 		',

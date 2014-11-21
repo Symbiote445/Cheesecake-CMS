@@ -254,7 +254,7 @@ class Forums{
 				$rc = mysqli_fetch_array($count);
 				echo'<tr>';
 				echo'<td><a class="nav" href="index.php?action=viewforum&cat='.$row1['cat_id'].'">' .$row1['name']. '<span class="badge">' . mysqli_num_rows($count) . ' Post(s)</span></a>';
-				echo $row1['desc'];
+				echo'<div class="col-md-6">'.$row1['desc'].'</div>';
 				echo'</td>';
 				echo'<td>';
 				if((mysqli_num_rows($count) > 0)){
@@ -351,7 +351,8 @@ class Forums{
 			}
 			$titler = $row['title'];
 			$parsed = $parser->parse($row['post']);
-			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed);
+			$sig = $parser->parse($row['sig']);
+			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
 		}
 		
 		//error_reporting(E_ALL);
@@ -361,7 +362,8 @@ class Forums{
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
 			$parsed = $parser->parse($row['reply']);
-			echo sprintf($layout['blogViewFormat'], $replyTitle, $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed);	
+			$sig = $parser->parse($row['sig']);
+			echo sprintf($layout['blogViewFormat'], $replyTitle, $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);	
 		}
 
 		echo '</div></div></div><br />';
