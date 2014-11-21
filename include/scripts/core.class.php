@@ -372,6 +372,7 @@ class core {
 		}
 	}
 	public function logout(){
+	global $settings;
 		session_destroy();
 		setcookie('ID', "", time()-86400, "/");
 		//setcookie('user_id', "", time()-10, "/");
