@@ -52,7 +52,9 @@ $offyBlog->postBlog();
 */
 	public function blogAdminBar(){
 	global $dbc, $parser, $layout, $main, $settings, $core;
+	if($core->verify("4")){
 	echo sprintf($layout['adminBar'], 'index.php?action=Blog&mode=admin', 'Blog');
+	}
 	}
 
 	public function viewBlog(){

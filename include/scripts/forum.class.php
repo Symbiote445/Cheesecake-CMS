@@ -70,8 +70,10 @@ if(isset($_GET['action'])){
 class Forums{
 	public function forumAdminBar(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
+		if($core->verify("4") || $core->verify("2")){
 		echo sprintf($layout['adminBar'], 'index.php?action=adminposts', 'Post');
 		echo sprintf($layout['adminBar'], 'index.php?action=adminreply', 'Reply');
+	}
 	}
 	public function newforum() {
 		global $dbc, $parser, $layout, $main, $settings, $core;
@@ -91,7 +93,7 @@ class Forums{
 				echo '<p class="error">You must enter information into all of the fields.</p>';
 			}
 		} 
-		if(!$core->verify("4") || !$core->verify("2")){ exit(); }
+		if($core->verify("4") || $core->verify("2")){
 		echo'<form enctype="multipart/form-data" method="post" action="index.php?action=newforum">
 		<fieldset>
 		<legend>Create Forum:</legend>
@@ -127,12 +129,11 @@ class Forums{
 		echo'</table>';
 		echo'</div>';
 	}
+	}
 	public function deletecat(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();
-		if(!$core->verify("4") || !$core->verify("2")){
-			exit();
-		}
+		if($core->verify("4") || $core->verify("2")){
 		if (isset($_POST['submit'])) {
 			$postid = mysqli_real_escape_string($dbc, trim($_POST['postid']));
 			if (!empty($postid)) {
@@ -160,12 +161,11 @@ class Forums{
 	</form>
 	</div>';	
 	}
+	}
 	public function deleteforum(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();
-		if(!$core->verify("4") || !$core->verify("2")){
-			exit();
-		}
+		if($core->verify("4") || $core->verify("2")){
 		if (isset($_POST['submit'])) {
 			$postid = mysqli_real_escape_string($dbc, trim($_POST['postid']));
 			if (!empty($postid)) {
@@ -192,6 +192,7 @@ class Forums{
 	</form>
 	</div>';
 	}
+	}
 	public function newcat() {
 		global $dbc, $parser, $layout, $main, $settings, $core;
 
@@ -209,7 +210,7 @@ class Forums{
 				echo '<p class="error">You must enter information into all of the fields.</p>';
 			}
 		} 
-		if(!$core->verify("4") || !$core->verify("2")){ exit(); }
+		if($core->verify("4") || $core->verify("2")){
 		echo'<form enctype="multipart/form-data" method="post" action="index.php?action=newcat">
 		<fieldset>
 		<legend>Create Category:</legend>
@@ -229,10 +230,11 @@ class Forums{
 		echo'</table>';
 		echo'</div>';
 	}
+	}
 	public function category(){
 		echo '<div class="shadowbar">';
 		global $dbc, $parser, $layout, $main, $settings, $core;
-		if($core->verify("4")){
+		if($core->verify("4") || $core->verify("2")){
 			echo '<a class="Link LButton" href="index.php?action=newcat">New Category</a><a class="Link LButton" href="index.php?action=newforum">New Forum</a>';
 		}
 		$query = "SELECT * FROM category_groups";
