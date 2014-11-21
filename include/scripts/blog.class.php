@@ -186,8 +186,8 @@ $offyBlog->postBlog();
 			}
 		} 
 		
-		
-		echo sprintf($layout['adminDeleteLayout'], $_GET['del']);
+		$id = mysqli_real_escape_string($dbc, trim($_GET['del']));
+		echo sprintf($layout['adminDeleteLayout'], 'delete', $id);
 	}
 }
 ?>
