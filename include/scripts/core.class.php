@@ -504,9 +504,9 @@ class core {
 		}
 		echo'<input type="file" id="new_picture" name="new_picture" />
 	<label for="email">E-Mail:</label>
-	<input type="text" id="email" name="email" value="'.$email.'"/>
-	<label for="sig">Signature:</label>
-	<textarea cols="6" rows="20" placeholder="Signature..." name="sig">'.$sig.'</textarea>
+	<input type="text" id="email" name="email" value="'.$email.'"/><br>
+	<label for="sig">Signature:</label><br>
+	<textarea cols="100" rows="6" placeholder="Signature..." name="sig">'.$sig.'</textarea>
 		</fieldset>
 		<input type="submit" value="Save Profile" name="submit" /> <a class="button" href="index.php?action=ucp">Cancel</a>
 	</form>
