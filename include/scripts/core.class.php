@@ -529,7 +529,6 @@ class core {
 			$row = mysqli_fetch_array($data);
 			echo '<div class="shadowbar"><table class="table">';
 			echo '<tr><td>Username:</td><td>' . $row['username'] . '</td></tr>';
-			echo '<a class="Link LButton" href="index.php?action=ucp&mode=notes&u='.$row['uid'].'">View User Notes</a><br>';
 			echo '</td></tr>';
 			echo '<tr><td>Email:</td><td>' . $row['email'] . '</td></tr>';
 			echo '<tr><td>Picture:</td><td><img style="max-height:100px;" class="img-square" src="include/images/profile/' . $row['picture'] .
