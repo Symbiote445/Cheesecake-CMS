@@ -62,7 +62,8 @@ $offyBlog->postBlog();
 
 		while ($row = mysqli_fetch_array($data)) {
 			$parsed = $parser->parse($row['content']);
-			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed);
+			$sig = $parser->parse($row['sig']);
+			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
 		}
 	}
 	
