@@ -91,7 +91,7 @@ class Forums{
 				echo '<p class="error">You must enter information into all of the fields.</p>';
 			}
 		} 
-		if(!$core->verify("4")){ exit(); }
+		if(!$core->verify("4") || !$core->verify("2")){ exit(); }
 		echo'<form enctype="multipart/form-data" method="post" action="index.php?action=newforum">
 		<fieldset>
 		<legend>Create Forum:</legend>
@@ -130,7 +130,7 @@ class Forums{
 	public function deletecat(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();
-		if(!$core->verify("4")){
+		if(!$core->verify("4") || !$core->verify("2")){
 			exit();
 		}
 		if (isset($_POST['submit'])) {
@@ -163,7 +163,7 @@ class Forums{
 	public function deleteforum(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();
-		if(!$core->verify("4")){
+		if(!$core->verify("4") || !$core->verify("2")){
 			exit();
 		}
 		if (isset($_POST['submit'])) {
@@ -209,7 +209,7 @@ class Forums{
 				echo '<p class="error">You must enter information into all of the fields.</p>';
 			}
 		} 
-		if(!$core->verify("4")){ exit(); }
+		if(!$core->verify("4") || !$core->verify("2")){ exit(); }
 		echo'<form enctype="multipart/form-data" method="post" action="index.php?action=newcat">
 		<fieldset>
 		<legend>Create Category:</legend>
@@ -431,9 +431,8 @@ class Forums{
 	public function delp(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();
-		if(!$core->verify("4")){
-			exit();
-		}
+if($core->verify("4") || $core->verify("2")){
+
 		if (isset($_POST['submit'])) {
 			$postid = mysqli_real_escape_string($dbc, trim($_POST['postid']));
 			if (!empty($postid)) {
@@ -460,6 +459,7 @@ class Forums{
 	</form>
 	</div>';
 		
+	}
 	}
 	public function hider(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
@@ -687,9 +687,8 @@ class Forums{
 		$core->isLoggedIn();
 		
 
-		if(!$core->verify("4")){
-			exit();
-		}
+		if($core->verify("4") || $core->verify("2")){
+
 
 		$query = "SELECT reply.*, users.* FROM reply JOIN users ON users.uid = reply.user_id ORDER BY reply.reply_id DESC ";
 		$data = mysqli_query($dbc, $query);
@@ -699,15 +698,15 @@ class Forums{
 		}
 		echo '</div>';
 	}
+	}
 	public function forumPostAdmin(){
 		global $settings, $version, $dbc, $layout, $core, $parser;
 		echo '<div class="shadowbar">';
 		$core->isLoggedIn();
 		
 
-		if(!$core->verify("4")){
-			exit();
-		}
+		if($core->verify("4") || $core->verify("2")){
+
 
 		$query = "SELECT posts.*, users.* FROM posts JOIN users ON users.uid = posts.user_id ORDER BY posts.post_id DESC ";
 		$data = mysqli_query($dbc, $query);
@@ -716,6 +715,7 @@ class Forums{
 			echo sprintf($layout['adminPostLayout'], $row['title'], $parsed, $row['post_id'], 'forumDeletePost', 'delete', $row['post_id'], $row['hidden'], 'ForumHidePost', $row['post_id'], 'ForumUnHidePost', $row['post_id'], $row['username'], $row['adminlevel']);
 		}
 		echo '</div>';
+	}
 	}
 }
 ?>
