@@ -250,7 +250,18 @@ global $dbc, $core;
 				$query = "UPDATE users SET `active` = '$time' WHERE `uid` = ".$_SESSION['uid']."";
 				mysqli_query($dbc, $query);	
 				}
-				echo '<h3>Online Users</h3>';
+				echo '
+			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+			  <div class="panel panel-default">
+				<div class="panel-heading" role="tab" id="headingOne">
+				  <h4 class="panel-title">
+				  <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+				  Online Users
+				  </a>
+				  </h4>
+				  </div>
+				      <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+      <div class="panel-body">';
 				$query = "SELECT * FROM users";
 				$data = mysqli_query($dbc, $query);
 				while ($row = mysqli_fetch_array($data)){
@@ -258,9 +269,14 @@ global $dbc, $core;
 				echo '<a href="index.php?action=ucp&uid='.$row['uid'].'">'.$row['username'].'</a>, ';
 				}
 				}
-				echo '<small>This list updates every five minutes</small>';
+				echo '<br /><small>This list updates every five minutes</small>';
 			echo'
 			</div>
+			</div>
+			</div>
+			
+		</div>
+		</div>
 		</div>
 		<div class="col-md-7">';
 }
