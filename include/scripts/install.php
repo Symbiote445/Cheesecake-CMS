@@ -124,6 +124,13 @@ CREATE TABLE IF NOT EXISTS `posts` (
 `hidden` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1;
 
+CREATE TABLE IF NOT EXISTS `gallery` (
+  `name` text NOT NULL,
+  `descr` text NOT NULL,
+  `filename` text NOT NULL,
+`p_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE IF NOT EXISTS `reply` (
 `reply_id` int(11) NOT NULL,
 `post_id` text NOT NULL,
@@ -167,7 +174,10 @@ ADD PRIMARY KEY (`reply_id`);
 
 ALTER TABLE `users`
 ADD PRIMARY KEY (`uid`);
-
+ALTER TABLE `gallery`
+ ADD PRIMARY KEY (`p_id`);
+ALTER TABLE `gallery`
+MODIFY `p_id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `blog`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
