@@ -244,6 +244,23 @@ global $dbc, $core;
 				}
 				echo'
 			</div>
+			<div class="shadowbar">';
+			if(isset($_SESSION['uid'])){
+				$time = time();
+				$query = "UPDATE users SET `active` = '$time' WHERE `uid` = ".$_SESSION['uid']."";
+				mysqli_query($dbc, $query);	
+				}
+				echo '<h3>Online Users</h3>';
+				$query = "SELECT * FROM users";
+				$data = mysqli_query($dbc, $query);
+				while ($row = mysqli_fetch_array($data)){
+				if(time() - 300 < $row['active']){
+				echo '<a href="index.php?action=ucp&uid='.$row['uid'].'">'.$row['username'].'</a>, ';
+				}
+				}
+				echo '<small>This list updates every five minutes</small>';
+			echo'
+			</div>
 		</div>
 		<div class="col-md-7">';
 }

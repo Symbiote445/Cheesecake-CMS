@@ -151,6 +151,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 `adminlevel` int(11) NOT NULL DEFAULT '0',
 `picture` text NOT NULL,
 `ip` varchar(12) NOT NULL
+`active` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 
