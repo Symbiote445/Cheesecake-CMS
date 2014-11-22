@@ -556,6 +556,135 @@ class core {
 		
 		
 	}
+	public function viewConvo(){
+		echo '<div class="shadowbar">';
+		global $dbc;
+		$query = "SELECT * FROM users WHERE uid = '" . $_SESSION['uid'] . "'";
+		$data = mysqli_query($dbc, $query);
+		$row = mysqli_fetch_array($data);
+		$username = $row['username'];
+		$id = $row['uid'];
+		$query = "SELECT * FROM convo WHERE convo.sent_to = '$username' OR convo.sent_by = '$id'";
+		$data = mysqli_query($dbc, $query);
+		echo '<table class="table">';
+		echo '<thead>';
+		echo '<th>Message Title</th>';
+		echo '</thead>';
+		echo '<tbody>';
+		while ($row = mysqli_fetch_array($data)) {
+			$query2 = "SELECT * FROM messages WHERE convo = ".$row['id']."";
+			$count = mysqli_query($dbc, $query2);
+			$rc = mysqli_fetch_array($count);
+			if(!empty($row['title'])) {
+				echo'<tr>';
+				echo'<td>';
+					echo'<a class="nav" href="index.php?action=viewmessage&m='.$row['id'].'">' .$row['title']. '   <span class="badge">' . mysqli_num_rows($count) . ' Messages</span></a>';  
+				echo'</td>';
+			}
+			
+		}
+		echo '</tbody></table></div>';
+	}
+	public function viewMessage(){
+		echo '<div class="shadowbar">';
+		global $dbc, $parser, $layout, $main, $settings, $core;
+		$secureMessage = preg_replace("/[^0-9]/", "", $_GET['m']);
+		$message = mysqli_real_escape_string($dbc, $secureMessage);
+		$query = "SELECT convo.*, messages.*, users.* FROM messages JOIN users ON users.uid = messages.user JOIN convo ON convo.id = messages.convo AND messages.convo = $message";
+		$data = mysqli_query($dbc, $query);
+		while ($row = mysqli_fetch_array($data)) {
+			$replyTitle = $row['title'];
+				echo '<a class="Link LButton" href="index.php?action=replymessage&m='.$message.'">Reply</a>';
+			$parsed = $parser->parse($row['content']);
+			$sig = $parser->parse($row['sig']);
+			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
+		}
+		echo '</div>';
+	}
+	public function sendMessage(){
+		global $dbc, $parser, $layout, $main, $settings, $core;
+		$core->isLoggedIn();
+		echo '<div class="shadowbar">';
+		//Grab the profile data from the database
+		$query = "SELECT * FROM users WHERE uid = '" . $_SESSION['uid'] . "'";
+		$data = mysqli_query($dbc, $query);
+		$row = mysqli_fetch_array($data);
+		$username = $row['uid'];
+		if (isset($_POST['submit'])) {
+			// Grab the profile data from the POST
+			$message = mysqli_real_escape_string($dbc, strip_tags( trim($_POST['message'])));
+			$title = mysqli_real_escape_string($dbc, trim($_POST['title']));
+			$sent_to = mysqli_real_escape_string($dbc, trim($_POST['sent_to']));
+			// Update the post data in the database
+			if (!empty($message) && !empty($title) && !empty($sent_to)) {
+				$query = "INSERT INTO convo (`sent_by`, `sent_to`, `title`) VALUES ('$username', '$sent_to', '$title')";
+				mysqli_query($dbc, $query);
+				$query = "SELECT * FROM convo WHERE sent_by = '$username' AND title = '$title' AND sent_to = '$sent_to' ORDER BY id DESC";
+				$cquery = mysqli_query($dbc, $query);
+				$convo = mysqli_fetch_array($cquery);
+				$convo_id = $convo['id'];
+				$query = "INSERT INTO messages (`user`, `convo`, `content`, `date`) VALUES ('$username', '$convo_id', '$message', NOW())";
+				mysqli_query($dbc, $query);
+				echo '<p>Your message has been successfully sent. Would you like to <a href="index.php?action=messages">view all of your messages</a>?</p>';
+				exit();
+			}
+			else {
+				echo '<p class="error">You must enter information into all of the fields.</p>';
+			}
+		} // End of check for form submission
+		echo'<form enctype="multipart/form-data" method="post" action="index.php?action=sendmessage">
+		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
+		<fieldset>
+		<legend>Send Message:</legend>
+			<label type="hidden" for="title">Title:</label><br />
+			<input type="text" name="title"><br />
+			<label type="hidden" for="title">To:</label><br />
+			<input type="text" name="sent_to"><br />			
+			<label type="hidden" for="message">Post Content:</label><br />
+		<textarea rows="4"  name="message" id="message" cols="50"></textarea><br />
+		</fieldset>
+		<input type="submit" value="Send" name="submit" />     
+	</form>
+	</div>';	
+	}
+
+	public function sendMessageReply(){
+		global $dbc, $core;
+		$core->isLoggedIn();
+		// Grab the profile data from the database
+		$query = "SELECT uid FROM users WHERE uid = '" . $_SESSION['uid'] . "'";
+		$data = mysqli_query($dbc, $query);
+		$row = mysqli_fetch_array($data);
+		$username = $row['uid'];
+		if (isset($_POST['submit'])) {
+			// Grab the profile data from the POST
+			$reply = mysqli_real_escape_string($dbc, strip_tags( trim($_POST['reply'])));
+			$secureReply = preg_replace("/[^0-9]/", "", $_POST['replyid']);
+			$replyid = mysqli_real_escape_string($dbc, $secureReply);
+			// Update the post data in the database
+			if (!empty($reply)) {
+				// Only set the picture column if there is a new picture
+				$query = "INSERT INTO messages (`user`, `convo`, `content`, `date`) VALUES ('$username', '$replyid', '$reply', NOW())";
+				mysqli_query($dbc, $query) or die(mysqli_error($dbc));
+				// Confirm success with the user
+				echo '<div class="shadowbar"><p>You have replied successfully. Would you like to <a href="index.php?action=messages">view all of your messages</a>?</p></div>';
+				exit();
+			}
+			else {
+				echo '<div class="shadowbar"><p class="error">You must enter information into all of the fields.</p></div>';
+			}
+		} // End of check for form submission
+		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=replymessage">
+		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
+		<fieldset>
+		<legend>Reply:</legend>
+		<input type="hidden" name="replyid" value="'.$_GET['m'].'">
+		<textarea rows="4"  name="reply" id="reply" cols="50"></textarea><br />
+		</fieldset>
+		<input type="submit" value="Send" name="submit" /> 
+	</form>
+	</div>';
+	}
 	public function signup(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		if(($settings['signup_enabled'] === 'false')){

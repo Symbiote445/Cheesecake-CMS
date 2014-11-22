@@ -224,6 +224,8 @@ global $dbc, $core;
 				<div class="btn-group-vertical width100">';
 				$uid = $_SESSION['uid'];
 					echo ' <a class="btn btn-default width100" href="index.php?action=ucp">View Profile</a>';
+					echo ' <a class="btn btn-default width100" href="index.php?action=messages">Messages</a>';
+					echo ' <a class="btn btn-default width100" href="index.php?action=sendmessage">Send Message</a>';
 					echo ' <a class="btn btn-default width100" href="index.php?action=logout">Log Out (' . $row['username'] . ')</a> ';
 					$core->loadModule("sidebar");
 

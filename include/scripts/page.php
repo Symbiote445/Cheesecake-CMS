@@ -31,6 +31,18 @@ class pageGeneration {
 			if($_GET['action'] === 'editprofile'){
 				$core->editprofile();
 			}
+			if($_GET['action'] == "messages"){
+			$core->viewConvo();
+			}
+			if($_GET['action'] == "viewmessage"){
+			$core->viewMessage();
+			}
+			if($_GET['action'] == "sendmessage"){
+			$core->sendMessage();
+			}
+			if($_GET['action'] == "replymessage"){
+			$core->sendMessageReply();
+			}
 		} else {
 			if(!isset($_GET['action'])){
 				if($settings['home_display'] == 'none' || $settings['home_display'] == 'about'){
