@@ -83,46 +83,42 @@ $dbc=mysqli_connect($settings[\'db_host\'],$settings[\'db_user\'],$settings[\'db
 				$query = 
 				"
 
+
 CREATE TABLE IF NOT EXISTS `blog` (
 `id` int(11) NOT NULL,
-`title` text NOT NULL,
-`content` text NOT NULL,
-`display` int(11) NOT NULL DEFAULT '1',
-`user` int(11) NOT NULL,
-`date` datetime NOT NULL,
-`hidden` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+  `title` text NOT NULL,
+  `content` text NOT NULL,
+  `display` int(11) NOT NULL DEFAULT '1',
+  `user` int(11) NOT NULL,
+  `date` datetime NOT NULL,
+  `hidden` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 
 CREATE TABLE IF NOT EXISTS `categories` (
 `cat_id` int(11) NOT NULL,
-`name` text NOT NULL,
-`desc` text NOT NULL,
-`cg` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+  `name` text NOT NULL,
+  `desc` text NOT NULL,
+  `cg` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 
 CREATE TABLE IF NOT EXISTS `category_groups` (
 `cg_id` int(11) NOT NULL,
-`cg_name` text NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+  `cg_name` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE IF NOT EXISTS `pages` (
-`page_id` int(11) NOT NULL,
-`pagename` text NOT NULL,
-`body` text NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 
-CREATE TABLE IF NOT EXISTS `posts` (
-`post_id` int(11) NOT NULL,
-`home` varchar(5) NOT NULL,
-`user_id` varchar(32) NOT NULL,
-`date` datetime NOT NULL,
-`title` varchar(50) NOT NULL,
-`post` mediumtext,
-`category` text NOT NULL,
-`reported` varchar(1) NOT NULL DEFAULT '0',
-`locked` varchar(1) NOT NULL,
-`hidden` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1;
+CREATE TABLE IF NOT EXISTS `convo` (
+`id` int(11) NOT NULL,
+  `first_message` int(11) NOT NULL,
+  `sent_by` int(11) NOT NULL,
+  `sent_to` text NOT NULL,
+  `title` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 CREATE TABLE IF NOT EXISTS `gallery` (
   `name` text NOT NULL,
@@ -131,69 +127,122 @@ CREATE TABLE IF NOT EXISTS `gallery` (
 `p_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
+CREATE TABLE IF NOT EXISTS `messages` (
+`mid` int(11) NOT NULL,
+  `user` int(11) NOT NULL,
+  `convo` int(11) NOT NULL,
+  `content` text NOT NULL,
+  `date` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE IF NOT EXISTS `pages` (
+`page_id` int(11) NOT NULL,
+  `pagename` text NOT NULL,
+  `body` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+CREATE TABLE IF NOT EXISTS `posts` (
+`post_id` int(11) NOT NULL,
+  `home` varchar(5) NOT NULL,
+  `user_id` varchar(32) NOT NULL,
+  `date` datetime NOT NULL,
+  `title` varchar(50) NOT NULL,
+  `post` mediumtext,
+  `category` text NOT NULL,
+  `reported` varchar(1) NOT NULL DEFAULT '0',
+  `locked` varchar(1) NOT NULL,
+  `hidden` int(11) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 CREATE TABLE IF NOT EXISTS `reply` (
 `reply_id` int(11) NOT NULL,
-`post_id` text NOT NULL,
-`user_id` varchar(32) NOT NULL,
-`reply` text NOT NULL,
-`hidden` int(11) NOT NULL DEFAULT '0',
-`date` datetime NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+  `post_id` text NOT NULL,
+  `user_id` varchar(32) NOT NULL,
+  `reply` text NOT NULL,
+  `hidden` int(11) NOT NULL DEFAULT '0',
+  `date` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 CREATE TABLE IF NOT EXISTS `users` (
 `uid` int(11) NOT NULL,
-`username` varchar(32) NOT NULL,
-`email` text NOT NULL,
-`sig` text NOT NULL,
-`hash` text NOT NULL,
-`password` text NOT NULL,
-`activated` int(11) NOT NULL DEFAULT '0',
-`adminlevel` int(11) NOT NULL DEFAULT '0',
-`picture` text NOT NULL,
-`ip` varchar(12) NOT NULL
-`active` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+  `username` varchar(32) NOT NULL,
+  `email` text NOT NULL,
+  `sig` text NOT NULL,
+  `hash` text NOT NULL,
+  `password` text NOT NULL,
+  `activated` int(11) NOT NULL DEFAULT '0',
+  `adminlevel` int(11) NOT NULL DEFAULT '0',
+  `picture` text NOT NULL,
+  `ip` varchar(12) NOT NULL,
+  `active` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 ALTER TABLE `blog`
-ADD PRIMARY KEY (`id`);
+ ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `categories`
-ADD PRIMARY KEY (`cat_id`);
+ ADD PRIMARY KEY (`cat_id`);
 
 ALTER TABLE `category_groups`
-ADD PRIMARY KEY (`cg_id`);
+ ADD PRIMARY KEY (`cg_id`);
 
-ALTER TABLE `pages`
-ADD PRIMARY KEY (`page_id`);
+ALTER TABLE `convo`
+ ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `posts`
-ADD PRIMARY KEY (`post_id`);
-
-ALTER TABLE `reply`
-ADD PRIMARY KEY (`reply_id`);
-
-ALTER TABLE `users`
-ADD PRIMARY KEY (`uid`);
 ALTER TABLE `gallery`
  ADD PRIMARY KEY (`p_id`);
+
+ALTER TABLE `messages`
+ ADD PRIMARY KEY (`mid`);
+
+ALTER TABLE `pages`
+ ADD PRIMARY KEY (`page_id`);
+
+ALTER TABLE `posts`
+ ADD PRIMARY KEY (`post_id`);
+
+ALTER TABLE `reply`
+ ADD PRIMARY KEY (`reply_id`);
+
+ALTER TABLE `users`
+ ADD PRIMARY KEY (`uid`);
+
+ALTER TABLE `blog`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `categories`
+MODIFY `cat_id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `category_groups`
+MODIFY `cg_id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `convo`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 ALTER TABLE `gallery`
 MODIFY `p_id` int(11) NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `blog`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
-ALTER TABLE `categories`
-MODIFY `cat_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
-ALTER TABLE `category_groups`
-MODIFY `cg_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+ALTER TABLE `messages`
+MODIFY `mid` int(11) NOT NULL AUTO_INCREMENT;
+
 ALTER TABLE `pages`
-MODIFY `page_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=15;
+MODIFY `page_id` int(11) NOT NULL AUTO_INCREMENT;
+
 ALTER TABLE `posts`
-MODIFY `post_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=38;
+MODIFY `post_id` int(11) NOT NULL AUTO_INCREMENT;
+
 ALTER TABLE `reply`
-MODIFY `reply_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
+MODIFY `reply_id` int(11) NOT NULL AUTO_INCREMENT;
+
 ALTER TABLE `users`
-MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT;
+
 
 INSERT INTO users (username, password, email, ip, adminlevel, activated) VALUES ('$username', SHA('$password1'), '$email', '$uip', '4', '1')
 ";
