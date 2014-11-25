@@ -382,7 +382,7 @@ class gallery{
 			if (!empty($postid)) {
 
 				$query = "DELETE FROM gallery_cat WHERE cg_id = $postid";
-				mysqli_query($dbc, $query);
+				mysqli_query($dbc, $query); 
 				echo '<div class="shadowbar"><p>Gallery has been successfully deleted. Would you like to <a href="index.php?action=viewgallery">go back to the gallery</a>?</p></div>';
 				
 				exit();

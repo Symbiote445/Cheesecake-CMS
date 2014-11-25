@@ -304,7 +304,7 @@ Database
 		}
 	}
 }
-
+ 
 
 class core {
 	public function checkLogin(){

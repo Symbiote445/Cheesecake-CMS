@@ -259,7 +259,7 @@ class Forums{
 				echo'<div class="col-md-6">'.$row1['desc'].'</div>';
 				echo'</td>';
 				echo'<td>';
-				if((mysqli_num_rows($count) > 0)){
+				if((mysqli_num_rows($count) > 0)){ 
 					echo'<a href="index.php?action=viewpost&post_id='.$rc['post_id'].'">'.$rc['title'].'</a><br>';
 					echo'By: <a href="index.php?action=ucp&uid='.$rc['uid'].'">' . $rc['username'] . '</a>';
 				}
