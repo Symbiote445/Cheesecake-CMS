@@ -459,7 +459,7 @@ class gallery{
 		<legend>Picture Upload</legend>
 		<label for="name">Picture Name:</label><br />
 		<input type="text" id="name" name="name" value="" /><br />';
-		echo'<select id="cat" name="category">';
+		echo'<select id="cat" name="cat">';
 		$query = "SELECT * FROM gallery_cat";
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
