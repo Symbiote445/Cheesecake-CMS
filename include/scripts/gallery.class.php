@@ -326,22 +326,32 @@ if(isset($_GET['action'])){
 	if(($_GET['action'] === 'uploadphoto')) {
 	$galleryClass->uloadp();
 	}
+	if(($_GET['action'] === 'addGallery')) {
+	$galleryClass->galleryCategory();
+	}
+	if(($_GET['action'] === 'deleteGallery')) {
+	$galleryClass->deleteGallery();
+	}
 }
+
 class gallery{
-	function vg(){
+	public function vg(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		if($core->verify("4") || $core->verify("2")){
-		echo '<div class="shadowbar"><a class="Link LButton" href="index.php?action=uploadphoto">Upload File To Gallery </a></div>';
+		echo '<div class="shadowbar"><a class="Link LButton" href="index.php?action=uploadphoto">Upload File To Gallery </a><a class="Link LButton" href="index.php?action=addGallery">Add Gallery</a></div>';
 		}
 		echo'<div class="shadowbar">';
-		echo'<h3>Gallery</h3>';
 		if(isset($_GET['limit'])){
 		$secureLimit = preg_replace("/[^0-9]/", "", $_GET['limit']);
 		$limit = mysqli_real_escape_string($dbc, $secureLimit);
 		} else {
-		$limit = 0;
+		$limit = 1;
 		}
-		$query = "SELECT * FROM gallery ORDER BY p_id LIMIT $limit,10";
+		$query = "SELECT * FROM gallery_cat WHERE cg_id = ".$limit."";
+		$data = mysqli_query($dbc, $query);
+		while($row = mysqli_fetch_array($data)) {
+		echo '<h3>'.$row['cg_name'].'</h3>';
+		$query = "SELECT * FROM gallery WHERE cat = ".$row['cg_id']." ";
 		mysqli_query($dbc, $query);
 		$data = mysqli_query($dbc, $query);
 		echo'
@@ -351,24 +361,51 @@ class gallery{
 			if(!empty($row['filename'])){
 				echo'<li>
 						<a href="http://'.$settings['b_url'].'/index.php?action=viewgallery" data-largesrc="include/images/'.$row['filename'].'" data-title="'.$row['name'].'" data-description="'.$row['descr'].'">
-							<img style="max-height:140px;" src="include/images/'.$row['filename'].'" alt="img01"/>
+							<img style="max-height:70px;" src="include/images/'.$row['filename'].'" alt="img01"/>
 						</a>
 					</li>';
-			} /*
-			if(!empty($row['name'])){
-				echo '<strong>'.$row['name'] . '</strong>';
-			}
-			if(!empty($row['descr'])){
-				echo $row['descr'];
-			}*/
+			} 
+
 		}
 		echo '</ul>
 				</div>';
-		echo '<a class="Link LButton" href="index.php?action=viewgallery&limit='.($limit - 10).'">Previous </a><a class="Link LButton" href="index.php?action=viewgallery&limit='.($limit + 10).'"> Next</a>';
+						echo '<a class="Link LButton" href="index.php?action=viewgallery&limit='.($limit - 1).'">Previous </a><a class="Link LButton" href="index.php?action=viewgallery&limit='.($limit + 1).'"> Next</a>';
 		echo '</div>';
 	}
-	
-	function uloadp(){
+	}
+	public function deleteGallery(){
+		global $dbc, $parser, $layout, $main, $settings, $core;
+		$core->isLoggedIn();
+		if($core->verify("4") || $core->verify("2")){
+		if (isset($_POST['submit'])) {
+			$postid = mysqli_real_escape_string($dbc, trim($_POST['postid']));
+			if (!empty($postid)) {
+
+				$query = "DELETE FROM gallery_cat WHERE cg_id = $postid";
+				mysqli_query($dbc, $query);
+				echo '<div class="shadowbar"><p>Gallery has been successfully deleted. Would you like to <a href="index.php?action=viewgallery">go back to the gallery</a>?</p></div>';
+				
+				exit();
+			}
+			else {
+				echo '<p class="error">You must enter information into all of the fields.</p>';
+			}
+		}
+		
+		
+		
+		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=deleteGallery">
+		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
+		<fieldset>
+		<legend>Are you sure?</legend>';
+		echo'<input type="hidden" name="postid" value="'.$_GET['cat'].'">
+		</fieldset>
+		<input type="submit" value="Delete" name="submit" />   <a class="button" href="index.php">Cancel</a> 
+	</form>
+	</div>';	
+	}
+	}
+	public function uloadp(){
 	
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();
@@ -386,6 +423,7 @@ class gallery{
 			$filename = mysqli_real_escape_string($dbc, trim($_FILES["file"]["name"]));
 			$name = mysqli_real_escape_string($dbc, trim($_POST['name']));
 			$desc = mysqli_real_escape_string($dbc, trim($_POST['desc']));
+			$cat = mysqli_real_escape_string($dbc, trim($_POST['cat']));
 			$pnumname = 'galleryUploadNumber'.$pnumu.'.'.$extension;
 			if ((($_FILES["file"]["type"] == "image/gif")
 						|| ($_FILES["file"]["type"] == "image/jpeg")
@@ -404,7 +442,7 @@ class gallery{
 					} else {
 						move_uploaded_file($_FILES["file"]["tmp_name"],
 						"include/images/" . $pnumname);
-						$query = "INSERT INTO gallery (name, descr, filename) VALUES ('$name', '$desc', '$pnumname')";
+						$query = "INSERT INTO gallery (name, descr, filename, cat) VALUES ('$name', '$desc', '$pnumname', '$cat')";
 						mysqli_query($dbc, $query);
 						echo "Success!";
 						exit();
@@ -420,7 +458,15 @@ class gallery{
 		<fieldset>
 		<legend>Picture Upload</legend>
 		<label for="name">Picture Name:</label><br />
-		<input type="text" id="name" name="name" value="" /><br />
+		<input type="text" id="name" name="name" value="" /><br />';
+		echo'<select id="cat" name="category">';
+		$query = "SELECT * FROM gallery_cat";
+		$data = mysqli_query($dbc, $query);
+		while ($row = mysqli_fetch_array($data)) {
+			echo '<option value="'.$row['cg_id'].'">'.$row['cg_name'].'</option>';
+		}
+		echo'</select><br /><br />';	
+		echo'
 		<label for="desc">Description</label><br />
 		<textarea id="desc" name="desc" rows="4" cols="30"></textarea><br />
 		<label for="file">Picture:</label>';
@@ -433,6 +479,44 @@ class gallery{
 	die("<p style=\"color: white;\">Insufficient Permissions</p>");
 	}
 	echo '</div>';
+	}
+	public function galleryCategory() {
+		global $dbc, $parser, $layout, $main, $settings, $core;
+
+		$core->isLoggedIn();
+		echo '<div class="shadowbar">';
+		if (isset($_POST['submit'])) {
+			$catt = mysqli_real_escape_string($dbc, strip_tags( trim($_POST['catt'])));
+			if (!empty($catt)) { 
+				$query = "INSERT INTO gallery_cat (`cg_name`) VALUES ('$catt')";
+				mysqli_query($dbc, $query);
+				echo '<p>Your category has been successfully added. Would you like to go back to the <a href="index.php?action=viewgallery">Gallery</a>?</p>';
+				exit();
+			}
+			else {
+				echo '<p class="error">You must enter information into all of the fields.</p>';
+			}
+		} 
+		if($core->verify("4") || $core->verify("2")){
+		echo'<form enctype="multipart/form-data" method="post" action="index.php?action=addGallery">
+		<fieldset>
+		<legend>Create Gallery:</legend>
+			<label type="hidden" for="catt">Gallery name:</label><br />
+			<input type="text" name="catt"><br /><br />
+		<input type="submit" value="Save Gallery" name="submit" />     
+	</form>';
+		echo '<table class"table">';
+		echo '<thead><th>Categories</th></thead>';
+		$query = "SELECT * FROM gallery_cat";
+		$data = mysqli_query($dbc, $query);
+		while ($row = mysqli_fetch_array($data)) {
+			echo '<tr>';
+			echo '<td>'.$row['cg_name'].' <a href="index.php?action=deleteGallery&cat='.$row['cg_id'].'">Delete Gallery</a></td></tr>';
+		}
+		
+		echo'</table>';
+		echo'</div>';
+	}
 	}
 	}
 
