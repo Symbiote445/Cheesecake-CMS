@@ -474,7 +474,7 @@ if($core->verify("4") || $core->verify("2")){
 
 					$query = "UPDATE reply SET `hidden` = '1' WHERE reply_id = $postid";
 					mysqli_query($dbc, $query);
-					echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a href="index.php?action=forumReplyAdmin">go back to replies</a>?</p></div>';
+					echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a href="index.php?action=mcp">go back to the moderator panel</a>?</p></div>';
 					
 					exit();
 				}
@@ -569,7 +569,7 @@ if($core->verify("4") || $core->verify("2")){
 
 					$query = "UPDATE reply SET `hidden` = '0' WHERE reply_id = $postid";
 					mysqli_query($dbc, $query);
-					echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a href="index.php?action=forumReplyAdmin">go back to replies</a>?</p></div>';
+					echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a href="index.php?action=mcp">go back to the moderator panel</a>?</p></div>';
 					
 					exit();
 				}
@@ -601,7 +601,7 @@ if($core->verify("4") || $core->verify("2")){
 
 					$query = "DELETE FROM reply WHERE reply_id = $postid";
 					mysqli_query($dbc, $query);
-					echo '<div class="shadowbar"><p> has been successfully deleted. Would you like to <a href="index.php?action=forumReplyAdmin">go back to replies</a>?</p></div>';
+					echo '<div class="shadowbar"><p> has been successfully deleted. Would you like to <a href="mcp.php">go back to the moderator panel</a>?</p></div>';
 					
 					exit();
 				}

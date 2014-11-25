@@ -578,8 +578,6 @@ class core {
 					';
 				}
 				echo '</ul>';
-				} else {
-				echo 'No new notifications.';
 				}
 			
 			echo'</div>  <div role="tabpanel" class="tab-pane" id="read">';
