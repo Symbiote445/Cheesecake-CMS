@@ -659,6 +659,16 @@ if($core->verify("4") || $core->verify("2")){
 			$reply = mysqli_real_escape_string($dbc, strip_tags( trim($_POST['reply'])));
 			$secureCategory = preg_replace("/[^0-9]/", "", $_POST['replyid']);
 			$replyid = mysqli_real_escape_string($dbc, $secureCategory);
+				$infoquery = "SELECT `user_id` FROM posts WHERE `post_id` = '" .$replyid. "'";
+				$info = mysqli_query($dbc, $infoquery);
+				$row = mysqli_fetch_array($info);
+				if($row['user_id'] != $_SESSION['uid']){
+				$link = 'index.php?action=viewpost&post_id='.$replyid;
+				$description = 'Someone has replied to your post';
+				$user = $row['user_id'];
+				$notif = "INSERT INTO notifications (`user`, `description`, `link`) VALUES ('$user', '$description', '$link')";
+				mysqli_query($dbc, $notif);		
+				}
 			// Update the post data in the database
 			if (!empty($reply)) {
 				// Only set the picture column if there is a new picture

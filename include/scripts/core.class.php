@@ -528,7 +528,8 @@ class core {
 
 		if (mysqli_num_rows($data) == 1) {
 			$row = mysqli_fetch_array($data);
-			echo '<div class="shadowbar"><table class="table">';
+			echo '<div class="shadowbar">';
+			echo '<table class="table">';
 			echo '<tr><td>Username:</td><td>' . $row['username'] . '</td></tr>';
 			echo '</td></tr>';
 			echo '<tr><td>Email:</td><td>' . $row['email'] . '</td></tr>';
@@ -543,6 +544,60 @@ class core {
 			echo '<p class="error">There was a problem accessing your profile.</p>';
 		}
 		echo'</div>';
+		echo '<div class="shadowbar">';
+			if (!isset($_GET['uid']) || ($_SESSION['uid'] == $_GET['uid'])) {
+			if(isset($_GET['mode']) && ($_GET['mode'] == 'markasread')){
+				$query = "UPDATE notifications SET `read` = '1' WHERE `user` = ".$_SESSION['uid']." ";
+				$data = mysqli_query($dbc, $query);
+				echo '<div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>Marked as read</div>';
+				}
+			if(isset($_GET['mode']) && ($_GET['mode'] == 'markasunread')){
+				$query = "UPDATE notifications SET `read` = '0' WHERE `user` = ".$_SESSION['uid']." ";
+				$data = mysqli_query($dbc, $query);
+				echo '<div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>Marked as unread</div>';
+				}
+			echo '<div role="tabpanel">
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#unread" aria-controls="home" role="tab" data-toggle="tab">Unread</a></li>
+    <li role="presentation"><a href="#read" aria-controls="profile" role="tab" data-toggle="tab">Read</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="unread">';
+				$query = "SELECT * FROM notifications WHERE `user` = '" .$_SESSION['uid']. "' AND `read` = 0";
+				$data = mysqli_query($dbc, $query);
+				if(mysqli_num_rows($data) > 0){
+				echo '<a href="index.php?action=ucp&mode=markasread">Mark all as read</a><br />';
+				echo '<ul class="list-group">';
+				while($row = mysqli_fetch_array($data)){
+					echo '
+					<li class="list-group-item"><a href="'.$row['link'].'">'.$row['description'].'</a></li>
+					';
+				}
+				echo '</ul>';
+				}
+			
+			echo'</div>  <div role="tabpanel" class="tab-pane" id="read">';
+				$query = "SELECT * FROM notifications WHERE `user` = '" .$_SESSION['uid']. "' AND `read`= 1";
+				$data = mysqli_query($dbc, $query);
+				if(mysqli_num_rows($data) > 0){
+				echo '<a href="index.php?action=ucp&mode=markasunread">Mark all as unread</a>';
+				echo '<ul class="list-group">';
+				while($row = mysqli_fetch_array($data)){
+					echo '
+					<li class="list-group-item"><a href="'.$row['link'].'">'.$row['description'].'</a></li>
+					';
+				}
+				echo '</ul>';
+				} else {
+				echo 'No new notifications.';
+				}
+			echo'</div></div></div>';
+		}
+		echo '</div>';
 	}
 	public function activate() {
 		global $dbc, $parser, $layout, $main, $settings, $core; 
