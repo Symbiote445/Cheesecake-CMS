@@ -6,6 +6,6 @@ If you're looking to build a community or run a small group for, well, whatever 
 
 For a documentation on ANYTHING you need to know please visit
 
-http://cheesecakebb.org/index.php?action=pages&page=Cheesecake%20Core%20Documentation
+http://cheesecakebb.org/index.php?action=pages&page=cheesecake-core-documentation
 
 PLEASE GIVE FEEDBACK
