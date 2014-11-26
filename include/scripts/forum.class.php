@@ -424,7 +424,8 @@ class Forums{
 		}
 		echo'</select><br /><br />';	
 		echo'<label type="hidden" for="post1">Post Content:</label><br />
-		<textarea rows="4"  name="post1" id="post1" cols="50"></textarea><br />
+		<script>edToolbar(\'bbcodeEditor\'); </script>
+		<textarea class="ed" name="post1" id="bbcodeEditor" style="height:300px;width:100%;"></textarea><br />
 		</fieldset>
 		<input type="submit" value="Save Post" name="submit" />     
 	</form>
@@ -693,7 +694,8 @@ if($core->verify("4") || $core->verify("2")){
 		<fieldset>
 		<legend>Reply:</legend>
 		<input type="hidden" name="replyid" value="'.$_GET['postid'].'">
-		<textarea rows="4"  name="reply" id="reply" cols="50"></textarea><br />
+		<script>edToolbar(\'bbcodeEditor\'); </script>
+		<textarea name="reply" id="bbcodeEditor" style="height:300px;width:100%;"></textarea><br />
 		</fieldset>
 		<input type="submit" value="Save Post" name="submit" />    <a class="button" href="index.php?action=vp&post_id='.$_GET['postid'].'">Cancel</a> 
 	</form>

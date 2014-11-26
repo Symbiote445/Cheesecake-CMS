@@ -10,7 +10,9 @@ $layout = array(
 			<link rel="stylesheet" type="text/css" href="include/style/%s/template.css">
 			<script src="include/style/%s/jquery.js"></script>
 			<script src="include/style/%s/bootstrap.js"></script>
+			<script type="text/javascript" src="include/scripts/js/ed.js"></script> 
 			<script>
+			
 			function Redirect()
 		{
 			window.location="index.php";
@@ -77,7 +79,8 @@ $layout = array(
 			<label type="hidden" for="title">Title:</label><br />
 			<input type="text" name="title"><br /><br />
 			<label type="hidden" for="post1">Blog Content:</label><br />
-		<textarea rows="4"  name="post1" id="post1" cols="50"></textarea><br />
+		<script>edToolbar(\'bbcodeEditor\'); </script>
+		<textarea name="post1" id="bbcodeEditor" style="height:300px;width:100%;"></textarea><br />
 		<label type="hidden" for="id">Display</label>
 		<select id="display" name="display">
 			<option value="0">Hidden</option>
@@ -160,7 +163,8 @@ $layout = array(
 			<label type="hidden" for="title">Title:</label><br />
 			<input type="text" name="title"><br /><br />
 		<label type="hidden" for="post1">Page Body:</label><br />
-		<textarea rows="8"  name="page" id="post1" cols="100"></textarea><br />
+		<script>edToolbar(\'bbcodeEditor\'); </script>
+		<textarea name="reply" id="bbcodeEditor" style="height:300px;width:100%;"></textarea><br />
 		</fieldset>
 		<input type="submit" value="Save Post" name="submit" />     
 		</form>
@@ -257,7 +261,7 @@ global $dbc, $core;
 			  <div class="panel panel-default">
 				<div class="panel-heading" role="tab" id="headingOne">
 				  <h4 class="panel-title">
-				  <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+				  <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
 				  Online Users
 				  </a>
 				  </h4>
@@ -295,7 +299,7 @@ global $dbc, $core;
 			  <div class="panel panel-default">
 				<div class="panel-heading" role="tab" id="notifOne">
 				  <h4 class="panel-title">
-				  <a data-toggle="collapse" data-parent="#notifAccordion" href="#notifCollapse" aria-expanded="true" aria-controls="notifCollapse">
+				  <a data-toggle="collapse" data-parent="#notifAccordion" href="#notifCollapse" aria-expanded="false" aria-controls="notifCollapse">
 				  Notifications
 				  </a>
 				  </h4>
