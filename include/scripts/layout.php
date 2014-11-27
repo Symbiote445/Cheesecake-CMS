@@ -164,7 +164,7 @@ $layout = array(
 			<input type="text" name="title"><br /><br />
 		<label type="hidden" for="post1">Page Body:</label><br />
 		<script>edToolbar(\'bbcodeEditor\'); </script>
-		<textarea name="reply" id="bbcodeEditor" style="height:300px;width:100%;"></textarea><br />
+		<textarea name="page" id="bbcodeEditor" style="height:300px;width:100%;"></textarea><br />
 		</fieldset>
 		<input type="submit" value="Save Post" name="submit" />     
 		</form>

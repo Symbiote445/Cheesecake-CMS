@@ -66,6 +66,10 @@ if(isset($_GET['action'])){
 		$forum->delr();
 		$forum->forumAdminBar();
 	}
+	if($_GET['action'] == 'update'){
+		$forum->update();
+		$forum->forumAdminBar();
+	}
 }
 class Forums{
 	public function forumAdminBar(){
@@ -260,7 +264,7 @@ class Forums{
 				echo'</td>';
 				echo'<td>';
 				if((mysqli_num_rows($count) > 0)){ 
-					echo'<a href="index.php?action=viewpost&post_id='.$rc['post_id'].'">'.$rc['title'].'</a><br>';
+					echo'<a href="index.php?action=viewpost&post='.$rc['postlink'].'">'.$rc['title'].'</a><br>';
 					echo'By: <a href="index.php?action=ucp&uid='.$rc['uid'].'">' . $rc['username'] . '</a>';
 				}
 				echo'</td></tr>';
@@ -314,9 +318,9 @@ class Forums{
 				echo'<tr>';
 				echo'<td>';
 				if(($row['locked'] === '1')){ 
-					echo'<a class="nav" href="index.php?action=viewpost&post_id='.$row['post_id'].'"><img width="25px" height="25px" src="include/images/lock.png" />' .$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';  
+					echo'<a class="nav" href="index.php?action=viewpost&post='.$row['postlink'].'"><img width="25px" height="25px" src="include/images/lock.png" />' .$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';  
 				} else {
-					echo'<a class="nav" href="index.php?action=viewpost&post_id='.$row['post_id'].'">' .$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';
+					echo'<a class="nav" href="index.php?action=viewpost&post='.$row['postlink'].'">' .$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';
 				}
 				echo'</td>';
 				echo'<td>';
@@ -332,24 +336,33 @@ class Forums{
 	public function vpost() {
 		echo '<div class="shadowbar">';
 		global $dbc, $parser, $layout, $main, $settings, $core;
-		$secureCategory = preg_replace("/[^0-9]/", "", $_GET['post_id']);
-		$postid = mysqli_real_escape_string($dbc, $secureCategory);
-		if(isset($_GET['mode']) && ($_GET['mode'] === 'lock')){
+		$postid = mysqli_real_escape_string($dbc, $_GET['post']);
+		if(isset($_GET['mode']) && ($_GET['mode'] == 'lock')){
 			if($core->verify("2") || $core->verify("4")){
-				$query = "UPDATE posts SET locked = 1 WHERE post_id = '$postid'";
+				$query = "UPDATE posts SET locked = 1 WHERE postlink = '$postid'";
 				mysqli_query($dbc, $query);
 				echo '<div class="alert alert-info"><strong>Post Locked</strong></div>';
 			}
+		} else {
+		if(isset($_GET['mode']) && ($_GET['mode'] == 'unlock')){
+			if($core->verify("2") || $core->verify("4")){
+				$query = "UPDATE posts SET locked = 0 WHERE postlink = '$postid'";
+				mysqli_query($dbc, $query);
+				echo '<div class="alert alert-info"><strong>Post Unlocked</strong></div>';
+			}		
 		}
-		$query = "SELECT posts.*, users.* FROM posts JOIN users ON users.uid = posts.user_id AND posts.post_id = $postid AND hidden = '0'";
-		$data = mysqli_query($dbc, $query);
+		}
+		$query = "SELECT `posts`.*, `users`.* FROM `posts` JOIN `users` ON `users`.`uid` = `posts`.`user_id` AND `posts`.`postlink` = '$postid' AND `hidden` = '0' " ;
+		$data = mysqli_query($dbc, $query) or die(mysqli_error($dbc));
 		if($core->verify("2") || $core->verify("4")){
-			echo '<a class="Link LButton" href="index.php?action=viewpost&post_id='.$postid.'&mode=lock">Lock Post</a><br>';
+			echo '<a class="Link LButton" href="index.php?action=viewpost&post='.$postid.'&mode=lock">Lock Post</a><br>';
+			echo '<a class="Link LButton" href="index.php?action=viewpost&post='.$postid.'&mode=unlock">Unlock Post</a><br>';
 		}
 		while ($row = mysqli_fetch_array($data)) {
 			$replyTitle = $row['title'];
+			$ID = $row['post_id'];
 			if(($row['locked'] != '1')){
-				echo '<a class="Link LButton" href="index.php?action=postreply&postid='.$_GET['post_id'].'">Reply</a>';
+				echo '<a class="Link LButton" href="index.php?action=postreply&postid='.$ID.'">Reply</a>';
 			}
 			$titler = $row['title'];
 			$parsed = $parser->parse($row['post']);
@@ -360,7 +373,7 @@ class Forums{
 		//error_reporting(E_ALL);
 		global $dbc;;
 		// Grab the profile data from the database
-		$query = "SELECT reply.*, users.* FROM reply JOIN users ON users.uid = reply.user_id AND reply.post_id = $postid AND hidden = '0'";
+		$query = "SELECT reply.*, users.* FROM reply JOIN users ON users.uid = reply.user_id AND reply.post_id = $ID AND hidden = '0'";
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
 			$parsed = $parser->parse($row['reply']);
@@ -383,7 +396,26 @@ class Forums{
 		echo 'Post Reported.';
 		echo '</div>';
 	}
-
+	public function update(){
+		global $dbc, $parser, $layout, $main, $settings, $core;
+				$query = "SELECT `post_id`, `title` FROM `posts`";
+				$data = mysqli_query($dbc, $query);		
+				while ($row = mysqli_fetch_array($data)){
+				$postid = $row['post_id'];
+				$title = $row['title'];
+				$rawlink = $title.' '.$postid;
+				//Lower case everything
+				$postlink = strtolower($rawlink);
+				//Make alphanumeric (removes all other characters)
+				$postlink = preg_replace("/[^a-z0-9_\s-]/", "", $postlink);
+				//Clean up multiple dashes or whitespaces
+				$postlink = preg_replace("/[\s-]+/", " ", $postlink);
+				//Convert whitespaces and underscore to dash
+				$postlink = preg_replace("/[\s_]/", "-", $postlink);
+				$query = "UPDATE `posts` SET `postlink` = '$postlink' WHERE `post_id` = '$postid' ";
+				mysqli_query($dbc, $query);
+				}
+	}
 	public function upost(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();
@@ -398,11 +430,27 @@ class Forums{
 			$post1 = mysqli_real_escape_string($dbc, strip_tags( trim($_POST['post1'])));
 			$title = mysqli_real_escape_string($dbc, trim($_POST['title']));
 			$category = mysqli_real_escape_string($dbc, trim($_POST['category']));
+			
 			// Update the post data in the database
 			if (!empty($post1) && !empty($title)) {
 				$query = "INSERT INTO posts (`user_id`, `date`, `title`, `post`, `category`) VALUES ('$username', NOW(), '$title', '$post1', '$category')";
 				mysqli_query($dbc, $query);
-				echo '<p>Your post has been successfully added. Would you like to <a href="index.php?action=viewcategory">view all of the posts</a>?</p>';
+				$query = "SELECT `post_id` FROM `posts` WHERE `title` = '$title' ORDER BY `post_id` DESC ";
+				$data = mysqli_query($dbc, $query);		
+				$row = mysqli_fetch_array($data);
+				$postid = $row['post_id'];
+				$rawlink = $title.' '.$postid;
+				//Lower case everything
+				$postlink = strtolower($rawlink);
+				//Make alphanumeric (removes all other characters)
+				$postlink = preg_replace("/[^a-z0-9_\s-]/", "", $postlink);
+				//Clean up multiple dashes or whitespaces
+				$postlink = preg_replace("/[\s-]+/", " ", $postlink);
+				//Convert whitespaces and underscore to dash
+				$postlink = preg_replace("/[\s_]/", "-", $postlink);
+				$query = "UPDATE `posts` SET `postlink` = '$postlink' WHERE `post_id` = '$postid' ";
+				mysqli_query($dbc, $query);
+				echo '<p>Your post has been successfully added. Would you like to <a href="index.php?action=viewcategory">view all of the posts</a>?</p>'.$postlink;
 				exit();
 			}
 			else {
@@ -635,7 +683,7 @@ if($core->verify("4") || $core->verify("2")){
 			$data = mysqli_query($dbc, $query);
 
 			$row = mysqli_fetch_array($data);
-			if(($row['locked'] === '1')){
+			if(($row['locked'] == '1')){
 				echo '<div class="shadowbar"><h3>Reply</h3><p>Post is locked. Cannot reply.</p></div>';
 				exit();
 			}
@@ -662,14 +710,18 @@ if($core->verify("4") || $core->verify("2")){
 			$replyid = mysqli_real_escape_string($dbc, $secureCategory);
 			// Update the post data in the database
 			if (!empty($reply)) {
-				$link = 'index.php?action=viewpost&post_id='.$replyid;
+			$query = "SELECT postlink FROM posts WHERE post_id = '$replyid' ";
+			$data = mysqli_query($dbc, $data);
+			$row = mysqli_fetch_array($data);
+			$post = $row['postlink'];
+				$link = 'index.php?action=viewpost&post='.$post;
 				$description = 'Someone has replied to a post you are involved in';
 				$infoquery = "SELECT DISTINCT `user_id` FROM reply WHERE `post_id` = '" .$replyid. "' AND `user_id` !='".$username."' ";
 				$data = mysqli_query($dbc, $infoquery);
 				while ($rows = mysqli_fetch_array($data)){
 				$core->addNotification($rows['user_id'], $link, $description);
 				}
-				$link = 'index.php?action=viewpost&post_id='.$replyid;
+				$link = 'index.php?action=viewpost&post='.$post;
 				$description = 'Someone has replied to your post';
 				$infoquery = "SELECT DISTINCT `user_id` FROM posts WHERE `post_id` = '" .$replyid. "' ";
 				$data = mysqli_query($dbc, $infoquery);
