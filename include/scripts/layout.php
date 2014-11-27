@@ -188,6 +188,9 @@ $layout = array(
 		  <tr><td>Activation Status: %s<a href="index.php?action=verifyaccount&hash=%s"> Activate User</a></td></tr>
 		  <tr><td>Admin Level: %s<a href="index.php?action=acp&mode=editperms&r=%s"> Edit Perms</a></td></tr>
 		</table><hr> 
+	',
+	'pollChoices' =>'
+		<li class="list-group-item"><a href="index.php?action=pollvote&poll=%s&choice=%s">%s</a></li>
 	'
 );
 

@@ -70,6 +70,14 @@ if(isset($_GET['action'])){
 		$forum->update();
 		$forum->forumAdminBar();
 	}
+	if($_GET['action'] == 'postPoll'){
+		$forum->postPoll();
+		$forum->forumAdminBar();
+	}
+	if($_GET['action'] == 'viewPoll'){
+		$forum->vpoll();
+		$forum->forumAdminBar();
+	}
 }
 class Forums{
 	public function forumAdminBar(){
@@ -332,7 +340,57 @@ class Forums{
 		}
 		echo '</tbody></table></div>';
 	}
+	public function vpoll() {
+		echo '<div class="shadowbar">';
+		global $dbc, $parser, $layout, $main, $settings, $core;
+		$postid = mysqli_real_escape_string($dbc, $_GET['p']);
+		if(isset($_GET['mode']) && ($_GET['mode'] == 'lock')){
+			if($core->verify("2") || $core->verify("4")){
+				$query = "UPDATE posts SET locked = 1 WHERE postlink = '$postid'";
+				mysqli_query($dbc, $query);
+				echo '<div class="alert alert-info"><strong>Post Locked</strong></div>';
+			}
+		} else {
+		if(isset($_GET['mode']) && ($_GET['mode'] == 'unlock')){
+			if($core->verify("2") || $core->verify("4")){
+				$query = "UPDATE posts SET locked = 0 WHERE postlink = '$postid'";
+				mysqli_query($dbc, $query);
+				echo '<div class="alert alert-info"><strong>Post Unlocked</strong></div>';
+			}		
+		}
+		}
+		$query = "SELECT `polls`.*, `users`.* FROM `polls` JOIN `users` ON `users`.`uid` = `polls`.`user_id` AND `polls`.`postlink` = '$postid' " ;
+		$data = mysqli_query($dbc, $query) or die(mysqli_error($dbc));
+		if($core->verify("2") || $core->verify("4")){
+			echo '<a class="Link LButton" href="index.php?action=viewpost&post='.$postid.'&mode=lock">Lock Post</a><br>';
+			echo '<a class="Link LButton" href="index.php?action=viewpost&post='.$postid.'&mode=unlock">Unlock Post</a><br>';
+		}
+		while ($row = mysqli_fetch_array($data)) {
+			$replyTitle = $row['title'];
+			$ID = $row['pid'];
+			if(($row['locked'] != '1')){
+				echo '<a class="Link LButton" href="index.php?action=postreply&postid='.$ID.'">Reply</a>';
+			}
+			$parsed = $parser->parse($row['post']);
+			$sig = $parser->parse($row['sig']);
+			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
+			echo '
+			<div class="shadowbar">
+			<h3>Poll Choices</h3>
+			<ul class="list-group">
+			';
+			$choices = explode(",", $row['choices']);
+			foreach($choices as $choice){
+			echo sprintf($layout['pollChoices'], $ID, $choice, $choice);
+			}
+			echo '
+			</ul>
+			</div>
+			';
+		}
 
+		echo '</div>';
+	}
 	public function vpost() {
 		echo '<div class="shadowbar">';
 		global $dbc, $parser, $layout, $main, $settings, $core;
@@ -415,6 +473,63 @@ class Forums{
 				$query = "UPDATE `posts` SET `postlink` = '$postlink' WHERE `post_id` = '$postid' ";
 				mysqli_query($dbc, $query);
 				}
+	}
+	public function postPoll(){
+		global $dbc, $parser, $layout, $main, $settings, $core;
+		$core->isLoggedIn();
+		echo '<div class="shadowbar">';
+		//Grab the profile data from the database
+		$query = "SELECT * FROM users WHERE uid = '" . $_SESSION['uid'] . "'";
+		$data = mysqli_query($dbc, $query);
+		$row = mysqli_fetch_array($data);
+		$username = $row['uid'];
+		if (isset($_POST['submit'])) {
+			// Grab the profile data from the POST
+			$post1 = mysqli_real_escape_string($dbc, strip_tags( trim($_POST['post1'])));
+			$title = mysqli_real_escape_string($dbc, trim($_POST['title']));
+			$choices = mysqli_real_escape_string($dbc, trim($_POST['choices']));
+			
+			// Update the post data in the database
+			if (!empty($post1) && !empty($title)) {
+				$query = "INSERT INTO polls (`date`, `title`, `post`, `choices`, `user_id`) VALUES (NOW(), '$title', '$post1', '$choices', '$username')";
+				mysqli_query($dbc, $query);
+				$query = "SELECT `pid` FROM `polls` WHERE `title` = '$title' ORDER BY `pid` DESC ";
+				$data = mysqli_query($dbc, $query);		
+				$row = mysqli_fetch_array($data);
+				$postid = $row['pid'];
+				$rawlink = $title.' '.$postid;
+				//Lower case everything
+				$postlink = strtolower($rawlink);
+				//Make alphanumeric (removes all other characters)
+				$postlink = preg_replace("/[^a-z0-9_\s-]/", "", $postlink);
+				//Clean up multiple dashes or whitespaces
+				$postlink = preg_replace("/[\s-]+/", " ", $postlink);
+				//Convert whitespaces and underscore to dash
+				$postlink = preg_replace("/[\s_]/", "-", $postlink);
+				$query = "UPDATE `polls` SET `postlink` = '$postlink' WHERE `pid` = '$postid' ";
+				mysqli_query($dbc, $query);
+				echo '<p>Your poll has been successfully added. Would you like to <a href="index.php?action=viewcategory#polls">view all of the polls</a>?</p>Link:'.$postlink;
+				exit();
+			}
+			else {
+				echo '<p class="error">You must enter information into all of the fields.</p>';
+			}
+		} // End of check for form submission
+		echo'<form enctype="multipart/form-data" method="post" action="index.php?action=postPoll">
+		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
+		<fieldset>
+		<legend>Post Here:</legend>
+			<label type="hidden" for="title">Title:</label><br />
+			<input type="text" name="title"><br /><br />
+		<label type="hidden" for="post1">Poll:</label><br />
+		<script>edToolbar(\'bbcodeEditor\'); </script>
+		<textarea class="ed" name="post1" id="bbcodeEditor" style="height:300px;width:100%;"></textarea><br />
+		<label type="hidden" for="choices">Choices (separated by commas):</label><br />
+		<input type="text" name="choices"><br />
+		</fieldset>
+		<input type="submit" value="Save Post" name="submit" />     
+	</form>
+	</div>';
 	}
 	public function upost(){
 		global $dbc, $parser, $layout, $main, $settings, $core;

@@ -137,7 +137,7 @@ class pages{
 
 		if(!$core->verify("4")){
 			die('Insufficient Permissions.');
-		 
+		}
 		if(isset($_POST['submit'])){
 			$content = mysqli_real_escape_string($dbc, trim($_POST['content']));
 			$page = mysqli_real_escape_string($dbc, trim($_POST['page']));
