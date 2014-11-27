@@ -724,7 +724,7 @@ if($core->verify("4") || $core->verify("2")){
 				$link = 'index.php?action=viewpost&post='.$post;
 				$description = 'Someone has replied to your post';
 				$infoquery = "SELECT DISTINCT `user_id` FROM posts WHERE `post_id` = '" .$replyid. "' ";
-				$data = mysqli_query($dbc, $infoquery);
+				$data = mysqli_query($dbc, $infoquery); 
 				$rows = mysqli_fetch_array($data);
 				if($rows['user_id'] != $_SESSION['uid']){
 				$core->addNotification($rows['user_id'], $link, $description);

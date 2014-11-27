@@ -355,4 +355,4 @@ global $dbc, $core;
 }
 
 
-?>
+?> 
