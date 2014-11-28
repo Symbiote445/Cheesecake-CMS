@@ -5,8 +5,8 @@ $modules = array(
 			'link'=> 'forum.class.php',
 			'enabled'=> '1',
 			'admin'=>'0',
-			'href'=> 'index.php?action=viewcategory',
-			'sidebar'=>'index.php?action=posttopic',
+			'href'=> 'viewcategory/',
+			'sidebar'=>'posttopic/',
 			'sidebarDesc'=>'Post Topic',
 			'acp'=>''
 	),
@@ -15,10 +15,10 @@ $modules = array(
 			'link'=> 'pages.class.php',
 			'enabled'=> '1',
 			'admin'=>'1',
-			'href'=> 'index.php?action=pages',
+			'href'=> 'pagelist/',
 			'sidebar'=>'',
 			'sidebarDesc'=>'Add Page',
-			'acp'=>'index.php?action=pages&mode=addpage'
+			'acp'=>'index.php/addpage'
 	),
 	'Gallery' => array(
 			'description'=> 'Gallery',

@@ -2,22 +2,24 @@
 //Page Generation
 class pageGeneration {
 	public function Generate(){
-		global $dbc, $parser, $layout, $settings, $core, $admin, $version;
-	if(isset($_GET['action'])){
-			if($_GET['action'] === 'logout'){
+	global $dbc, $parser, $version, $layout, $main, $settings, $core, $URI;
+	if(isset($URI)){
+			if(in_array("logout", $URI)){
 				$core->logout();
 			}
 	}
 		$parser->SetSmileyURL("http://".$settings['b_url']."/include/images/smileys");
 		$core->checkLogin();
-		echo sprintf($layout['header-begin'], $settings['site_name'], $settings['style'], $settings['style'], $settings['style'], $settings['style'], $settings['site_name']);
+		echo sprintf($layout['header-begin'], $settings['site_name'], $settings['b_url'], $settings['style'], $settings['b_url'], $settings['style'], $settings['b_url'], $settings['b_url'], $settings['style'], $settings['b_url'], $settings['style'], $settings['site_name'], $settings['b_url']);
 		$core->loadModule("nav");
 		print($layout['header-end']);
 		sidebar();
-		if(isset($_GET['action'])){
-			if($_GET['action'] === 'login'){
+		if(isset($URI)){
+			if(in_array("login", $URI)){
 				$core->login();
 			}
+		} /*
+		if(isset($_GET['action'])){
 			if($_GET['action'] === 'signup'){
 				$core->signup();
 			}
@@ -54,7 +56,7 @@ class pageGeneration {
 					echo '</div>';
 				}
 			}
-		}
+		} */
 		$core->loadModule("initialLoad");
 		echo sprintf($layout['footer'], $settings['b_url'], $settings['site_name'], $version['core']);
 	}

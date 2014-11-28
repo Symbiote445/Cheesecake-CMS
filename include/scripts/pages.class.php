@@ -1,8 +1,18 @@
 <?php
 //Pages
 $pages = new pages;
-if(isset($_GET['action']) && ($_GET['action'] == "pages")){
+	global $dbc, $parser, $version, $layout, $main, $settings, $core, $URI;
+
+if(in_array("pages", $URI)){
+var_dump($URI);
 	$pages->page();
+}
+if(in_array("pagelist", $URI)){
+var_dump($URI);
+	$pages->pagelist();
+}
+	
+	if(isset($_GET['action'])){
 
 	if($_GET['action'] === 'pages' && !isset($_GET['page'])) {
 		$pages->pagelist();
@@ -68,14 +78,11 @@ class pages{
 		}
 	}
 	public function page(){
-		global $dbc, $parser, $layout, $main, $settings, $core;
+		global $dbc, $parser, $layout, $main, $settings, $core, $URI;
 
-		if(isset($_GET['page'])){
-			$page = mysqli_real_escape_string($dbc, $_GET['page']);
-
-			if(!isset($_GET['page']) && !isset($_GET['action'])){
-				$page = $settings['home_display'];
-			}
+		if(isset($URI[3])){
+			$page = mysqli_real_escape_string($dbc, $URI[3]);
+			echo $page;
 			$query = "SELECT * FROM pages WHERE pagelink = '$page'";
 			$data = mysqli_query($dbc, $query);
 
@@ -126,7 +133,7 @@ class pages{
 		while ($row = mysqli_fetch_array($data)) {
 
 			if(!empty($row['pagename'])) {
-				echo'<tr><td><a href="index.php?action=pages&page='.$row['pagelink'].'">'.$row['pagename'].'</a><br><hr style="margin:5px;"></td></tr>';
+				echo'<tr><td><a href="pages/'.$row['pagelink'].'">'.$row['pagename'].'</a><br><hr style="margin:5px;"></td></tr>';
 			}
 		}
 		echo '</table><a class="Link LButton" href="index.php?action=pages&f='.($f - 5).'">Previous</a><a class="Link LButton" href="index.php?action=pages&f='.($f + 5).'">Next</a>';

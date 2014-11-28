@@ -13,7 +13,9 @@
 	require_once('include/scripts/layout.php');
 	require_once('include/scripts/page.php');
 	//Set Variables...
-	global $dbc, $parser, $layout, $main, $settings, $core;
+	$page = $_SERVER['REQUEST_URI'];
+	$URI = explode("/", $page);
+	global $dbc, $parser, $layout, $main, $settings, $core, $URI;
 	$page = new pageGeneration;
 	$page->Generate();
 	
