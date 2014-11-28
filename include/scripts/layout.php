@@ -6,16 +6,16 @@ $layout = array(
 		<meta name="viewport" content="width=device-width, user-scalable=no">
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 			<title>%s</title>
-			<link rel="stylesheet" type="text/css" href="http://%s/include/style/%s/style.css">
-			<link rel="stylesheet" type="text/css" href="http://%s/include/style/%s/template.css">
-			<script type="text/javascript" src="http://%s/include/scripts/js/ed.js"></script> 
-			<script src="http://%s/include/style/%s/jquery.js"></script>
-			<script src="http://%s/include/style/%s/bootstrap.js"></script>
+			<link rel="stylesheet" type="text/css" href="include/style/%s/style.css">
+			<link rel="stylesheet" type="text/css" href="include/style/%s/template.css">
+			<script type="text/javascript" src="include/scripts/js/ed.js"></script> 
+			<script src="include/style/%s/jquery.js"></script>
+			<script src="include/style/%s/bootstrap.js"></script>
 			<script>
 			
 			function Redirect()
 		{
-			window.location="http://%s/index.php";
+			window.location="index.php";
 		}
 			</script>
 
@@ -108,7 +108,7 @@ $layout = array(
 	</div>
 	',
 	'login'=>'
-	<div class="shadowbar"><form method="post" action="index.php/login">
+	<div class="shadowbar"><form method="post" action="index.php?action=login">
 
     <fieldset>
 
