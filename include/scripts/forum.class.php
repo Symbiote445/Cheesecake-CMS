@@ -436,6 +436,7 @@ class Forums{
 	public function vpost() {
 		echo '<div class="shadowbar">';
 		global $dbc, $parser, $layout, $main, $settings, $core;
+		if(isset($_GET['post'])){
 		$postid = mysqli_real_escape_string($dbc, $_GET['post']);
 		if(isset($_GET['mode']) && ($_GET['mode'] == 'lock')){
 			if($core->verify("2") || $core->verify("4")){
@@ -454,6 +455,9 @@ class Forums{
 		}
 		$query = "SELECT `posts`.*, `users`.* FROM `posts` JOIN `users` ON `users`.`uid` = `posts`.`user_id` AND `posts`.`postlink` = '$postid' AND `hidden` = '0' " ;
 		$data = mysqli_query($dbc, $query) or die(mysqli_error($dbc));
+		if(empty($data)){
+		die("Invalid Action");
+		}
 		if($core->verify("2") || $core->verify("4")){
 			echo '<a class="Link LButton" href="index.php?action=viewpost&post='.$postid.'&mode=lock">Lock Post</a><br>';
 			echo '<a class="Link LButton" href="index.php?action=viewpost&post='.$postid.'&mode=unlock">Unlock Post</a><br>';
@@ -482,6 +486,9 @@ class Forums{
 		}
 
 		echo '</div></div></div><br />';
+	} else {
+	echo '<div class="shadowbar">Invalid Query!</div>';
+	}
 	}
 
 	public function rep() {
