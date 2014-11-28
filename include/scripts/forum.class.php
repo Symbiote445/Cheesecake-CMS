@@ -78,6 +78,10 @@ if(isset($_GET['action'])){
 		$forum->vpoll();
 		$forum->forumAdminBar();
 	}
+	if($_GET['action'] == 'pollvote'){
+		$forum->pollvote();
+		$forum->forumAdminBar();
+	}
 }
 class Forums{
 	public function forumAdminBar(){
@@ -247,8 +251,18 @@ class Forums{
 		echo '<div class="shadowbar">';
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		if($core->verify("4") || $core->verify("2")){
-			echo '<a class="Link LButton" href="index.php?action=newcat">New Category</a><a class="Link LButton" href="index.php?action=newforum">New Forum</a>';
+			echo '<a class="Link LButton" href="index.php?action=newcat">New Category</a><a class="Link LButton" href="index.php?action=newforum">New Forum</a><a class="Link LButton" href="index.php?action=postPoll">Post Poll</a>';
 		}
+		echo'
+      <div class="panel-body"><div role="tabpanel">
+
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#categories" aria-controls="home" role="tab" data-toggle="tab">Forums</a></li>
+    <li role="presentation"><a href="#polls" aria-controls="profile" role="tab" data-toggle="tab">Polls</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="categories">';
 		$query = "SELECT * FROM category_groups";
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
@@ -279,6 +293,30 @@ class Forums{
 			}
 		}
 		echo '</tbody></table></div>';
+		echo '
+		<div role="tabpanel" class="tab-pane" id="polls">
+		';
+		echo '<table class="table cgBox">';
+		echo '<thead>
+		<th>Poll</th>
+		</thead>
+		<tbody>
+		';
+		$query = "SELECT * FROM polls";
+		$data = mysqli_query($dbc, $query);
+		while ($row = mysqli_fetch_array($data)) {
+		echo '<tr><td><a href="index.php?action=viewPoll&p='.$row['postlink'].'">'.$row['title'].'</a></td></tr>';
+		}
+		echo '
+		</tbody>
+		</table>
+		</div>
+		</div>
+		</div>
+		</div>
+		</div>
+		';
+		
 	}
 	/*
 		while ($row = mysqli_fetch_array($data)) {
@@ -341,24 +379,9 @@ class Forums{
 		echo '</tbody></table></div>';
 	}
 	public function vpoll() {
-		echo '<div class="shadowbar">';
+
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$postid = mysqli_real_escape_string($dbc, $_GET['p']);
-		if(isset($_GET['mode']) && ($_GET['mode'] == 'lock')){
-			if($core->verify("2") || $core->verify("4")){
-				$query = "UPDATE posts SET locked = 1 WHERE postlink = '$postid'";
-				mysqli_query($dbc, $query);
-				echo '<div class="alert alert-info"><strong>Post Locked</strong></div>';
-			}
-		} else {
-		if(isset($_GET['mode']) && ($_GET['mode'] == 'unlock')){
-			if($core->verify("2") || $core->verify("4")){
-				$query = "UPDATE posts SET locked = 0 WHERE postlink = '$postid'";
-				mysqli_query($dbc, $query);
-				echo '<div class="alert alert-info"><strong>Post Unlocked</strong></div>';
-			}		
-		}
-		}
 		$query = "SELECT `polls`.*, `users`.* FROM `polls` JOIN `users` ON `users`.`uid` = `polls`.`user_id` AND `polls`.`postlink` = '$postid' " ;
 		$data = mysqli_query($dbc, $query) or die(mysqli_error($dbc));
 		if($core->verify("2") || $core->verify("4")){
@@ -368,9 +391,6 @@ class Forums{
 		while ($row = mysqli_fetch_array($data)) {
 			$replyTitle = $row['title'];
 			$ID = $row['pid'];
-			if(($row['locked'] != '1')){
-				echo '<a class="Link LButton" href="index.php?action=postreply&postid='.$ID.'">Reply</a>';
-			}
 			$parsed = $parser->parse($row['post']);
 			$sig = $parser->parse($row['sig']);
 			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
@@ -381,6 +401,9 @@ class Forums{
 			';
 			$choices = explode(",", $row['choices']);
 			foreach($choices as $choice){
+			$query = "SELECT * FROM `votes` WHERE `poll` = '$ID' AND `choice` = '$choice' ";
+			$data = mysqli_query($dbc, $query);
+			echo $choice.': '.mysqli_num_rows($data);
 			echo sprintf($layout['pollChoices'], $ID, $choice, $choice);
 			}
 			echo '
@@ -389,7 +412,26 @@ class Forums{
 			';
 		}
 
-		echo '</div>';
+
+	}
+	public function pollvote(){
+	global $dbc, $parser, $layout, $main, $settings, $core;
+	$poll = mysqli_real_escape_string($dbc, $_GET['poll']);
+	$vote = mysqli_real_escape_string($dbc, $_GET['choice']);
+	$user = $_SESSION['uid'];
+	$query = "SELECT `user`, `poll` FROM votes WHERE `user` = '$user' AND `poll` = '$poll' ";
+	$data = mysqli_query($dbc, $query);
+	$row = mysqli_fetch_array($data);
+	if(empty($row)){
+	$query = "INSERT INTO `votes` (`choice`, `user`, `poll`) VALUES ('$vote', '$user', '$poll') ";
+	mysqli_query($dbc, $query);
+	echo '<div class="shadowbar">Voted!</div>';
+	} elseif(!empty($row)) {
+	$query = "UPDATE `votes` SET `choice` = '$vote' WHERE `user` = '$user' AND `poll` = '$poll' ";
+	mysqli_query($dbc, $query);
+	echo '<div class="shadowbar">Your vote has been re-cast.</div>'; 
+	}
+	
 	}
 	public function vpost() {
 		echo '<div class="shadowbar">';
@@ -825,8 +867,8 @@ if($core->verify("4") || $core->verify("2")){
 			$replyid = mysqli_real_escape_string($dbc, $secureCategory);
 			// Update the post data in the database
 			if (!empty($reply)) {
-			$query = "SELECT postlink FROM posts WHERE post_id = '$replyid' ";
-			$data = mysqli_query($dbc, $data);
+			$query = "SELECT `postlink` FROM `posts` WHERE `post_id` = '$replyid' ";
+			$data = mysqli_query($dbc, $query);
 			$row = mysqli_fetch_array($data);
 			$post = $row['postlink'];
 				$link = 'index.php?action=viewpost&post='.$post;

@@ -374,13 +374,19 @@ class core {
 	public function logout(){
 	global $settings;
 		session_destroy();
+		unset($_COOKIE['ID']);
 		setcookie('ID', "", time()-86400, "/");
 		//setcookie('user_id', "", time()-10, "/");
-
-		$home_url = 'http://'.$settings['b_url'].'/index.php';
-
-		header('Location: ' . $home_url);
-	}
+		echo '
+			<script>
+			
+			function Redirect()
+		{
+			window.location="index.php";
+		}
+			</script>		
+		<script>Redirect();</script>';
+		}
 	public function isLoggedIn(){
 		echo '<div class="shadowbar">';
 		if (!isset($_SESSION['uid'])) {

@@ -3,6 +3,11 @@
 class pageGeneration {
 	public function Generate(){
 		global $dbc, $parser, $layout, $settings, $core, $admin, $version;
+	if(isset($_GET['action'])){
+			if($_GET['action'] === 'logout'){
+				$core->logout();
+			}
+	}
 		$parser->SetSmileyURL("http://".$settings['b_url']."/include/images/smileys");
 		$core->checkLogin();
 		echo sprintf($layout['header-begin'], $settings['site_name'], $settings['style'], $settings['style'], $settings['style'], $settings['style'], $settings['site_name']);
@@ -12,9 +17,6 @@ class pageGeneration {
 		if(isset($_GET['action'])){
 			if($_GET['action'] === 'login'){
 				$core->login();
-			}
-			if($_GET['action'] === 'logout'){
-				$core->logout();
 			}
 			if($_GET['action'] === 'signup'){
 				$core->signup();

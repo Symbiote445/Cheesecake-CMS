@@ -8,9 +8,9 @@ $layout = array(
 			<title>%s</title>
 			<link rel="stylesheet" type="text/css" href="include/style/%s/style.css">
 			<link rel="stylesheet" type="text/css" href="include/style/%s/template.css">
+			<script type="text/javascript" src="include/scripts/js/ed.js"></script> 
 			<script src="include/style/%s/jquery.js"></script>
 			<script src="include/style/%s/bootstrap.js"></script>
-			<script type="text/javascript" src="include/scripts/js/ed.js"></script> 
 			<script>
 			
 			function Redirect()
@@ -310,13 +310,11 @@ global $dbc, $core;
 				      <div id="notifCollapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="notifOne">
       <div class="panel-body"><div role="tabpanel">
 
-  <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#unread" aria-controls="home" role="tab" data-toggle="tab">Unread</a></li>
     <li role="presentation"><a href="#read" aria-controls="profile" role="tab" data-toggle="tab">Read</a></li>
   </ul>
 
-  <!-- Tab panes -->
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="unread">';
 				$query = "SELECT * FROM notifications WHERE `user` = '" .$_SESSION['uid']. "' AND `read` = 0";
