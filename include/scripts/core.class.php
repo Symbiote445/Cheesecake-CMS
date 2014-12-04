@@ -9,7 +9,7 @@ if(!defined("CCore")){
 }
 class admin {
 	private function array2php($arr){
-		$out = '<? $settings = array(';
+		$out = '<?php $settings = array(';
 		foreach( $arr as $k => $v ){
 			if( is_bool($v) ){
 				$v = ( $v ) ? 'true' : 'false';
@@ -173,7 +173,7 @@ class admin {
 					'board_enabled'=>false,
 					'about' => " ".$about.""
 					);
-					$end = '<?
+					$end = '<?php
 define(\'MM_UPLOADPATH\', \'include/images/profile/\');
 define(\'MM_MAXFILESIZE\', 32768);
 define(\'MM_MAXIMGWIDTH\', 120);
@@ -182,7 +182,7 @@ define(\'MM_DLPATH\', \'files/\');
 define(\'MM_DLIMGPATH\', \'files/images/\');
 define(\'MM_GALLERY\', \'include/images/\');	
 $dbc=mysqli_connect($settings[\'db_host\'],$settings[\'db_user\'],$settings[\'db_password\'],$settings[\'db\']);
-			?>';
+			php?>';
 					file_put_contents($mySettingsFile, $this->array2php($newSettings));
 					file_put_contents($mySettingsFile, $end, FILE_APPEND | LOCK_EX );
 
@@ -310,11 +310,15 @@ class core {
 	public function checkLogin(){
 		if(!isset($_SESSION['uid']) && isset($_COOKIE['ID'])){
 			global $dbc;
-			$_SESSION['uid'] = $_COOKIE['ID'];
-			$query = "SELECT username FROM users WHERE uid = '" . $_SESSION['uid'] . "'";
+			$query = "SELECT username, ip, hash FROM users WHERE uid = '" . $_COOKIE['ID'] . "'";
 			$data = mysqli_query($dbc, $query);
-			$row = mysqli_fetch_array($data);	
+			$row = mysqli_fetch_array($data);
+			if($row['ip'] == $_COOKIE['IP']){
+			if($row['hash'] == $_COOKIE['HASH']){
+			$_SESSION['uid'] = $_COOKIE['ID'];
 			$_SESSION['username'] = $row['username'];
+			}
+			}
 		}
 	}
 	public function Version($local, $remote){
@@ -376,6 +380,8 @@ class core {
 		session_destroy();
 		unset($_COOKIE['ID']);
 		setcookie('ID', "", time()-86400, "/");
+		setcookie('IP', "", time()-86400, "/");
+		setcookie('HASH', "", time()-86400, "/");
 		//setcookie('user_id', "", time()-10, "/");
 		echo '
 			<script>
@@ -413,13 +419,20 @@ class core {
 				$username = mysqli_real_escape_string($dbc, trim($_POST['email']));
 				$password = mysqli_real_escape_string($dbc, trim($_POST['password']));
 				if(!empty($username) && !empty($password)){
-					$query = "SELECT uid, email, username, password FROM users WHERE email = '$username' AND password = SHA('$password') AND activated = '1'";
+					$query = "SELECT uid, email, username, password, hash FROM users WHERE email = '$username' AND password = SHA('$password') AND activated = '1'";
 					$data = mysqli_query($dbc, $query);
 					if((mysqli_num_rows($data) === 1)){
 						$row = mysqli_fetch_array($data);
 						$_SESSION['uid'] = $row['uid'];
 						$_SESSION['username'] = $row['username'];
+						$_SERVER['REMOTE_ADDR'] = isset($_SERVER["HTTP_CF_CONNECTING_IP"]) ? $_SERVER["HTTP_CF_CONNECTING_IP"] : $_SERVER["REMOTE_ADDR"];
+						$ip = $_SERVER['REMOTE_ADDR'];
+						$user = $row['uid'];
+						$query = "UPDATE users SET ip = '$ip' WHERE uid = '$user' ";
+						mysqli_query($dbc, $query);
 						setcookie("ID", $row['uid'], time()+3600*24);
+						setcookie("IP", $ip, time()+3600*24);
+						setcookie("HASH", $row['hash'], time()+3600*24);
 						echo "<div class=\"shadowbar\"><script type=\"text/javascript\">document.write(\"You will be redirected to main page in 5 seconds.\");
 				setTimeout('Redirect()', 5000);</script> if not click <a href=\"index.php\">here</a></div>";
 						exit();
@@ -662,7 +675,9 @@ class core {
 	</form>
 	</div>';	
 	}
-
+	public function invalidAction(){
+	die('<div class="shadowbar">Invalid Argument.</div>');
+	}
 	public function sendMessageReply(){
 		global $dbc, $core;
 		$core->isLoggedIn();
