@@ -45,6 +45,9 @@ class pageGeneration {
 			if($_GET['action'] == "replymessage"){
 			$core->sendMessageReply();
 			}
+			if($_GET['action'] == "passwordReset"){
+			$core->deactivateAndReset();
+			}
 		} else {
 			if(!isset($_GET['action'])){
 				if($settings['home_display'] == 'none' || $settings['home_display'] == 'about'){

@@ -388,7 +388,7 @@ class Forums{
 			echo '<a class="Link LButton" href="index.php?action=viewpost&post='.$postid.'&mode=lock">Lock Post</a><br>';
 			echo '<a class="Link LButton" href="index.php?action=viewpost&post='.$postid.'&mode=unlock">Unlock Post</a><br>';
 		}
-		while ($row = mysqli_fetch_array($data)) {
+		$row = mysqli_fetch_array($data);
 			$replyTitle = $row['title'];
 			$ID = $row['pid'];
 			$parsed = $parser->parse($row['post']);
@@ -410,7 +410,6 @@ class Forums{
 			</ul>
 			</div>
 			';
-		}
 
 
 	}
