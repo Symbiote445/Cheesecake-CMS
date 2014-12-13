@@ -34,17 +34,10 @@ class pages{
 		$core->isLoggedIn();
 		if (isset($_POST['submit'])) {
 			$page = mysqli_real_escape_string($dbc, trim($_POST['page']));
-			$title = mysqli_real_escape_string($dbc, trim($_POST['title']));
-			//Lower case everything
-			$pagelink = strtolower($title);
-			//Make alphanumeric (removes all other characters)
-			$pagelink = preg_replace("/[^a-z0-9_\s-]/", "", $pagelink);
-			//Clean up multiple dashes or whitespaces
-			$pagelink = preg_replace("/[\s-]+/", " ", $pagelink);
-			//Convert whitespaces and underscore to dash
-			$pagelink = preg_replace("/[\s_]/", "-", $pagelink);		
 
-			$query = "SELECT * FROM pages WHERE pagelink = '$pagelink'";
+			$title = mysqli_real_escape_string($dbc, trim($_POST['title']));
+			
+			$query = "SELECT pagename FROM pages WHERE pagename = '$title'";
 			$data = mysqli_query($dbc, $query);
 			if((mysqli_num_rows($data)) > 0){
 				echo 'Page already exists. Try a different name.';
@@ -52,7 +45,7 @@ class pages{
 			
 			elseif (!empty($page) && !empty($title)) {
 
-				$query = "INSERT INTO pages (`pagename`, `body`, `pagelink`) VALUES ('$title', '$page', '$pagelink')";
+				$query = "INSERT INTO pages (`pagename`, `body`) VALUES ('$title', '$page')";
 				mysqli_query($dbc, $query);
 
 				echo '<div class="shadowbar"><p>Your page has been successfully added. Would you like to <a href="index.php?action=pages">go back to the MCP</a>?</p></div>';
@@ -76,7 +69,7 @@ class pages{
 			if(!isset($_GET['page']) && !isset($_GET['action'])){
 				$page = $settings['home_display'];
 			}
-			$query = "SELECT * FROM pages WHERE pagelink = '$page'";
+			$query = "SELECT * FROM pages WHERE pagename = '$page'";
 			$data = mysqli_query($dbc, $query);
 
 			$row = mysqli_fetch_array($data);
@@ -126,7 +119,7 @@ class pages{
 		while ($row = mysqli_fetch_array($data)) {
 
 			if(!empty($row['pagename'])) {
-				echo'<tr><td><a href="index.php?action=pages&page='.$row['pagelink'].'">'.$row['pagename'].'</a><br><hr style="margin:5px;"></td></tr>';
+				echo'<tr><td><a href="index.php?action=pages&page='.$row['pagename'].'">'.$row['pagename'].'</a><br><hr style="margin:5px;"></td></tr>';
 			}
 		}
 		echo '</table><a class="Link LButton" href="index.php?action=pages&f='.($f - 5).'">Previous</a><a class="Link LButton" href="index.php?action=pages&f='.($f + 5).'">Next</a>';

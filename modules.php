@@ -39,8 +39,17 @@ $modules = array(
 			'sidebar'=>'',
 			'sidebarDesc'=>'Post Blog',
 			'acp'=>'index.php?action=Blog&mode=postblog'
+	),
+	'Chat' => array(
+			'description'=> 'Chat',
+			'link'=> 'chat.class.php',
+			'enabled'=> '1',
+			'admin'=>'0',
+			'href'=> 'index.php?action=chat',
+			'sidebar'=>'index.php?action=chat',
+			'sidebarDesc'=>'Join Chat',
+			'acp'=>''
 	)
-
 );
 
 ?>

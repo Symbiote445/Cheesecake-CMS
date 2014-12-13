@@ -1,7 +1,5 @@
 <?php
-  if(!defined("CCore")){
-	die("Access Denied.");
-	}
+
     //  EmailAddressValidator Class
     //  http://code.google.com/p/php-email-address-validation/
     //

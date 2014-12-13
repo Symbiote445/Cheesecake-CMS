@@ -11,12 +11,28 @@ $layout = array(
 			<script type="text/javascript" src="include/scripts/js/ed.js"></script> 
 			<script src="include/style/%s/jquery.js"></script>
 			<script src="include/style/%s/bootstrap.js"></script>
+			<script src="include/scripts/js/iframeResizer.contentWindow.min.js"></script>
+			<script src="include/scripts/js/iframeResizer.min.js"></script>
 			<script>
 			
 			function Redirect()
 		{
 			window.location="index.php";
 		}
+			</script>
+			<script>
+			iFrameResize({
+				log                     : true,                  // Enable console logging
+				enablePublicMethods     : true,                  // Enable methods within iframe hosted page
+				resizedCallback         : function(messageData){ // Callback fn when resize is received
+					$(\'p#callback\').html(
+						\'<b>Frame ID:</b> \'    + messageData.iframe.id +
+						\' <b>Height:</b> \'     + messageData.height +
+						\' <b>Width:</b> \'      + messageData.width + 
+						\' <b>Event type:</b> \' + messageData.type
+					);
+				}
+			});
 			</script>
 
 		</head>
@@ -131,6 +147,16 @@ $layout = array(
 	</form></div>',
 	
 	'adminPostLayout'=>'
+		  <table class="table">
+			<tr><td>Title: %s<a class="Link LButton" href="index.php?action=markAs&p=%s">Mark As...</a></td></tr>
+		  <tr><td><div class="col-md-8"><pre>Post:<br/><br />%s</pre></div></td></tr>
+			<tr><td>Post ID: %s<a class="Link LButton" href="index.php?action=%s&mode=%s&del=%s">Delete Post</a></td></tr>
+			<tr><td>Display Status: %s<a class="Link LButton" href="index.php?action=%s&mode=hide&del=%s">Hide Post</a><a class="Link LButton" href="index.php?action=%s&mode=unhide&del=%s">Unhide Post</a></td></tr>
+		  <tr><td>UserName: %s</td></tr>
+		  <tr><td>Rank: %s</td></tr>
+		</table>
+	',
+	'adminReplyLayout'=>'
 		  <table class="table">
 			<tr><td>Title: %s</td></tr>
 		  <tr><td><div class="col-md-8"><pre>Post:<br/><br />%s</pre></div></td></tr>

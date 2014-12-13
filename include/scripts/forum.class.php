@@ -2,6 +2,7 @@
 $forum = new Forums;
 if(isset($_GET['action'])){
 	if (($_GET['action'] == 'viewcategory')){
+		$forum->searchBar();
 		$forum->category();
 		$forum->forumAdminBar();
 	}
@@ -12,10 +13,12 @@ if(isset($_GET['action'])){
 		$forum->newcat();
 	}
 	if (($_GET['action'] == 'viewforum')){
+		$forum->searchBar();
 		$forum->viewforum();
 		$forum->forumAdminBar();
 	}
 	if(($_GET['action'] == 'viewpost')){
+		$forum->searchBar();
 		$forum->vpost();
 	}
 	if(($_GET['action'] == 'posttopic')){
@@ -30,8 +33,8 @@ if(isset($_GET['action'])){
 		$forum->rep();
 		$forum->forumAdminBar();
 	}
-	if($_GET['action'] == 'adminposts'){
-		$forum->forumPostAdmin();
+	if($_GET['action'] == 'moderation'){
+		$forum->forumModeration();
 	}
 	if($_GET['action'] == 'deletecat'){
 		$forum->deletecat();
@@ -50,10 +53,10 @@ if(isset($_GET['action'])){
 	if($_GET['action'] == 'ForumUnHidePost'){
 		$forum->unhidep();
 		$forum->forumAdminBar();
-	}
+	} /*
 	if($_GET['action'] == 'adminreply'){
 		$forum->forumReplyAdmin();
-	}
+	} */
 	if($_GET['action'] == 'ForumHideReply'){
 		$forum->hider();
 		$forum->forumAdminBar();
@@ -82,14 +85,53 @@ if(isset($_GET['action'])){
 		$forum->pollvote();
 		$forum->forumAdminBar();
 	}
+	if($_GET['action'] == 'markAs'){
+		$forum->markPost();
+	}
+	if($_GET['action'] == 'searchforums'){
+		$forum->searchBar();
+	}
 }
 class Forums{
 	public function forumAdminBar(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		if($core->verify("4") || $core->verify("2")){
-		echo sprintf($layout['adminBar'], 'index.php?action=adminposts', 'Post');
-		echo sprintf($layout['adminBar'], 'index.php?action=adminreply', 'Reply');
+		echo sprintf($layout['adminBar'], 'index.php?action=moderation', 'Forum');
 	}
+	}
+	public function searchBar(){
+		global $dbc, $parser, $layout, $main, $settings, $core;
+		if(isset($_POST['submit'])){
+			$search = mysqli_real_escape_string($dbc, trim($_POST['search']));
+			$tag = '['.$search.']';
+			$query = "SELECT `title`, `postlink` FROM `posts` WHERE `tag` = '$tag' ";
+			$data = mysqli_query($dbc, $query);
+			echo '
+			<div class="shadowbar">
+			<table class="table">
+			<th>Posts with this tag: '.$tag.'</th>
+			';
+			while ($row = mysqli_fetch_array($data)){
+			echo '
+			<tr><td><a href="index.php?action=viewpost&post='.$row['postlink'].'">'.$row['title'].'</a></td></tr>
+			';
+			}
+			echo '
+			</table>
+			</div>
+			';
+		}
+	echo '
+		<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=searchforums">
+				<fieldset>
+				<legend>Search:</legend>
+				<input type="text" name="search" /><br />
+				</fieldset>
+				<input class="Link LButton" type="submit" value="Search Forum Topics" name="submit" />
+			</form>
+		</div>	
+	';
+	
 	}
 	public function newforum() {
 		global $dbc, $parser, $layout, $main, $settings, $core;
@@ -259,6 +301,7 @@ class Forums{
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#categories" aria-controls="home" role="tab" data-toggle="tab">Forums</a></li>
     <li role="presentation"><a href="#polls" aria-controls="profile" role="tab" data-toggle="tab">Polls</a></li>
+	<li role="presentation"><a href="#important" aria-controls="profile" role="tab" data-toggle="tab">Announcements/Important</a></li>
   </ul>
 
   <div class="tab-content">
@@ -286,7 +329,7 @@ class Forums{
 				echo'</td>';
 				echo'<td>';
 				if((mysqli_num_rows($count) > 0)){ 
-					echo'<a href="index.php?action=viewpost&post='.$rc['postlink'].'">'.$rc['title'].'</a><br>';
+					echo'<a href="index.php?action=viewpost&post='.$rc['postlink'].'">'.$rc['tag'].' '.$rc['title'].'</a><br>';
 					echo'By: <a href="index.php?action=ucp&uid='.$rc['uid'].'">' . $rc['username'] . '</a>';
 				}
 				echo'</td></tr>';
@@ -310,6 +353,28 @@ class Forums{
 		echo '
 		</tbody>
 		</table>
+		</div>
+		<div role="tabpanel" class="tab-pane" id="important">
+		';
+			$query = "SELECT `title`, `postlink`, `tag`, `post` FROM `posts` WHERE `tag` = '[!!]' ";
+			$data = mysqli_query($dbc, $query);
+			while ($row = mysqli_fetch_array($data)){
+			$string = $row['post'];
+			$truncated = (strlen($string) > 200) ? substr($string, 0, 200) . '...' : $string;
+			$parsed = $parser->parse($truncated);
+			echo '<div class="shadowbar">
+			<table class="table cgBox">
+			<tr>
+			<td>
+			<a href="index.php?action=viewpost&post='.$row['postlink'].'">'.$row['tag'].' '.$row['title'].'</a>
+			<div class="col=md=6">'.$parsed.'</div>
+			</td>
+			</tr>
+			</table>
+			</div>
+			';
+			}
+		echo'
 		</div>
 		</div>
 		</div>
@@ -364,9 +429,9 @@ class Forums{
 				echo'<tr>';
 				echo'<td>';
 				if(($row['locked'] === '1')){ 
-					echo'<a class="nav" href="index.php?action=viewpost&post='.$row['postlink'].'"><img width="25px" height="25px" src="include/images/lock.png" />' .$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';  
+					echo'<a class="nav" href="index.php?action=viewpost&post='.$row['postlink'].'"><img width="25px" height="25px" src="include/images/lock.png" />'.$row['tag'].' '.$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';  
 				} else {
-					echo'<a class="nav" href="index.php?action=viewpost&post='.$row['postlink'].'">' .$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';
+					echo'<a class="nav" href="index.php?action=viewpost&post='.$row['postlink'].'">'.$row['tag'].' '.$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';
 				}
 				echo'</td>';
 				echo'<td>';
@@ -439,14 +504,14 @@ class Forums{
 		$postid = mysqli_real_escape_string($dbc, $_GET['post']);
 		if(isset($_GET['mode']) && ($_GET['mode'] == 'lock')){
 			if($core->verify("2") || $core->verify("4")){
-				$query = "UPDATE posts SET locked = 1 WHERE postlink = '$postid'";
+				$query = "UPDATE posts SET locked = 1, tag = '[Locked]' WHERE postlink = '$postid'";
 				mysqli_query($dbc, $query);
 				echo '<div class="alert alert-info"><strong>Post Locked</strong></div>';
 			}
 		} else {
 		if(isset($_GET['mode']) && ($_GET['mode'] == 'unlock')){
 			if($core->verify("2") || $core->verify("4")){
-				$query = "UPDATE posts SET locked = 0 WHERE postlink = '$postid'";
+				$query = "UPDATE posts SET locked = 0, tag = '' WHERE postlink = '$postid'";
 				mysqli_query($dbc, $query);
 				echo '<div class="alert alert-info"><strong>Post Unlocked</strong></div>';
 			}		
@@ -462,7 +527,7 @@ class Forums{
 			echo '<a class="Link LButton" href="index.php?action=viewpost&post='.$postid.'&mode=unlock">Unlock Post</a><br>';
 		}
 		while ($row = mysqli_fetch_array($data)) {
-			$replyTitle = $row['title'];
+			$Title = $row['tag'].' '.$row['title'];
 			$ID = $row['post_id'];
 			if(($row['locked'] != '1')){
 				echo '<a class="Link LButton" href="index.php?action=postreply&postid='.$ID.'">Reply</a>';
@@ -470,18 +535,18 @@ class Forums{
 			$titler = $row['title'];
 			$parsed = $parser->parse($row['post']);
 			$sig = $parser->parse($row['sig']);
-			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
+			echo sprintf($layout['blogViewFormat'], $Title, $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
 		}
 		
 		//error_reporting(E_ALL);
 		global $dbc;;
 		// Grab the profile data from the database
-		$query = "SELECT reply.*, users.* FROM reply JOIN users ON users.uid = reply.user_id AND reply.post_id = $ID AND hidden = '0'";
+		$query = "SELECT reply.*, users.* FROM reply JOIN users ON users.uid = reply.user_id AND reply.post_id = $ID AND hidden = '0' ORDER BY reply.reply_id";
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
 			$parsed = $parser->parse($row['reply']);
 			$sig = $parser->parse($row['sig']);
-			echo sprintf($layout['blogViewFormat'], $replyTitle, $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);	
+			echo sprintf($layout['blogViewFormat'], $Title, $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);	
 		}
 
 		echo '</div></div></div><br />';
@@ -653,7 +718,7 @@ if($core->verify("4") || $core->verify("2")){
 
 				$query = "DELETE FROM posts WHERE post_id = $postid";
 				mysqli_query($dbc, $query);
-				echo '<div class="shadowbar"><p>Post has been successfully deleted. Would you like to <a href="index.php">go back to the admin panel</a>?</p></div>';
+				echo '<div class="shadowbar"><p>Post has been successfully deleted. Would you like to <a href="index.php?action=moderation">go back to the admin panel</a>?</p></div>';
 				
 				exit();
 			}
@@ -686,7 +751,7 @@ if($core->verify("4") || $core->verify("2")){
 
 					$query = "UPDATE reply SET `hidden` = '1' WHERE reply_id = $postid";
 					mysqli_query($dbc, $query);
-					echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a href="index.php?action=forumReplyAdmin">go back to replies</a>?</p></div>';
+					echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a href="moderation">go back to replies</a>?</p></div>';
 					
 					exit();
 				}
@@ -717,7 +782,7 @@ if($core->verify("4") || $core->verify("2")){
 
 					$query = "UPDATE posts SET `hidden` = '1' WHERE post_id = $postid";
 					mysqli_query($dbc, $query);
-					echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a class="Link LButton" href="index.php?action=acp">go back to the admin panel</a>?</p></div>';
+					echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a class="Link LButton" href="index.php?action=moderation">go back to the admin panel</a>?</p></div>';
 					
 					exit();
 				}
@@ -781,7 +846,7 @@ if($core->verify("4") || $core->verify("2")){
 
 					$query = "UPDATE reply SET `hidden` = '0' WHERE reply_id = $postid";
 					mysqli_query($dbc, $query);
-					echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a href="index.php?action=forumReplyAdmin">go back to replies</a>?</p></div>';
+					echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a href="moderation">go back to replies</a>?</p></div>';
 					
 					exit();
 				}
@@ -813,7 +878,7 @@ if($core->verify("4") || $core->verify("2")){
 
 					$query = "DELETE FROM reply WHERE reply_id = $postid";
 					mysqli_query($dbc, $query);
-					echo '<div class="shadowbar"><p> has been successfully deleted. Would you like to <a href="index.php?action=forumReplyAdmin">go back to replies</a>?</p></div>';
+					echo '<div class="shadowbar"><p> has been successfully deleted. Would you like to <a href="index.php?action=moderation">go back to replies</a>?</p></div>';
 					
 					exit();
 				}
@@ -929,7 +994,7 @@ if($core->verify("4") || $core->verify("2")){
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
 			$parsed = $parser->parse($row['reply']);
-			echo sprintf($layout['adminPostLayout'], 'N/A', $parsed, $row['reply_id'], 'forumDeleteReply', 'delete', $row['reply_id'], $row['hidden'], 'ForumHideReply', $row['reply_id'], 'ForumUnHideReply', $row['reply_id'], $row['username'], $row['adminlevel']);
+			echo sprintf($layout['adminReplyLayout'], 'N/A', $parsed, $row['reply_id'], 'forumDeleteReply', 'delete', $row['reply_id'], $row['hidden'], 'ForumHideReply', $row['reply_id'], 'ForumUnHideReply', $row['reply_id'], $row['username'], $row['adminlevel']);
 		}
 		echo '</div>';
 	}
@@ -947,10 +1012,51 @@ if($core->verify("4") || $core->verify("2")){
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
 			$parsed = $parser->parse($row['post']);
-			echo sprintf($layout['adminPostLayout'], $row['title'], $parsed, $row['post_id'], 'forumDeletePost', 'delete', $row['post_id'], $row['hidden'], 'ForumHidePost', $row['post_id'], 'ForumUnHidePost', $row['post_id'], $row['username'], $row['adminlevel']);
+			echo sprintf($layout['adminPostLayout'], $row['title'], $row['post_id'], $parsed, $row['post_id'], 'forumDeletePost', 'delete', $row['post_id'], $row['hidden'], 'ForumHidePost', $row['post_id'], 'ForumUnHidePost', $row['post_id'], $row['username'], $row['adminlevel']);
 		}
 		echo '</div>';
 	}
+	}
+	public function markPost(){
+		global $settings, $version, $dbc, $layout, $core, $parser;
+		if(isset($_POST['submit'])){
+			$reply = mysqli_real_escape_string($dbc, strip_tags( trim($_POST['title'])));
+			$secureCategory = preg_replace("/[^0-9]/", "", $_POST['id']);
+			$replyid = mysqli_real_escape_string($dbc, $secureCategory);
+			$tag = '['.$reply.']';
+			$query = "UPDATE `posts` SET `tag` = '$tag' WHERE `post_id` = '$replyid' ";
+			$data = mysqli_query($dbc, $query);
+			echo '<div class="shadowbar">Success!</div>';
+			exit();
+		}
+		echo '
+		<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=markAs">
+				<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
+				<fieldset>
+				<legend>Mark As:</legend>
+				<input type="hidden" name="id" value="'.$_GET['p'].'">
+				<input type="text" name="title" /><br />
+				</fieldset>
+				<input type="submit" value="Save" name="submit" />
+			</form>
+		</div>		
+		';
+	}
+	public function forumModeration(){
+		global $settings, $version, $dbc, $layout, $core, $parser;
+		echo '<div class="shadowbar"> <div class="panel-body"><div role="tabpanel">
+
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#posts" aria-controls="home" role="tab" data-toggle="tab">Posts</a></li>
+    <li role="presentation"><a href="#replies" aria-controls="profile" role="tab" data-toggle="tab">Replies</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="posts">';
+		$this->forumPostAdmin();
+		echo '</div>  <div role="tabpanel" class="tab-pane" id="replies">';
+		$this->forumReplyAdmin();
+		echo '</div></div></div></div></div>';
 	}
 }
 ?>

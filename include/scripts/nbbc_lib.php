@@ -172,13 +172,6 @@
 				'class' => 'inline',
 				'allow_in' => Array('listitem', 'block', 'columns', 'inline', 'link'),
 			),
-			'headingid' => Array(
-				'mode' => BBCODE_MODE_ENHANCED,
-				'template' => '<div id="{$id}">{$_content}</div>',
-				'class' => 'inline',
-				'allow_in' => Array('listitem', 'block', 'columns', 'inline', 'link'),
-			),
-
 			'size' => Array(
 				'mode' => BBCODE_MODE_LIBRARY,
 				'allow' => Array('_default' => '/^[0-9.]+$/D'),
