@@ -786,6 +786,80 @@ class core {
 	</form>
 	</div>';
 	}
+	public function encrypt($value, $strlength){
+		include('include/scripts/keys.php');
+		global $Keys;	
+		$output = preg_replace("/Password/", $Keys['Password'], $value);
+		$output = preg_replace("/password/", $Keys['password'], $output);
+		$output = preg_replace("/PASSWORD/", $Keys['password'], $output);
+		$output = preg_replace("/a/", $Keys['a'], $output);
+		$output = preg_replace("/b/", $Keys['b'], $output);
+		$output = preg_replace("/c/", $Keys['c'], $output);
+		$output = preg_replace("/d/", $Keys['d'], $output);
+		$output = preg_replace("/e/", $Keys['e'], $output);
+		$output = preg_replace("/f/", $Keys['f'], $output);
+		$output = preg_replace("/g/", $Keys['g'], $output);
+		$output = preg_replace("/h/", $Keys['h'], $output);
+		$output = preg_replace("/i/", $Keys['i'], $output);
+		$output = preg_replace("/j/", $Keys['j'], $output);
+		$output = preg_replace("/k/", $Keys['k'], $output);
+		$output = preg_replace("/l/", $Keys['l'], $output);
+		$output = preg_replace("/m/", $Keys['m'], $output);
+		$output = preg_replace("/n/", $Keys['n'], $output);
+		$output = preg_replace("/o/", $Keys['o'], $output);
+		$output = preg_replace("/p/", $Keys['p'], $output);
+		$output = preg_replace("/q/", $Keys['q'], $output);
+		$output = preg_replace("/r/", $Keys['r'], $output);
+		$output = preg_replace("/s/", $Keys['s'], $output);
+		$output = preg_replace("/t/", $Keys['t'], $output);
+		$output = preg_replace("/u/", $Keys['u'], $output);
+		$output = preg_replace("/v/", $Keys['v'], $output);
+		$output = preg_replace("/w/", $Keys['w'], $output);
+		$output = preg_replace("/x/", $Keys['x'], $output);
+		$output = preg_replace("/y/", $Keys['y'], $output);
+		$output = preg_replace("/z/", $Keys['z'], $output);
+		$output = preg_replace("/1/", $Keys['1'], $output);
+		$output = preg_replace("/2/", $Keys['2'], $output);
+		$output = preg_replace("/3/", $Keys['3'], $output);
+		$output = preg_replace("/4/", $Keys['4'], $output);
+		$output = preg_replace("/5/", $Keys['5'], $output);
+		$output = preg_replace("/6/", $Keys['6'], $output);
+		$output = preg_replace("/7/", $Keys['7'], $output);
+		$output = preg_replace("/8/", $Keys['8'], $output);
+		$output = preg_replace("/9/", $Keys['9'], $output);
+		$output = preg_replace("/0/", $Keys['0'], $output);
+		$output = preg_replace("/_/", $Keys['_'], $output);
+		$output = preg_replace("/-/", $Keys['-'], $output);
+		$output = preg_replace("/A/", $Keys['a'], $output);
+		$output = preg_replace("/B/", $Keys['b'], $output);
+		$output = preg_replace("/C/", $Keys['c'], $output);
+		$output = preg_replace("/D/", $Keys['d'], $output);
+		$output = preg_replace("/E/", $Keys['e'], $output);
+		$output = preg_replace("/F/", $Keys['f'], $output);
+		$output = preg_replace("/G/", $Keys['g'], $output);
+		$output = preg_replace("/H/", $Keys['h'], $output);
+		$output = preg_replace("/I/", $Keys['i'], $output);
+		$output = preg_replace("/J/", $Keys['j'], $output);
+		$output = preg_replace("/K/", $Keys['k'], $output);
+		$output = preg_replace("/L/", $Keys['l'], $output);
+		$output = preg_replace("/M/", $Keys['m'], $output);
+		$output = preg_replace("/N/", $Keys['n'], $output);
+		$output = preg_replace("/O/", $Keys['o'], $output);
+		$output = preg_replace("/P/", $Keys['p'], $output);
+		$output = preg_replace("/Q/", $Keys['q'], $output);
+		$output = preg_replace("/R/", $Keys['r'], $output);
+		$output = preg_replace("/S/", $Keys['s'], $output);
+		$output = preg_replace("/T/", $Keys['t'], $output);
+		$output = preg_replace("/U/", $Keys['u'], $output);
+		$output = preg_replace("/V/", $Keys['v'], $output);
+		$output = preg_replace("/W/", $Keys['w'], $output);
+		$output = preg_replace("/X/", $Keys['x'], $output);
+		$output = preg_replace("/Y/", $Keys['y'], $output);
+		$output = preg_replace("/Z/", $Keys['z'], $output);
+		$output = preg_replace("/ /", $Keys[' '], $output);
+		$output = substr($output, 0, $strlength);
+		return $output;		
+	}
 	public function signup(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		if(($settings['signup_enabled'] === 'false')){
@@ -817,8 +891,9 @@ class core {
 			'; // Our message above including the link				
 					$headers = 'From:'.$settings['site_name'].'' . "\r\n"; // Set from headers
 					mail($to, $subject, $message, $headers); // Send our email								
-					$uip = $_SERVER['REMOTE_ADDR'];					
-					$query = "INSERT INTO users (username, password, email, hash, ip, picture) VALUES ('$username', SHA('$password1'), '$email', '$hash', '$uip', 'nopic.png')";
+					$uip = $_SERVER['REMOTE_ADDR'];	
+					$encrypted = $this->encrypt($password1, 40);				
+					$query = "INSERT INTO users (username, password, email, hash, ip, picture) VALUES ('$username', $encrypted, '$email', '$hash', '$uip', 'nopic.png')";
 					mysqli_query($dbc, $query);		
 					echo '<p>Your new account has been successfully created. You now need to verify your account. You signed up with this email: ' .$email . '. Please check your spam folder as there\'s a chance that the email could have ended up in there.';
 					
