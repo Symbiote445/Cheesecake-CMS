@@ -786,7 +786,7 @@ class core {
 	</form>
 	</div>';
 	}
-	public function encrypt($value, $strlength){
+	private function encrypt($value, $strlength){
 		include('include/scripts/keys.php');
 		global $Keys;	
 		$output = preg_replace("/Password/", $Keys['Password'], $value);
