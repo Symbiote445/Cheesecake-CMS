@@ -8,8 +8,9 @@
 	<script src="include/style/bootstrap.js"></script>
 <?php
 	error_reporting(E_ALL); ini_set('display_errors', 1);
-
+require_once('include/scripts/keys.php');
 require_once('include/scripts/install.php');
+global $Keys;
 $installer = new cheeseInstall;
 
 if(!isset($_GET['mode'])){

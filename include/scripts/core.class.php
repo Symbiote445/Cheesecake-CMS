@@ -445,8 +445,9 @@ class core {
 			if(isset($_POST['submit'])){
 				$username = mysqli_real_escape_string($dbc, trim($_POST['email']));
 				$password = mysqli_real_escape_string($dbc, trim($_POST['password']));
+				$EncPass = $this->encrypt($password, 40);
 				if(!empty($username) && !empty($password)){
-					$query = "SELECT uid, email, username, password, hash FROM users WHERE email = '$username' AND password = SHA('$password') AND activated = '1'";
+					$query = "SELECT uid, email, username, password, hash FROM users WHERE email = '$username' AND password = '$EncPass' AND activated = '1'";
 					$data = mysqli_query($dbc, $query);
 					if((mysqli_num_rows($data) === 1)){
 						$row = mysqli_fetch_array($data);
@@ -787,7 +788,6 @@ class core {
 	</div>';
 	}
 	private function encrypt($value, $strlength){
-		include('include/scripts/keys.php');
 		global $Keys;	
 		$output = preg_replace("/Password/", $Keys['Password'], $value);
 		$output = preg_replace("/password/", $Keys['password'], $output);
@@ -876,6 +876,7 @@ class core {
 				$burl = $settings['b_url'];
 				$query = "SELECT * FROM users WHERE email = '$email' AND `username` = '$username'";
 				$data = mysqli_query($dbc, $query);
+				$EncPass = $this->encrypt($password2, 40);
 				if (mysqli_num_rows($data) == 0) {
 					$to      = $email; // Send email to our user
 					$subject = $settings['site_name']; // Give the email a subject
@@ -891,9 +892,8 @@ class core {
 			'; // Our message above including the link				
 					$headers = 'From:'.$settings['site_name'].'' . "\r\n"; // Set from headers
 					mail($to, $subject, $message, $headers); // Send our email								
-					$uip = $_SERVER['REMOTE_ADDR'];	
-					$encrypted = $this->encrypt($password1, 40);				
-					$query = "INSERT INTO users (username, password, email, hash, ip, picture) VALUES ('$username', $encrypted, '$email', '$hash', '$uip', 'nopic.png')";
+					$uip = $_SERVER['REMOTE_ADDR'];					
+					$query = "INSERT INTO users (username, password, email, hash, ip, picture) VALUES ('$username', $EncPass, '$email', '$hash', '$uip', 'nopic.png')";
 					mysqli_query($dbc, $query);		
 					echo '<p>Your new account has been successfully created. You now need to verify your account. You signed up with this email: ' .$email . '. Please check your spam folder as there\'s a chance that the email could have ended up in there.';
 					

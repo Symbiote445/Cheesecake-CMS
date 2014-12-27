@@ -52,8 +52,7 @@ $dbc=mysqli_connect($settings[\'db_host\'],$settings[\'db_user\'],$settings[\'db
 		file_put_contents($mySettingsFile, $end, FILE_APPEND | LOCK_EX );
 	}
 
-	private function encrypt($value, $strlength){
-		include('include/scripts/keys.php');
+	public function encrypt($value, $strlength){
 		global $Keys;	
 		$output = preg_replace("/Password/", $Keys['Password'], $value);
 		$output = preg_replace("/password/", $Keys['password'], $output);
@@ -142,7 +141,6 @@ $dbc=mysqli_connect($settings[\'db_host\'],$settings[\'db_user\'],$settings[\'db
 			$dbh = $_POST['dbhost'];
 			if (!empty($db) && !empty($dbu) && !empty($dbp) && !empty($dbh)) {					
 				$this->createFile($name, $url, $email, $about, $signup, $db, $dbu, $dbp, $dbh);
-				echo 'Board Installed. <a href="index.php">Board index</a>';
 				$dbc = mysqli_connect($dbh,$dbu,$dbp,$db);
 				$username = mysqli_real_escape_string($dbc, trim($_POST['username']));
 				$password1 = mysqli_real_escape_string($dbc, trim($_POST['password1']));
@@ -318,10 +316,11 @@ $dbc=mysqli_connect($settings[\'db_host\'],$settings[\'db_user\'],$settings[\'db
 					) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 
-					INSERT INTO users (username, password, email, ip, adminlevel, activated) VALUES ('$username', $encrypted, '$email', '$uip', '4', '1')
+					INSERT INTO users (username, password, email, ip, adminlevel, activated) VALUES ('$username', '$encrypted', '$email', '$uip', '4', '1')
 ";
 				if (!empty($username) && !empty($password1) && !empty($password2) && !empty($email) && ($password1 == $password2)) {								
-					mysqli_multi_query($dbc, $query);	
+					mysqli_multi_query($dbc, $query);
+					echo 'Board Installed. <a href="index.php">Board index</a>'.$encrypted;	
 				}
 				else {
 					echo '<p class="error">You must enter all of the sign-up data, including the desired password twice.</p>';
