@@ -30,26 +30,18 @@ $blog->blogAdminBar();
 }
 
 class blog {
-/*
-public function loadBlogModule(){
-global $settings, $version, $dbc, $layout, $core, $parser;
-//Check so see if they're trying to access the Blog Module
-if(isset($_GET['action'])){
-if($_GET['action'] === "Blog"){
-if(!isset($_GET['mode'])){
-$blog->viewBlog();
-var_dump($parser);
-}
-//Check for the 'mode' variable
-if(isset($_GET['mode'])){
-if($_GET['mode'] === "postblog"){
-$offyBlog->postBlog();
-}
-}
-}
-}
-}
-*/
+	public function homepage(){
+	global $dbc, $parser, $layout, $main, $settings, $core;
+		$query = "SELECT blog.*, users.* FROM blog INNER JOIN users ON users.uid = blog.user ORDER BY blog.id DESC LIMIT 3";
+		$data = mysqli_query($dbc, $query);
+		echo '<div class="shadowbar"><h3>Latest Blog Posts</h3><hr>';
+		while ($row = mysqli_fetch_array($data)) {
+			$parsed = $parser->parse($row['content']);
+			$sig = $parser->parse($row['sig']);
+			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
+		}
+		echo '</div>';
+	}
 	public function blogAdminBar(){
 	global $dbc, $parser, $layout, $main, $settings, $core;
 	if($core->verify("4")){
@@ -59,7 +51,7 @@ $offyBlog->postBlog();
 
 	public function viewBlog(){
 	global $dbc, $parser, $layout, $main, $settings, $core;
-		$query = "SELECT blog.*, users.* FROM blog INNER JOIN users ON users.uid = blog.user order by blog.id DESC";
+		$query = "SELECT blog.*, users.* FROM blog INNER JOIN users ON users.uid = blog.user ORDER BY blog.id DESC";
 		$data = mysqli_query($dbc, $query);
 
 		while ($row = mysqli_fetch_array($data)) {
