@@ -893,7 +893,7 @@ class core {
 					$headers = 'From:'.$settings['site_name'].'' . "\r\n"; // Set from headers
 					mail($to, $subject, $message, $headers); // Send our email								
 					$uip = $_SERVER['REMOTE_ADDR'];					
-					$query = "INSERT INTO users (username, password, email, hash, ip, picture) VALUES ('$username', $EncPass, '$email', '$hash', '$uip', 'nopic.png')";
+					$query = "INSERT INTO users (username, password, email, hash, ip, picture) VALUES ('$username', '$EncPass', '$email', '$hash', '$uip', 'nopic.png')";
 					mysqli_query($dbc, $query);		
 					echo '<p>Your new account has been successfully created. You now need to verify your account. You signed up with this email: ' .$email . '. Please check your spam folder as there\'s a chance that the email could have ended up in there.';
 					
