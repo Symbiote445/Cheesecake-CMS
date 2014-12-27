@@ -12,7 +12,9 @@
 	background-color: #007FFF;
 	width: 100%;
 }
-
+.cgBox{
+	border:2px solid #DDD;
+}
 
 .width100 {
 	width: 100%;

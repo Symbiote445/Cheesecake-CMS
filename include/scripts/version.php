@@ -1,5 +1,5 @@
 <?php
 $version = array (
-	'core'=>'1.0'
+	'core'=>'2.0.1a'
 	);
 ?>

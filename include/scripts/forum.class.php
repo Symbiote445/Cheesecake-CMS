@@ -91,6 +91,8 @@ if(isset($_GET['action'])){
 	if($_GET['action'] == 'searchforums'){
 		$forum->searchBar();
 	}
+} else {
+	$forum->homepage();	
 }
 class Forums{
 	public function forumAdminBar(){
@@ -415,7 +417,7 @@ class Forums{
 		$cat = mysqli_real_escape_string($dbc, $secureCategory);
 		$query = "SELECT posts.*, users.* FROM posts JOIN users ON users.uid = posts.user_id AND category = '".$cat."' AND hidden = '0' ORDER BY posts.post_id DESC";
 		$data = mysqli_query($dbc, $query);
-		echo '<table class="table">';
+		echo '<table class="table cgBox">';
 		echo '<thead>';
 		echo '<th>Post Title</th>';
 		echo '<th>Latest Posts</th>';
@@ -497,9 +499,31 @@ class Forums{
 	}
 	
 	}
+	public function homepage(){
+	global $dbc, $parser, $layout, $main, $settings, $core;
+	$query = "SELECT * FROM `posts` ORDER BY `date` DESC LIMIT 5";
+	$data = mysqli_query($dbc, $query);
+	echo'
+	<div class="shadowbar">
+	<table class="table cgBox">
+	<thead>
+	<th>Latest Posts</th>
+	</thead>
+	';
+	while($row = mysqli_fetch_array($data)){
+	echo'<tr>';
+	echo'<td><a class="nav" href="index.php?action=viewpost&post='.$row['postlink'].'">'.$row['tag'].' '.$row['title']. '</a>';
+	echo'</td>';
+	echo'</tr>';		
+	}
+	echo'
+	</table>
+	</div>
+	';
+	}
 	public function vpost() {
+	global $dbc, $parser, $layout, $main, $settings, $core;
 		echo '<div class="shadowbar">';
-		global $dbc, $parser, $layout, $main, $settings, $core;
 		if(isset($_GET['post'])){
 		$postid = mysqli_real_escape_string($dbc, $_GET['post']);
 		if(isset($_GET['mode']) && ($_GET['mode'] == 'lock')){

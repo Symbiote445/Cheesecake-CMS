@@ -8,12 +8,13 @@ $modules = array(
 			'href'=> 'index.php?action=viewcategory',
 			'sidebar'=>'index.php?action=posttopic',
 			'sidebarDesc'=>'Post Topic',
-			'acp'=>''
+			'acp'=>'',
+			'homepageDo'=>'homepage'
 	),
 	'Pages' => array(
 			'description'=> 'Pages',
 			'link'=> 'pages.class.php',
-			'enabled'=> '1',
+			'enabled'=> '0',
 			'admin'=>'1',
 			'href'=> 'index.php?action=pages',
 			'sidebar'=>'',
@@ -23,8 +24,8 @@ $modules = array(
 	'Gallery' => array(
 			'description'=> 'Gallery',
 			'link'=> 'gallery.class.php',
-			'enabled'=> '1',
-			'admin'=>'1',
+			'enabled'=> '0',
+			'admin'=>'0',
 			'href'=> 'index.php?action=viewgallery',
 			'sidebar'=>'',
 			'sidebarDesc'=>'Add Picture to Gallery',
@@ -33,7 +34,7 @@ $modules = array(
 	'Blog' => array(
 			'description'=> 'Blog',
 			'link'=> 'blog.class.php',
-			'enabled'=> '1',
+			'enabled'=> '0',
 			'admin'=>'1',
 			'href'=> 'index.php?action=Blog',
 			'sidebar'=>'',
@@ -43,7 +44,7 @@ $modules = array(
 	'Chat' => array(
 			'description'=> 'Chat',
 			'link'=> 'chat.class.php',
-			'enabled'=> '1',
+			'enabled'=> '0',
 			'admin'=>'0',
 			'href'=> 'index.php?action=chat',
 			'sidebar'=>'index.php?action=chat',
