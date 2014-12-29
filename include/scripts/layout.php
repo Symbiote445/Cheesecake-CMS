@@ -38,7 +38,8 @@ $layout = array(
 		</head>
 		<body>
 			<div class="row header">
-				<div class="col-md-1"></div>
+				<div class="col-md-1">
+				  <img style="top: 0px; left: 0px; position: relative;" src="include/images/logo.png" height="120px"></div>
    <div class="navbar-wrapper">
       <div class="container">
 

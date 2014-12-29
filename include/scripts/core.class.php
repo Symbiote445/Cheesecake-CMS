@@ -8,8 +8,8 @@ if(!defined("CCore")){
 	die("Access Denied.");
 }
 class admin {
-	private function array2php($arr){
-		$out = '<?php $settings = array(';
+	public function array2php($arr, $arrName){
+		$out = '<?php $'.$arrName.' = array(';
 		foreach( $arr as $k => $v ){
 			if( is_bool($v) ){
 				$v = ( $v ) ? 'true' : 'false';
@@ -172,7 +172,7 @@ class admin {
 					'b_url'=>''.$burl.'',
 					'b_email'=>''.$bemail.'',
 					'board_enabled'=>false,
-					'about' => " ".$about.""
+					'about' => "".$about.""
 					);
 					$end = '<?php
 define(\'MM_UPLOADPATH\', \'include/images/profile/\');
@@ -184,7 +184,7 @@ define(\'MM_DLIMGPATH\', \'files/images/\');
 define(\'MM_GALLERY\', \'include/images/\');	
 $dbc=mysqli_connect($settings[\'db_host\'],$settings[\'db_user\'],$settings[\'db_password\'],$settings[\'db\']);
 			?>';
-					file_put_contents($mySettingsFile, $this->array2php($newSettings));
+					file_put_contents($mySettingsFile, $this->array2php($newSettings, "settings"));
 					file_put_contents($mySettingsFile, $end, FILE_APPEND | LOCK_EX );
 
 					echo '<div class="alert alert-success">Settings Edited</div>';
@@ -502,14 +502,10 @@ class core {
 						&& ($_FILES["new_picture"]["size"] < 5000000)
 						&& in_array($extension, $allowedExts)
 						&& isset($_FILES['new_picture']['type'])) {
-					if ($_FILES["new_picture"]["name"]["error"] > 0) {
-						echo "Return Code: " . $_FILES["new_picture"]["name"]["error"] . "<br>";
-					} else {
 						$query = "UPDATE users SET `picture` = '$pnumname' WHERE uid = '".$_SESSION['uid']."'";
 						mysqli_query($dbc, $query);
 						move_uploaded_file($_FILES["new_picture"]["tmp_name"],
 						"include/images/profile/" . $pnumname);
-					}
 				} else {
 					echo 'Error: Invalid File.';
 				}
