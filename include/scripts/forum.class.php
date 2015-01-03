@@ -501,7 +501,11 @@ class Forums{
 	}
 	public function homepage(){
 	global $dbc, $parser, $layout, $main, $settings, $core;
-	$query = "SELECT * FROM `posts` ORDER BY `date` DESC LIMIT 5";
+	$query = "SELECT * FROM `FConf` ";
+	$data = mysqli_query($dbc, $query);
+	$FConf = mysqli_fetch_array($data);
+	if($FConf['homeDisp'] == 'posts'){
+	$query = "SELECT * FROM `posts` ORDER BY `date` DESC LIMIT ".$FConf['homeNum']." ";
 	$data = mysqli_query($dbc, $query);
 	echo'
 	<div class="shadowbar">
@@ -520,6 +524,69 @@ class Forums{
 	</table>
 	</div>
 	';
+	}
+	if($FConf['homeDisp'] == 'polls'){
+	$query = "SELECT * FROM `polls` ORDER BY `date` DESC LIMIT ".$FConf['homeNum']." ";
+	$data = mysqli_query($dbc, $query);
+	echo'
+	<div class="shadowbar">
+	<table class="table cgBox">
+	<thead>
+	<th>Latest Polls</th>
+	</thead>
+	';
+	while($row = mysqli_fetch_array($data)){
+	echo'<tr>';
+	echo'<td><a class="nav" href="/viewPoll/p/'.$row['postlink'].'">'.$row['title'].'</a>';
+	echo'</td>';
+	echo'</tr>';		
+	}
+	echo'
+	</table>
+	</div>
+	';
+	}
+	if($FConf['homeDisp'] == 'both'){
+	$query = "SELECT * FROM `posts` ORDER BY `date` DESC LIMIT ".$FConf['homeNum']." ";
+	$data = mysqli_query($dbc, $query);
+	echo'
+	<div class="shadowbar">
+	<table class="table cgBox">
+	<thead>
+	<th>Latest Posts</th>
+	</thead>
+	';
+	while($row = mysqli_fetch_array($data)){
+	echo'<tr>';
+	echo'<td><a class="nav" href="/viewpost/post/'.$row['postlink'].'">'.$row['tag'].' '.$row['title']. '</a>';
+	echo'</td>';
+	echo'</tr>';		
+	}
+	echo'
+	</table>
+	</div>
+	';
+	
+	$query = "SELECT * FROM `polls` ORDER BY `date` DESC LIMIT ".$FConf['homeNum']." ";
+	$data = mysqli_query($dbc, $query);
+	echo'
+	<div class="shadowbar">
+	<table class="table cgBox">
+	<thead>
+	<th>Latest Polls</th>
+	</thead>
+	';
+	while($row = mysqli_fetch_array($data)){
+	echo'<tr>';
+	echo'<td><a class="nav" href="/viewPoll/p/'.$row['postlink'].'">'.$row['title'].'</a>';
+	echo'</td>';
+	echo'</tr>';		
+	}
+	echo'
+	</table>
+	</div>
+	';
+	}
 	}
 	public function vpost() {
 	global $dbc, $parser, $layout, $main, $settings, $core;
@@ -1066,21 +1133,57 @@ if($core->verify("4") || $core->verify("2")){
 		</div>		
 		';
 	}
+	public function forumConf(){
+		global $settings, $version, $dbc, $layout, $core, $parser;
+	if(isset($_POST['submit'])){
+		$homeDisp = mysqli_real_escape_string($dbc, trim($_POST['homeDisp']));
+		$homeNum = mysqli_real_escape_string($dbc, trim($_POST['homeNum']));
+
+		$query = "UPDATE `FConf` SET `homeDisp`='$homeDisp', `homeNum`='$homeNum' ";
+		mysqli_query($dbc, $query);
+		
+		echo '<div class="shadowbar">Forum Module Configuration Updated.</div>';
+	}
+	$query = "SELECT * FROM `FConf` ";
+	$data = mysqli_query($dbc, $query);
+	$FConf = mysqli_fetch_array($data);
+	echo '
+<div class="shadowbar"><div class="alert alert-info">Please refer to the documentation <a href="http://cheesecakebb.org/index.php?action=pages&page=Settings">Here</a> for settings</div>
+		<form method="post" action="/moderation">
+		<fieldset>
+		<legend>Settings</legend>
+		<div class="input-group">
+		<span class="input-group-addon">Home Page Display</span>
+		<input class="form-control" type="text" name="homeDisp" value="'.$FConf['homeDisp'].'" />
+		</div>
+		<div class="input-group">
+		<span class="input-group-addon">Number of Latest Post/Polls</span>
+		<input class="form-control" type="text" name="homeNum" value="'.$FConf['homeNum'].'" />
+		</div>
+		</fieldset>
+		<input class="Link LButton" type="submit" value="Submit Edits" name="submit" />
+	</form>
+	</div>	
+	';
+	}
 	public function forumModeration(){
 		global $settings, $version, $dbc, $layout, $core, $parser;
 		echo '<div class="shadowbar"> <div class="panel-body"><div role="tabpanel">
 
   <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#posts" aria-controls="home" role="tab" data-toggle="tab">Posts</a></li>
+    <li role="presentation"><a href="#posts" aria-controls="home" role="tab" data-toggle="tab">Posts</a></li>
     <li role="presentation"><a href="#replies" aria-controls="profile" role="tab" data-toggle="tab">Replies</a></li>
+	<li role="presentation" class="active"><a href="#Conf" aria-controls="profile" role="tab" data-toggle="tab">Configuration</a></li>
   </ul>
 
   <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="posts">';
+    <div role="tabpanel" class="tab-pane" id="posts">';
 		$this->forumPostAdmin();
 		echo '</div>  <div role="tabpanel" class="tab-pane" id="replies">';
 		$this->forumReplyAdmin();
-		echo '</div></div></div></div></div>';
+		echo '</div><div role="tabpanel" class="tab-pane active" id="Conf">';
+		$this->forumConf();
+		echo'</div></div></div></div></div>';
 	}
 }
 ?>
