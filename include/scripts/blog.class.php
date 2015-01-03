@@ -1,7 +1,6 @@
 <?php
 //Cheesecake Core Blog
 $blog = new blog;
-if(isset($_GET['action'])){
 if(isset($_GET['action']) && ($_GET['action'] == "Blog")){
 if(isset($_GET['action']) && !isset($_GET['mode'])){
 if($_GET['action'] === "Blog"){
@@ -29,9 +28,6 @@ $blog->blogUnHideAdmin();
 $blog->blogAdminBar();
 }
 }
-} else {
-  $blog->homepage();	
-}
 
 class blog {
 	public function homepage(){
@@ -49,7 +45,7 @@ class blog {
 	public function blogAdminBar(){
 	global $dbc, $parser, $layout, $main, $settings, $core;
 	if($core->verify("4")){
-	echo sprintf($layout['adminBar'], 'index.php?action=Blog&mode=admin', 'Blog');
+	echo sprintf($layout['adminBar'], '/Blog/mode/admin', 'Blog');
 	}
 	}
 
@@ -85,7 +81,7 @@ class blog {
 					$query = "INSERT INTO blog (`title`, `content`, `display`, `user`, `date`) VALUES ('$title', '$post1', '$display', '$username', NOW())";
 					mysqli_query($dbc, $query);
 
-					echo '<p>Your post has been successfully added. Would you like to <a href="index.php?action=vb">view all of the blog posts</a>?</p>';
+					echo '<p>Your post has been successfully added. Would you like to <a href="/Blog">view all of the blog posts</a>?</p>';
 					
 					exit();
 				}
@@ -127,7 +123,7 @@ class blog {
 
 				$query = "UPDATE blog SET `display`='0' WHERE id = $postid";
 				mysqli_query($dbc, $query);
-				echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a href="index.php">go back to the admin panel</a>?</p></div>';
+				echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a href="/Blog/mode/admin">go back to the admin panel</a>?</p></div>';
 				
 				exit();
 			}
@@ -151,7 +147,7 @@ class blog {
 
 				$query = "UPDATE blog SET `display`='1' WHERE id = $postid";
 				mysqli_query($dbc, $query);
-				echo '<div class="shadowbar"><p>Post has been successfully unhidden. Would you like to <a href="index.php">go back to the admin panel</a>?</p></div>';
+				echo '<div class="shadowbar"><p>Post has been successfully unhidden. Would you like to <a href="/Blog/mode/admin">go back to the admin panel</a>?</p></div>';
 				
 				exit();
 			}
@@ -175,7 +171,7 @@ class blog {
 
 				$query = "DELETE FROM blog WHERE id = $postid";
 				mysqli_query($dbc, $query);
-				echo '<div class="shadowbar"><p>Post has been successfully deleted. Would you like to <a href="index.php">go back to the admin panel</a>?</p></div>';
+				echo '<div class="shadowbar"><p>Post has been successfully deleted. Would you like to <a href="/Blog/mode/admin">go back to the admin panel</a>?</p></div>';
 				
 				exit();
 			}
