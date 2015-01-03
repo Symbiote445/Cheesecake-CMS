@@ -6,7 +6,7 @@
 	require_once('include/scripts/settings.php');
 	require_once('include/scripts/version.php');
 	require('include/scripts/core.class.php');
-	require('include/scripts/nbbc_main.php'); 
+	require('include/scripts/nbbc_main.php');
 	$parser = new BBCode;
 	$core = new core;
 	$admin = new admin;

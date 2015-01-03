@@ -338,11 +338,11 @@ class gallery{
 	public function vg(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		if($core->verify("4") || $core->verify("2")){
-		echo '<div class="shadowbar"><a class="Link LButton" href="/uploadphoto">Upload File To Gallery </a><a class="Link LButton" href="/addGallery">Add Gallery</a></div>';
+		echo '<div class="shadowbar"><a class="Link LButton" href="index.php?action=uploadphoto">Upload File To Gallery </a><a class="Link LButton" href="index.php?action=addGallery">Add Gallery</a></div>';
 		}
 		echo'<div class="shadowbar">';
-		if(isset($_GET['page'])){
-		$secureLimit = preg_replace("/[^0-9]/", "", $_GET['page']);
+		if(isset($_GET['limit'])){
+		$secureLimit = preg_replace("/[^0-9]/", "", $_GET['limit']);
 		$limit = mysqli_real_escape_string($dbc, $secureLimit);
 		} else {
 		$limit = 1;
@@ -360,8 +360,8 @@ class gallery{
 		while($row = mysqli_fetch_array($data)){
 			if(!empty($row['filename'])){
 				echo'<li>
-						<a href="http://'.$settings['b_url'].'/viewgallery" data-largesrc="include/images/'.$row['filename'].'" data-title="'.$row['name'].'" data-description="'.$row['descr'].'">
-							<img style="max-height:70px;" src="/include/images/'.$row['filename'].'" alt="img01"/>
+						<a href="http://'.$settings['b_url'].'/index.php?action=viewgallery" data-largesrc="include/images/'.$row['filename'].'" data-title="'.$row['name'].'" data-description="'.$row['descr'].'">
+							<img style="max-height:70px;" src="include/images/'.$row['filename'].'" alt="img01"/>
 						</a>
 					</li>';
 			} 
@@ -369,7 +369,7 @@ class gallery{
 		}
 		echo '</ul>
 				</div>';
-						echo '<a class="Link LButton" href="/viewgallery/page/'.($limit - 1).'">Previous </a><a class="Link LButton" href="/viewgallery/page/'.($limit + 1).'"> Next</a>';
+						echo '<a class="Link LButton" href="index.php?action=viewgallery&limit='.($limit - 1).'">Previous </a><a class="Link LButton" href="index.php?action=viewgallery&limit='.($limit + 1).'"> Next</a>';
 		echo '</div>';
 	}
 	}
@@ -383,7 +383,7 @@ class gallery{
 
 				$query = "DELETE FROM gallery_cat WHERE cg_id = $postid";
 				mysqli_query($dbc, $query); 
-				echo '<div class="shadowbar"><p>Gallery has been successfully deleted. Would you like to <a href="/viewgallery">go back to the gallery</a>?</p></div>';
+				echo '<div class="shadowbar"><p>Gallery has been successfully deleted. Would you like to <a href="index.php?action=viewgallery">go back to the gallery</a>?</p></div>';
 				
 				exit();
 			}
@@ -394,13 +394,13 @@ class gallery{
 		
 		
 		
-		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/deleteGallery">
+		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=deleteGallery">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Are you sure?</legend>';
 		echo'<input type="hidden" name="postid" value="'.$_GET['cat'].'">
 		</fieldset>
-		<input type="submit" value="Delete" name="submit" />   <a class="button" href="/viewgallery">Cancel</a> 
+		<input type="submit" value="Delete" name="submit" />   <a class="button" href="index.php">Cancel</a> 
 	</form>
 	</div>';	
 	}
@@ -454,7 +454,7 @@ class gallery{
 		}
 		
 		
-		echo'<form enctype="multipart/form-data" method="post" action="/uploadphoto">
+		echo'<form enctype="multipart/form-data" method="post" action="index.php?action=uploadphoto">
 		<fieldset>
 		<legend>Picture Upload</legend>
 		<label for="name">Picture Name:</label><br />
@@ -472,7 +472,7 @@ class gallery{
 		<label for="file">Picture:</label>';
 		echo'<input type="file" id="file" name="file" />
 		</fieldset>
-		<input type="submit" value="Save Picture" name="submit" /> <a class="button" href="/viewgallery">Cancel</a>
+		<input type="submit" value="Save Picture" name="submit" /> <a class="button" href="acp.php">Cancel</a>
 	</form>
 	</div>';
 	} else {
@@ -490,7 +490,7 @@ class gallery{
 			if (!empty($catt)) { 
 				$query = "INSERT INTO gallery_cat (`cg_name`) VALUES ('$catt')";
 				mysqli_query($dbc, $query);
-				echo '<p>Your category has been successfully added. Would you like to go back to the <a href="/viewgallery">Gallery</a>?</p>';
+				echo '<p>Your category has been successfully added. Would you like to go back to the <a href="index.php?action=viewgallery">Gallery</a>?</p>';
 				exit();
 			}
 			else {
@@ -498,7 +498,7 @@ class gallery{
 			}
 		} 
 		if($core->verify("4") || $core->verify("2")){
-		echo'<form enctype="multipart/form-data" method="post" action="/addGallery">
+		echo'<form enctype="multipart/form-data" method="post" action="index.php?action=addGallery">
 		<fieldset>
 		<legend>Create Gallery:</legend>
 			<label type="hidden" for="catt">Gallery name:</label><br />
@@ -511,7 +511,7 @@ class gallery{
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
 			echo '<tr>';
-			echo '<td>'.$row['cg_name'].' <a href="/deleteGallery/cat/'.$row['cg_id'].'">Delete Gallery</a></td></tr>';
+			echo '<td>'.$row['cg_name'].' <a href="index.php?action=deleteGallery&cat='.$row['cg_id'].'">Delete Gallery</a></td></tr>';
 		}
 		
 		echo'</table>';

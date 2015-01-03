@@ -14,15 +14,15 @@ document.write("<link href=\"include/style/required/styles.css\" rel=\"styleshee
 
 function edToolbar(obj) {
     document.write("<div class=\"toolbar\">");
-	document.write("<img class=\"button\" src=\"/include/images/bbcode/bold.gif\" name=\"btnBold\" title=\"Bold\" onClick=\"doAddTags('[b]','[/b]','" + obj + "')\">");
-    document.write("<img class=\"button\" src=\"/include/images/bbcode/italic.gif\" name=\"btnItalic\" title=\"Italic\" onClick=\"doAddTags('[i]','[/i]','" + obj + "')\">");
-	document.write("<img class=\"button\" src=\"/include/images/bbcode/underline.gif\" name=\"btnUnderline\" title=\"Underline\" onClick=\"doAddTags('[u]','[/u]','" + obj + "')\">");
-	document.write("<img class=\"button\" src=\"/include/images/bbcode/link.gif\" name=\"btnLink\" title=\"Insert URL Link\" onClick=\"doURL('" + obj + "')\">");
-	document.write("<img class=\"button\" src=\"/include/images/bbcode/picture.gif\" name=\"btnPicture\" title=\"Insert Image\" onClick=\"doImage('" + obj + "')\">");
-	document.write("<img class=\"button\" src=\"/include/images/bbcode/ordered.gif\" name=\"btnList\" title=\"Ordered List\" onClick=\"doList('[LIST=1]','[/LIST]','" + obj + "')\">");
-	document.write("<img class=\"button\" src=\"/include/images/bbcode/unordered.gif\" name=\"btnList\" title=\"Unordered List\" onClick=\"doList('[LIST]','[/LIST]','" + obj + "')\">");
-	document.write("<img class=\"button\" src=\"/include/images/bbcode/quote.gif\" name=\"btnQuote\" title=\"Quote\" onClick=\"doAddTags('[quote]','[/quote]','" + obj + "')\">"); 
-  	document.write("<img class=\"button\" src=\"/include/images/bbcode/code.gif\" name=\"btnCode\" title=\"Code\" onClick=\"doAddTags('[code]','[/code]','" + obj + "')\">");
+	document.write("<img class=\"button\" src=\"include/images/bbcode/bold.gif\" name=\"btnBold\" title=\"Bold\" onClick=\"doAddTags('[b]','[/b]','" + obj + "')\">");
+    document.write("<img class=\"button\" src=\"include/images/bbcode/italic.gif\" name=\"btnItalic\" title=\"Italic\" onClick=\"doAddTags('[i]','[/i]','" + obj + "')\">");
+	document.write("<img class=\"button\" src=\"include/images/bbcode/underline.gif\" name=\"btnUnderline\" title=\"Underline\" onClick=\"doAddTags('[u]','[/u]','" + obj + "')\">");
+	document.write("<img class=\"button\" src=\"include/images/bbcode/link.gif\" name=\"btnLink\" title=\"Insert URL Link\" onClick=\"doURL('" + obj + "')\">");
+	document.write("<img class=\"button\" src=\"include/images/bbcode/picture.gif\" name=\"btnPicture\" title=\"Insert Image\" onClick=\"doImage('" + obj + "')\">");
+	document.write("<img class=\"button\" src=\"include/images/bbcode/ordered.gif\" name=\"btnList\" title=\"Ordered List\" onClick=\"doList('[LIST=1]','[/LIST]','" + obj + "')\">");
+	document.write("<img class=\"button\" src=\"include/images/bbcode/unordered.gif\" name=\"btnList\" title=\"Unordered List\" onClick=\"doList('[LIST]','[/LIST]','" + obj + "')\">");
+	document.write("<img class=\"button\" src=\"include/images/bbcode/quote.gif\" name=\"btnQuote\" title=\"Quote\" onClick=\"doAddTags('[quote]','[/quote]','" + obj + "')\">"); 
+  	document.write("<img class=\"button\" src=\"include/images/bbcode/code.gif\" name=\"btnCode\" title=\"Code\" onClick=\"doAddTags('[code]','[/code]','" + obj + "')\">");
     document.write("</div>");
 	//document.write("<textarea id=\""+ obj +"\" name = \"" + obj + "\" cols=\"" + width + "\" rows=\"" + height + "\"></textarea>");
 				}

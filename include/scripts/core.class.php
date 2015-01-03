@@ -133,7 +133,7 @@ class admin {
 			die('<div class="shadowbar">You don\'t have significant privilege</div>');
 		}
 		echo '<div class="shadowbar">
-		<a class="Link LButton" href="/acp">Admin </a><a class="Link LButton" href="/acp/mode/users">Users </a><a class="Link LButton" href="/acp/mode/Settings">Settings </a><a class="Link LButton" href="/acp/mode/modules">Module Settings </a><a class="Link LButton" href="/acp/mode/layout">Advanced Layout Editor</a>';
+		<a class="Link LButton" href="index.php?action=acp">Admin </a><a class="Link LButton" href="index.php?action=acp&mode=users">Users </a><a class="Link LButton" href="index.php?action=acp&mode=Settings">Settings </a>';
 		echo '</div>
 ';
 		if(isset($_GET['mode'])){
@@ -145,51 +145,6 @@ class admin {
 			}
 			if($_GET['mode'] == 'editperms'){
 				$this->eur();
-			}
-			if($_GET['mode'] == 'layout'){
-				if(isset($_POST['submit'])){
-					$layoutSettings = $_POST['layout'];
-					file_put_contents("include/scripts/layout.php", $layoutSettings);
-					echo '<div class="shadowbar">Layout file updated</div>';
-				}
-				$layoutFile = file_get_contents("include/scripts/layout.php");
-				$layoutFile = htmlspecialchars($layoutFile);
-echo (
-<<<EOD
-<div class="shadowbar">
-		<form method="post" action="/acp/mode/layout">
-		<fieldset>
-		<legend>Advanced Layout Editor</legend>
-		<div class="input-group" style="width:100%;">
-		<textarea id="codeEdit" rows=50 placeholder="Layout File" name="layout" style="width:100%;">$layoutFile</textarea><br />
-		</div>
-		</fieldset>
-		<input class="Link LButton" type="submit" value="Submit Edits" name="submit" />
-	</form>
-	</div>
-EOD
-);				
-			}
-			if($_GET['mode'] == 'modules'){
-				if(isset($_POST['submit'])){
-					$moduleSettings = $_POST['modules'];
-					file_put_contents("modules.php", $moduleSettings);
-					echo '<div class="shadowbar">Module settings updated</div>';
-				}
-				$moduleFile = file_get_contents("modules.php");
-				echo '
-<div class="shadowbar">
-		<form method="post" action="/acp/mode/modules">
-		<fieldset>
-		<legend>Module Settings</legend>
-		<div class="input-group" style="width:100%">
-		<textarea style="width:100%" placeholder="Module Settings" name="modules" id="codeEdit" rows="50">'.$moduleFile.'</textarea><br />
-		</div>
-		</fieldset>
-		<input class="Link LButton" type="submit" value="Submit Edits" name="submit" />
-	</form>
-	</div>
-				';
 			}
 			if(($_GET['mode'] === 'Settings')){
 				if(isset($_POST['submit'])){
@@ -237,7 +192,7 @@ $dbc=mysqli_connect($settings[\'db_host\'],$settings[\'db_user\'],$settings[\'db
 				global $settings;
 				
 				echo'<div class="shadowbar"><div class="alert alert-info">Please refer to the documentation <a href="http://cheesecakebb.org/index.php?action=pages&page=Settings">Here</a> for settings</div>
-		<form method="post" action="/acp/mode/Settings">
+		<form method="post" action="index.php?action=acp&mode=Settings">
 		<fieldset>
 		<legend>Settings</legend>
 		<div class="input-group">
@@ -442,11 +397,11 @@ class core {
 	public function isLoggedIn(){
 		echo '<div class="shadowbar">';
 		if (!isset($_SESSION['uid'])) {
-			echo '<p class="login">Please <a href="/login">log in</a> to access this page.</p>';
+			echo '<p class="login">Please <a href="index.php?action=login">log in</a> to access this page.</p>';
 			exit();
 		}
 		else {
-			echo('<p class="login">You are logged in as ' . $_SESSION['username'] . '. <a href="/logout">Log out</a>.</p>');
+			echo('<p class="login">You are logged in as ' . $_SESSION['username'] . '. <a href="index.php?action=logout">Log out</a>.</p>');
 		}
 		echo '</div>';
 	}
@@ -466,12 +421,12 @@ class core {
 					$to      = $email; // Send email to our user
 					$subject = $settings['site_name']; // Give the email a subject
 					$message = '	
-			You have submitted a password reset request at '.$settings['site_name'].'
+			You have submittd a password reset request at '.$settings['site_name'].'
 			Your account has been deactivated and you will have to reset your password upon re-activation.
 			Please click this link to activate your account:
-			http://'.$burl.'/verifyaccount/hash/'.$hash.'
+			http://'.$burl.'/index.php?action=verifyaccount&hash='.$hash.'
 			If you did not request this, please click here:
-			http://'.$burl.'/verifyaccount/hash/'.$hash.'/fraud/true
+			http://'.$burl.'/index.php?action=verifyaccount&hash='.$hash.'&fraud=true
 			'; // Our message above including the link				
 					$headers = 'From:'.$site.'' . "\r\n"; // Set from headers
 					mail($to, $subject, $message, $headers); // Send our email	
@@ -589,13 +544,13 @@ class core {
 
 
 
-		echo'<form enctype="multipart/form-data" method="post" action="/editprofile">
+		echo'<form enctype="multipart/form-data" method="post" action="index.php?action=editprofile">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Personal Information</legend>
 		<label for="new_picture">Picture:</label>';
 		if (!empty($old_picture)) {
-			echo '<img style="max-height:120px;" class="profile" src="/include/images/profile/' . $old_picture . '" alt="Profile Picture" /><br /><br />';
+			echo '<img style="max-height:120px;" class="profile" src="include/images/profile/' . $old_picture . '" alt="Profile Picture" /><br /><br />';
 		}
 		echo'<input type="file" id="new_picture" name="new_picture" />
 	<label for="email">E-Mail:</label>
@@ -603,7 +558,7 @@ class core {
 	<label for="sig">Signature:</label><br>
 	<textarea cols="100" rows="6" placeholder="Signature..." name="sig">'.$sig.'</textarea>
 		</fieldset>
-		<input type="submit" value="Save Profile" name="submit" /> <a class="button" href="/ucp">Cancel</a>
+		<input type="submit" value="Save Profile" name="submit" /> <a class="button" href="index.php?action=ucp">Cancel</a>
 	</form>
 	</div>';
 	}
@@ -627,11 +582,11 @@ class core {
 			echo '<tr><td>Username:</td><td>' . $row['username'] . '</td></tr>';
 			echo '</td></tr>';
 			echo '<tr><td>Email:</td><td>' . $row['email'] . '</td></tr>';
-			echo '<tr><td>Picture:</td><td><img style="max-height:100px;" class="img-square" src="/include/images/profile/' . $row['picture'] .
+			echo '<tr><td>Picture:</td><td><img style="max-height:100px;" class="img-square" src="include/images/profile/' . $row['picture'] .
 			'" alt="Profile Picture" /></td></tr>';
 			echo '</table>';
 			if (!isset($_GET['uid']) || ($_SESSION['uid'] == $_GET['uid'])) {
-				echo '<p><a class="button" href="/editprofile">Edit</a><a class="button" href="/passwordReset">Reset Password</a></p>';
+				echo '<p><a class="button" href="index.php?action=editprofile">Edit</a><a class="button" href="index.php?action=passwordReset">Reset Password</a></p>';
 			}
 		}
 		else {
@@ -668,7 +623,7 @@ class core {
 		if($row['passwordReset'] == '1') {
 		echo '
 		<div class="shadowbar">
-				<form method="post" action="/verifyaccount">
+				<form method="post" action="index.php?action=verifyaccount">
 				<fieldset>
 				<legend>Reset Password</legend>
 				<div class="input-group">
@@ -718,7 +673,7 @@ class core {
 			if(!empty($row['title'])) {
 				echo'<tr>';
 				echo'<td>';
-					echo'<a class="nav" href="/viewmessage/m/'.$row['id'].'">' .$row['title']. '   <span class="badge">' . mysqli_num_rows($count) . ' Messages</span></a>';  
+					echo'<a class="nav" href="index.php?action=viewmessage&m='.$row['id'].'">' .$row['title']. '   <span class="badge">' . mysqli_num_rows($count) . ' Messages</span></a>';  
 				echo'</td>';
 			}
 			
@@ -734,7 +689,7 @@ class core {
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
 			$replyTitle = $row['title'];
-				echo '<a class="Link LButton" href="/replymessage/m/'.$message.'">Reply</a>';
+				echo '<a class="Link LButton" href="index.php?action=replymessage&m='.$message.'">Reply</a>';
 			$parsed = $parser->parse($row['content']);
 			$sig = $parser->parse($row['sig']);
 			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
@@ -772,7 +727,7 @@ class core {
 				echo '<p class="error">You must enter information into all of the fields.</p>';
 			}
 		} // End of check for form submission
-		echo'<form enctype="multipart/form-data" method="post" action="/sendmessage">
+		echo'<form enctype="multipart/form-data" method="post" action="index.php?action=sendmessage">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Send Message:</legend>
@@ -816,7 +771,7 @@ class core {
 				echo '<div class="shadowbar"><p class="error">You must enter information into all of the fields.</p></div>';
 			}
 		} // End of check for form submission
-		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/replymessage">
+		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=replymessage">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Reply:</legend>
@@ -854,7 +809,7 @@ class core {
 			Password: '.$password1.'
 			------------------------
 			Please click this link to activate your account:
-			http://'.$burl.'/verifyaccount/hash/'.$hash.'
+			http://'.$burl.'/index.php?action=verifyaccount&hash='.$hash.'
 			'; // Our message above including the link				
 					$headers = 'From:'.$settings['site_name'].'' . "\r\n"; // Set from headers
 					mail($to, $subject, $message, $headers); // Send our email								
@@ -876,7 +831,7 @@ class core {
 		}
 		
 		echo'<div class="shadowbar"><div class="alert alert-info"><strong>Please enter your username and desired password to sign up.</strong></div>
-		<form method="post" action="/signup">
+		<form method="post" action="index.php?action=signup">
 		<fieldset>
 		<legend>Registration Info</legend>
 		<div class="input-group">

@@ -6,23 +6,13 @@ $layout = array(
 		<meta name="viewport" content="width=device-width, user-scalable=no">
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 			<title>%s</title>
-			<link rel="stylesheet" type="text/css" href="/include/style/%s/style.css">
-			<link rel="stylesheet" type="text/css" href="/include/style/%s/template.css">
-			<script type="text/javascript" src="/include/scripts/js/ed.js"></script> 
-			<script src="/include/style/%s/jquery.js"></script>
-			<script src="/include/style/%s/bootstrap.js"></script>
-			<script src="/include/scripts/js/iframeResizer.contentWindow.min.js"></script>
-			<script src="/include/scripts/js/iframeResizer.min.js"></script>
-			<script language="javascript" type="text/javascript" src="/include/scripts/codeEdit/edit_area_full.js"></script>
-			<script language="javascript" type="text/javascript">
-			editAreaLoader.init({
-				id : "codeEdit"		// textarea id
-				,syntax: "php"			// syntax to be uses for highgliting
-				,start_highlight: true		// to display with highlight mode on start-up
-		                ,toolbar: "search, go_to_line, |, undo, redo, |, select_font, |, syntax_selection, |, change_smooth_selection, highlight, reset_highlight, |, help"
-			        ,syntax_selection_allow: "css,html,js,php,python,vb,xml,c,cpp,sql,basic,pas,brainfuck"
-			});
-			</script>
+			<link rel="stylesheet" type="text/css" href="include/style/%s/style.css">
+			<link rel="stylesheet" type="text/css" href="include/style/%s/template.css">
+			<script type="text/javascript" src="include/scripts/js/ed.js"></script> 
+			<script src="include/style/%s/jquery.js"></script>
+			<script src="include/style/%s/bootstrap.js"></script>
+			<script src="include/scripts/js/iframeResizer.contentWindow.min.js"></script>
+			<script src="include/scripts/js/iframeResizer.min.js"></script>
 			<script>
 			
 			function Redirect()
@@ -48,7 +38,8 @@ $layout = array(
 		</head>
 		<body>
 			<div class="row header">
-				<div class="col-md-1"></div>
+				<div class="col-md-1">
+				  <img style="top: 0px; left: 0px; position: relative;" src="include/images/logo.png" height="120px"></div>
    <div class="navbar-wrapper">
       <div class="container">
 
@@ -65,7 +56,7 @@ $layout = array(
             </div>
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                <li><a href="/index.php">Home</a></li>
+                <li><a href="index.php">Home</a></li>
 										
 		',
 	'header-end'=>'
@@ -85,7 +76,7 @@ $layout = array(
 		<h3>%s</h3>
 		<div class="row">
 		<div class="col-md-12">
-		<img style="max-height:100px;" class="img-square" src="/include/images/profile/%s" /> By <a href="index.php?action=ucp&uid=%s">%s</a> On <a href="">%s</a>
+		<img style="max-height:100px;" class="img-square" src="include/images/profile/%s" /> By <a href="index.php?action=ucp&uid=%s">%s</a> On <a href="">%s</a>
 		<hr />
 		</div>
 		<div class="col-md-10">
@@ -99,7 +90,7 @@ $layout = array(
 		</div>
 		',
 	'postBlogFormat'=>'
-		<form enctype="multipart/form-data" method="post" action="/Blog/mode/postblog"> 
+		<form enctype="multipart/form-data" method="post" action="index.php?action=Blog&mode=postblog"> 
 		<fieldset>
 		<legend>Blog Article:</legend>
 			<label type="hidden" for="title">Title:</label><br />
@@ -128,13 +119,13 @@ $layout = array(
 			Copyright <a href="http://%s">%s</a> - All Rights Reserved<br>
 			</div>
 			<div class="col-md-4">
-			Cheesecake CMS Version: %s
+			Cheesecake Core Version: %s
 			</div>
 		</div>
 	</div>
 	',
 	'login'=>'
-	<div class="shadowbar"><form method="post" action="/login">
+	<div class="shadowbar"><form method="post" action="index.php?action=login">
 
     <fieldset>
 
@@ -158,10 +149,10 @@ $layout = array(
 	
 	'adminPostLayout'=>'
 		  <table class="table">
-			<tr><td>Title: %s<a class="Link LButton" href="/markAs/p/%s">Mark As...</a></td></tr>
+			<tr><td>Title: %s<a class="Link LButton" href="index.php?action=markAs&p=%s">Mark As...</a></td></tr>
 		  <tr><td><div class="col-md-8"><pre>Post:<br/><br />%s</pre></div></td></tr>
-			<tr><td>Post ID: %s<a class="Link LButton" href="/%s/mode/%s/del/%s">Delete Post</a></td></tr>
-			<tr><td>Display Status: %s<a class="Link LButton" href="/%s/mode/hide/del/%s">Hide Post</a><a class="Link LButton" href="index.php?action=%s&mode=unhide&del=%s">Unhide Post</a></td></tr>
+			<tr><td>Post ID: %s<a class="Link LButton" href="index.php?action=%s&mode=%s&del=%s">Delete Post</a></td></tr>
+			<tr><td>Display Status: %s<a class="Link LButton" href="index.php?action=%s&mode=hide&del=%s">Hide Post</a><a class="Link LButton" href="index.php?action=%s&mode=unhide&del=%s">Unhide Post</a></td></tr>
 		  <tr><td>UserName: %s</td></tr>
 		  <tr><td>Rank: %s</td></tr>
 		</table>
@@ -170,8 +161,8 @@ $layout = array(
 		  <table class="table">
 			<tr><td>Title: %s</td></tr>
 		  <tr><td><div class="col-md-8"><pre>Post:<br/><br />%s</pre></div></td></tr>
-			<tr><td>Post ID: %s<a class="Link LButton" href="/%s/mode/%s/del/%s">Delete Post</a></td></tr>
-			<tr><td>Display Status: %s<a class="Link LButton" href="/%s/mode/hide/del/%s">Hide Post</a><a class="Link LButton" href="index.php?action=%s&mode=unhide&del=%s">Unhide Post</a></td></tr>
+			<tr><td>Post ID: %s<a class="Link LButton" href="index.php?action=%s&mode=%s&del=%s">Delete Post</a></td></tr>
+			<tr><td>Display Status: %s<a class="Link LButton" href="index.php?action=%s&mode=hide&del=%s">Hide Post</a><a class="Link LButton" href="index.php?action=%s&mode=unhide&del=%s">Unhide Post</a></td></tr>
 		  <tr><td>UserName: %s</td></tr>
 		  <tr><td>Rank: %s</td></tr>
 		</table>
@@ -182,7 +173,7 @@ $layout = array(
 	</div>
 	',
 	'adminPageEditLayout'=>'
-	<form enctype="multipart/form-data" method="post" action="/pages/mode/edit"> 
+	<form enctype="multipart/form-data" method="post" action="index.php?action=pages&mode=edit"> 
 		<fieldset>
 		<legend>Edit Page</legend>
 		<label type="hidden" for="post1">Page Body:</label><br />
@@ -193,7 +184,7 @@ $layout = array(
 		</form>
 	',
 	'adminPageAddLayout'=>'
-<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/pages/mode/addpage"> 
+<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=pages&mode=addpage"> 
 		<fieldset>
 		<legend>New Page</legend>
 			<label type="hidden" for="title">Title:</label><br />
@@ -207,26 +198,26 @@ $layout = array(
 		</div>
 	',
 	'adminDeleteLayout'=>'
-	<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/Blog/mode/%s">
+	<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=Blog&mode=%s">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Are you sure?</legend>
 		<input type="hidden" name="postid" value="%s">
 		</fieldset>
-		<input type="submit" value="Yes" name="submit" />   <a class="button" href="/Blog/mode/admin">Cancel</a> 
+		<input type="submit" value="Yes" name="submit" />   <a class="button" href="index.php?action=Blog&mode=admin">Cancel</a> 
 	</form>
 	</div>
 	',
 	'adminUserLayout'=>'
 		  <table class="table">
 			<tr><td>Username: %s<td></tr>
-			<tr><td>User ID: %s<a class="Link LButton" href="/acp/mode/deleteuser/del/%s"> Delete User</a></td></tr>
-		  <tr><td>Activation Status: %s<a href="/verifyaccount/hash/%s"> Activate User</a></td></tr>
-		  <tr><td>Admin Level: %s<a href="/acp/mode/editperms/r/%s"> Edit Perms</a></td></tr>
+			<tr><td>User ID: %s<a class="Link LButton" href="index.php?action=acp&mode=deleteuser&del=%s"> Delete User</a></td></tr>
+		  <tr><td>Activation Status: %s<a href="index.php?action=verifyaccount&hash=%s"> Activate User</a></td></tr>
+		  <tr><td>Admin Level: %s<a href="index.php?action=acp&mode=editperms&r=%s"> Edit Perms</a></td></tr>
 		</table><hr> 
 	',
 	'pollChoices' =>'
-		<li class="list-group-item"><a href="/pollvote/poll/%s/choice/%s">%s</a></li>
+		<li class="list-group-item"><a href="index.php?action=pollvote&poll=%s&choice=%s">%s</a></li>
 	'
 );
 
@@ -234,7 +225,7 @@ $layout = array(
 
 $postBlogFormat = 
 '
-		<form enctype="multipart/form-data" method="post" action="/pb"> 
+		<form enctype="multipart/form-data" method="post" action="index.php?action=pb"> 
 		<fieldset>
 		<legend>Blog Article:</legend>
 			<label type="hidden" for="title">Title:</label><br />
@@ -263,18 +254,18 @@ global $dbc, $core;
 				echo '
 				
 				<h3>'.$row['username'].'</h3>
-				<img style="max-height:120px;" class="postedBy" src="/include/images/profile/'.$row['picture'].'">
+				<img style="max-height:120px;" class="postedBy" src="'.MM_UPLOADPATH.''.$row['picture'].'">
 				<div class="btn-group-vertical width100">';
 				$uid = $_SESSION['uid'];
-					echo ' <a class="btn btn-default width100" href="/ucp">View Profile</a>';
-					echo ' <a class="btn btn-default width100" href="/messages">Messages</a>';
-					echo ' <a class="btn btn-default width100" href="/sendmessage">Send Message</a>';
-					echo ' <a class="btn btn-default width100" href="/logout">Log Out (' . $row['username'] . ')</a> ';
+					echo ' <a class="btn btn-default width100" href="index.php?action=ucp">View Profile</a>';
+					echo ' <a class="btn btn-default width100" href="index.php?action=messages">Messages</a>';
+					echo ' <a class="btn btn-default width100" href="index.php?action=sendmessage">Send Message</a>';
+					echo ' <a class="btn btn-default width100" href="index.php?action=logout">Log Out (' . $row['username'] . ')</a> ';
 					$core->loadModule("sidebar");
 
 
 					if($core->verify("4")){
-						echo '<a class="btn btn-default width100" href="/acp">Admin Panel</a>';
+						echo '<a class="btn btn-default width100" href="index.php?action=acp">Admin Panel</a>';
 						}
 
 					if($core->verify("4") || $core->verify("2")){
@@ -284,8 +275,8 @@ global $dbc, $core;
 					echo '</div>';
 				}
 				else {
-					echo ' <a class="btn btn-default width100" href="/login">Log In</a> ';
-					echo ' <a class="btn btn-default width100" href="/signup">Signup</a> ';
+					echo ' <a class="btn btn-default width100" href="index.php?action=login">Log In</a> ';
+					echo ' <a class="btn btn-default width100" href="index.php?action=signup">Signup</a> ';
 				}
 				echo'
 			</div>
@@ -311,7 +302,7 @@ global $dbc, $core;
 				$data = mysqli_query($dbc, $query);
 				while ($row = mysqli_fetch_array($data)){
 				if(time() - 300 < $row['active']){
-				echo '<a href="/ucp/uid/'.$row['uid'].'">'.$row['username'].'</a>, ';
+				echo '<a href="index.php?action=ucp&uid='.$row['uid'].'">'.$row['username'].'</a>, ';
 				}
 				}
 				echo '<br /><small>This list updates every five minutes</small>';
@@ -324,12 +315,12 @@ global $dbc, $core;
 		</div>';
 		if(isset($_SESSION['uid'])){
 		echo'<div class="shadowbar">';
-			if(isset($_GET['action']) && ($_GET['action'] == 'markasread')){
+			if(isset($_GET['mode']) && ($_GET['mode'] == 'markasread')){
 				$query = "UPDATE notifications SET `read` = '1' WHERE `user` = ".$_SESSION['uid']." ";
 				$data = mysqli_query($dbc, $query);
 				echo '<div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>Marked as read</div>';
 				}
-			if(isset($_GET['action']) && ($_GET['action'] == 'markasunread')){
+			if(isset($_GET['mode']) && ($_GET['mode'] == 'markasunread')){
 				$query = "UPDATE notifications SET `read` = '0' WHERE `user` = ".$_SESSION['uid']." ";
 				$data = mysqli_query($dbc, $query);
 				echo '<div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>Marked as unread</div>';
@@ -356,7 +347,7 @@ global $dbc, $core;
 				$query = "SELECT * FROM notifications WHERE `user` = '" .$_SESSION['uid']. "' AND `read` = 0";
 				$data = mysqli_query($dbc, $query);
 				if(mysqli_num_rows($data) > 0){
-				echo '<a href="/markasread">Mark all as read</a><br />';
+				echo '<a href="index.php?mode=markasread">Mark all as read</a><br />';
 				echo '<ul class="list-group">';
 				while($row = mysqli_fetch_array($data)){
 					echo '
@@ -372,7 +363,7 @@ global $dbc, $core;
 				$query = "SELECT * FROM notifications WHERE `user` = '" .$_SESSION['uid']. "' AND `read`= 1";
 				$data = mysqli_query($dbc, $query);
 				if(mysqli_num_rows($data) > 0){
-				echo '<a href="/markasunread">Mark all as unread</a>';
+				echo '<a href="index.php?mode=markasunread">Mark all as unread</a>';
 				echo '<ul class="list-group">';
 				while($row = mysqli_fetch_array($data)){
 					echo '
