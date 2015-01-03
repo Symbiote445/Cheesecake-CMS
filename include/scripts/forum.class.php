@@ -98,7 +98,7 @@ class Forums{
 	public function forumAdminBar(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		if($core->verify("4") || $core->verify("2")){
-		echo sprintf($layout['adminBar'], 'index.php?action=moderation', 'Forum');
+		echo sprintf($layout['adminBar'], '/moderation', 'Forum');
 	}
 	}
 	public function searchBar(){
@@ -115,7 +115,7 @@ class Forums{
 			';
 			while ($row = mysqli_fetch_array($data)){
 			echo '
-			<tr><td><a href="index.php?action=viewpost&post='.$row['postlink'].'">'.$row['title'].'</a></td></tr>
+			<tr><td><a href="/viewpost/post/'.$row['postlink'].'">'.$row['title'].'</a></td></tr>
 			';
 			}
 			echo '
@@ -124,7 +124,7 @@ class Forums{
 			';
 		}
 	echo '
-		<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=searchforums">
+		<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/searchforums">
 				<fieldset>
 				<legend>Search:</legend>
 				<input type="text" name="search" /><br />
@@ -146,7 +146,7 @@ class Forums{
 			if (!empty($catt)) { 
 				$query = "INSERT INTO categories (`name`, `desc`, `cg`) VALUES ('$catt', '$desc', '$cg')";
 				mysqli_query($dbc, $query);
-				echo '<p>Your forum has been successfully added. Would you like to go back to the <a href="index.php?action=acp">Admin Panel</a>?</p>';
+				echo '<p>Your forum has been successfully added. Would you like to go back to the <a href="/moderation">Admin Panel</a>?</p>';
 				exit();
 			}
 			else {
@@ -154,7 +154,7 @@ class Forums{
 			}
 		} 
 		if($core->verify("4") || $core->verify("2")){
-		echo'<form enctype="multipart/form-data" method="post" action="index.php?action=newforum">
+		echo'<form enctype="multipart/form-data" method="post" action="/newforum">
 		<fieldset>
 		<legend>Create Forum:</legend>
 			<label type="hidden" for="catt">Forum name:</label><br />
@@ -183,7 +183,7 @@ class Forums{
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
 			echo '<tr>';
-			echo '<td>'.$row['name'].'<a href="index.php?action=deleteforum&f='.$row['cat_id'].'">Delete Forum</a></td></tr>';
+			echo '<td>'.$row['name'].'<a href="/deleteforum/f/'.$row['cat_id'].'">Delete Forum</a></td></tr>';
 		}
 		
 		echo'</table>';
@@ -200,7 +200,7 @@ class Forums{
 
 				$query = "DELETE FROM category_groups WHERE cg_id = $postid";
 				mysqli_query($dbc, $query);
-				echo '<div class="shadowbar"><p>Category has been successfully deleted. Would you like to <a href="index.php?action=viewcategory">go back to the forums</a>?</p></div>';
+				echo '<div class="shadowbar"><p>Category has been successfully deleted. Would you like to <a href="/viewcategory">go back to the forums</a>?</p></div>';
 				
 				exit();
 			}
@@ -211,7 +211,7 @@ class Forums{
 		
 		
 		
-		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=deletecat">
+		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/deletecat">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Are you sure?</legend>';
@@ -232,7 +232,7 @@ class Forums{
 
 				$query = "DELETE FROM categories WHERE cat_id = $postid";
 				mysqli_query($dbc, $query);
-				echo '<div class="shadowbar"><p>Forum has been successfully deleted. Would you like to <a href="index.php?action=viewcategory">go back to the forums</a>?</p></div>';
+				echo '<div class="shadowbar"><p>Forum has been successfully deleted. Would you like to <a href="/viewcategory">go back to the forums</a>?</p></div>';
 				
 				exit();
 			}
@@ -242,7 +242,7 @@ class Forums{
 		} 
 		
 		
-		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=deleteforum">
+		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/deleteforum">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Are you sure?</legend>';
@@ -271,7 +271,7 @@ class Forums{
 			}
 		} 
 		if($core->verify("4") || $core->verify("2")){
-		echo'<form enctype="multipart/form-data" method="post" action="index.php?action=newcat">
+		echo'<form enctype="multipart/form-data" method="post" action="/newcat">
 		<fieldset>
 		<legend>Create Category:</legend>
 			<label type="hidden" for="catt">Category name:</label><br />
@@ -284,7 +284,7 @@ class Forums{
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
 			echo '<tr>';
-			echo '<td>'.$row['cg_name'].' <a href="index.php?action=deletecat&cat='.$row['cg_id'].'">Delete Category</a></td></tr>';
+			echo '<td>'.$row['cg_name'].' <a href="/deletecat/cat/'.$row['cg_id'].'">Delete Category</a></td></tr>';
 		}
 		
 		echo'</table>';
@@ -295,7 +295,7 @@ class Forums{
 		echo '<div class="shadowbar">';
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		if($core->verify("4") || $core->verify("2")){
-			echo '<a class="Link LButton" href="index.php?action=newcat">New Category</a><a class="Link LButton" href="index.php?action=newforum">New Forum</a><a class="Link LButton" href="index.php?action=postPoll">Post Poll</a>';
+			echo '<a class="Link LButton" href="/newcat">New Category</a><a class="Link LButton" href="/newforum">New Forum</a><a class="Link LButton" href="/postPoll">Post Poll</a>';
 		}
 		echo'
       <div class="panel-body"><div role="tabpanel">
@@ -326,13 +326,13 @@ class Forums{
 				$count = mysqli_query($dbc, $query2);
 				$rc = mysqli_fetch_array($count);
 				echo'<tr>';
-				echo'<td><a class="nav" href="index.php?action=viewforum&cat='.$row1['cat_id'].'">' .$row1['name']. '<span class="badge">' . mysqli_num_rows($count) . ' Post(s)</span></a>';
+				echo'<td><a class="nav" href="/viewforum/cat/'.$row1['cat_id'].'">' .$row1['name']. '<span class="badge">' . mysqli_num_rows($count) . ' Post(s)</span></a>';
 				echo'<div class="col-md-6">'.$row1['desc'].'</div>';
 				echo'</td>';
 				echo'<td>';
 				if((mysqli_num_rows($count) > 0)){ 
-					echo'<a href="index.php?action=viewpost&post='.$rc['postlink'].'">'.$rc['tag'].' '.$rc['title'].'</a><br>';
-					echo'By: <a href="index.php?action=ucp&uid='.$rc['uid'].'">' . $rc['username'] . '</a>';
+					echo'<a href="/viewpost/post/'.$rc['postlink'].'">'.$rc['tag'].' '.$rc['title'].'</a><br>';
+					echo'By: <a href="/ucp/uid/'.$rc['uid'].'">' . $rc['username'] . '</a>';
 				}
 				echo'</td></tr>';
 			}
@@ -350,7 +350,7 @@ class Forums{
 		$query = "SELECT * FROM polls";
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
-		echo '<tr><td><a href="index.php?action=viewPoll&p='.$row['postlink'].'">'.$row['title'].'</a></td></tr>';
+		echo '<tr><td><a href="/viewPoll/p/'.$row['postlink'].'">'.$row['title'].'</a></td></tr>';
 		}
 		echo '
 		</tbody>
@@ -358,7 +358,7 @@ class Forums{
 		</div>
 		<div role="tabpanel" class="tab-pane" id="important">
 		';
-			$query = "SELECT `post_id`, `title`, `postlink`, `tag`, `post` FROM `posts` WHERE `tag` = '[!!]' ORDER BY `post_id` DESC";
+			$query = "SELECT `title`, `postlink`, `tag`, `post` FROM `posts` WHERE `tag` = '[!!]' ";
 			$data = mysqli_query($dbc, $query);
 			while ($row = mysqli_fetch_array($data)){
 			$string = $row['post'];
@@ -368,7 +368,7 @@ class Forums{
 			<table class="table cgBox">
 			<tr>
 			<td>
-			<a href="index.php?action=viewpost&post='.$row['postlink'].'">'.$row['tag'].' '.$row['title'].'</a>
+			<a href="/viewpost/post/'.$row['postlink'].'">'.$row['tag'].' '.$row['title'].'</a>
 			<div class="col=md=6">'.$parsed.'</div>
 			</td>
 			</tr>
@@ -431,14 +431,14 @@ class Forums{
 				echo'<tr>';
 				echo'<td>';
 				if(($row['locked'] === '1')){ 
-					echo'<a class="nav" href="index.php?action=viewpost&post='.$row['postlink'].'"><img width="25px" height="25px" src="include/images/lock.png" />'.$row['tag'].' '.$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';  
+					echo'<a class="nav" href="/viewpost/post/'.$row['postlink'].'"><img width="25px" height="25px" src="/include/images/lock.png" />'.$row['tag'].' '.$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';  
 				} else {
-					echo'<a class="nav" href="index.php?action=viewpost&post='.$row['postlink'].'">'.$row['tag'].' '.$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';
+					echo'<a class="nav" href="/viewpost/post/'.$row['postlink'].'">'.$row['tag'].' '.$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';
 				}
 				echo'</td>';
 				echo'<td>';
 				echo'Posted By:';
-				echo '<a href="index.php?action=ucp&uid='.$row['uid'].'">' . $row['username'] . '</a>';
+				echo '<a href="/ucp/uid/'.$row['uid'].'">' . $row['username'] . '</a>';
 				echo'</td>';
 			}
 			
@@ -452,8 +452,8 @@ class Forums{
 		$query = "SELECT `polls`.*, `users`.* FROM `polls` JOIN `users` ON `users`.`uid` = `polls`.`user_id` AND `polls`.`postlink` = '$postid' " ;
 		$data = mysqli_query($dbc, $query) or die(mysqli_error($dbc));
 		if($core->verify("2") || $core->verify("4")){
-			echo '<a class="Link LButton" href="index.php?action=viewpost&post='.$postid.'&mode=lock">Lock Post</a><br>';
-			echo '<a class="Link LButton" href="index.php?action=viewpost&post='.$postid.'&mode=unlock">Unlock Post</a><br>';
+			echo '<a class="Link LButton" href="/viewpost/post/'.$postid.'/mode/lock">Lock Post</a><br>';
+			echo '<a class="Link LButton" href="/viewpost/post/'.$postid.'/mode/unlock">Unlock Post</a><br>';
 		}
 		$row = mysqli_fetch_array($data);
 			$replyTitle = $row['title'];
@@ -501,11 +501,7 @@ class Forums{
 	}
 	public function homepage(){
 	global $dbc, $parser, $layout, $main, $settings, $core;
-	$query = "SELECT * FROM `FConf` ";
-	$data = mysqli_query($dbc, $query);
-	$FConf = mysqli_fetch_array($data);
-	if($FConf['homeDisp'] == 'posts'){
-	$query = "SELECT * FROM `posts` ORDER BY `date` DESC LIMIT ".$FConf['homeNum']." ";
+	$query = "SELECT * FROM `posts` ORDER BY `date` DESC LIMIT 5";
 	$data = mysqli_query($dbc, $query);
 	echo'
 	<div class="shadowbar">
@@ -516,7 +512,7 @@ class Forums{
 	';
 	while($row = mysqli_fetch_array($data)){
 	echo'<tr>';
-	echo'<td><a class="nav" href="index.php?action=viewpost&post='.$row['postlink'].'">'.$row['tag'].' '.$row['title']. '</a>';
+	echo'<td><a class="nav" href="/viewpost/post/'.$row['postlink'].'">'.$row['tag'].' '.$row['title']. '</a>';
 	echo'</td>';
 	echo'</tr>';		
 	}
@@ -524,69 +520,6 @@ class Forums{
 	</table>
 	</div>
 	';
-	}
-	if($FConf['homeDisp'] == 'polls'){
-	$query = "SELECT * FROM `polls` ORDER BY `date` DESC LIMIT ".$FConf['homeNum']." ";
-	$data = mysqli_query($dbc, $query);
-	echo'
-	<div class="shadowbar">
-	<table class="table cgBox">
-	<thead>
-	<th>Latest Polls</th>
-	</thead>
-	';
-	while($row = mysqli_fetch_array($data)){
-	echo'<tr>';
-	echo'<td><a class="nav" href="index.php?action=viewPoll&p='.$row['postlink'].'">'.$row['title'].'</a>';
-	echo'</td>';
-	echo'</tr>';		
-	}
-	echo'
-	</table>
-	</div>
-	';
-	}
-	if($FConf['homeDisp'] == 'both'){
-	$query = "SELECT * FROM `posts` ORDER BY `date` DESC LIMIT ".$FConf['homeNum']." ";
-	$data = mysqli_query($dbc, $query);
-	echo'
-	<div class="shadowbar">
-	<table class="table cgBox">
-	<thead>
-	<th>Latest Posts</th>
-	</thead>
-	';
-	while($row = mysqli_fetch_array($data)){
-	echo'<tr>';
-	echo'<td><a class="nav" href="index.php?action=viewpost&post='.$row['postlink'].'">'.$row['tag'].' '.$row['title']. '</a>';
-	echo'</td>';
-	echo'</tr>';		
-	}
-	echo'
-	</table>
-	</div>
-	';
-	
-	$query = "SELECT * FROM `polls` ORDER BY `date` DESC LIMIT ".$FConf['homeNum']." ";
-	$data = mysqli_query($dbc, $query);
-	echo'
-	<div class="shadowbar">
-	<table class="table cgBox">
-	<thead>
-	<th>Latest Polls</th>
-	</thead>
-	';
-	while($row = mysqli_fetch_array($data)){
-	echo'<tr>';
-	echo'<td><a class="nav" href="index.php?action=viewPoll&p='.$row['postlink'].'">'.$row['title'].'</a>';
-	echo'</td>';
-	echo'</tr>';		
-	}
-	echo'
-	</table>
-	</div>
-	';
-	}
 	}
 	public function vpost() {
 	global $dbc, $parser, $layout, $main, $settings, $core;
@@ -614,14 +547,14 @@ class Forums{
 		die("Invalid Action");
 		}
 		if($core->verify("2") || $core->verify("4")){
-			echo '<a class="Link LButton" href="index.php?action=viewpost&post='.$postid.'&mode=lock">Lock Post</a><br>';
-			echo '<a class="Link LButton" href="index.php?action=viewpost&post='.$postid.'&mode=unlock">Unlock Post</a><br>';
+			echo '<a class="Link LButton" href="/viewpost/post/'.$postid.'/mode/lock">Lock Post</a><br>';
+			echo '<a class="Link LButton" href="/viewpost/post/'.$postid.'/mode/unlock">Unlock Post</a><br>';
 		}
 		while ($row = mysqli_fetch_array($data)) {
 			$Title = $row['tag'].' '.$row['title'];
 			$ID = $row['post_id'];
 			if(($row['locked'] != '1')){
-				echo '<a class="Link LButton" href="index.php?action=postreply&postid='.$ID.'">Reply</a>';
+				echo '<a class="Link LButton" href="/postreply/postid/'.$ID.'">Reply</a>';
 			}
 			$titler = $row['title'];
 			$parsed = $parser->parse($row['post']);
@@ -712,14 +645,14 @@ class Forums{
 				$postlink = preg_replace("/[\s_]/", "-", $postlink);
 				$query = "UPDATE `polls` SET `postlink` = '$postlink' WHERE `pid` = '$postid' ";
 				mysqli_query($dbc, $query);
-				echo '<p>Your poll has been successfully added. Would you like to <a href="index.php?action=viewcategory#polls">view all of the polls</a>?</p>Link:'.$postlink;
+				echo '<p>Your poll has been successfully added. Would you like to <a href="/viewcategory">view all of the polls</a>?</p>Link:'.$postlink;
 				exit();
 			}
 			else {
 				echo '<p class="error">You must enter information into all of the fields.</p>';
 			}
 		} // End of check for form submission
-		echo'<form enctype="multipart/form-data" method="post" action="index.php?action=postPoll">
+		echo'<form enctype="multipart/form-data" method="post" action="/postPoll">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Post Here:</legend>
@@ -769,14 +702,14 @@ class Forums{
 				$postlink = preg_replace("/[\s_]/", "-", $postlink);
 				$query = "UPDATE `posts` SET `postlink` = '$postlink' WHERE `post_id` = '$postid' ";
 				mysqli_query($dbc, $query);
-				echo '<p>Your post has been successfully added. Would you like to <a href="index.php?action=viewcategory">view all of the posts</a>?</p>'.$postlink;
+				echo '<p>Your post has been successfully added. Would you like to <a href="/viewcategory">view all of the posts</a>?</p>'.$postlink;
 				exit();
 			}
 			else {
 				echo '<p class="error">You must enter information into all of the fields.</p>';
 			}
 		} // End of check for form submission
-		echo'<form enctype="multipart/form-data" method="post" action="index.php?action=posttopic">
+		echo'<form enctype="multipart/form-data" method="post" action="/posttopic">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Post Here:</legend>
@@ -809,7 +742,7 @@ if($core->verify("4") || $core->verify("2")){
 
 				$query = "DELETE FROM posts WHERE post_id = $postid";
 				mysqli_query($dbc, $query);
-				echo '<div class="shadowbar"><p>Post has been successfully deleted. Would you like to <a href="index.php?action=moderation">go back to the admin panel</a>?</p></div>';
+				echo '<div class="shadowbar"><p>Post has been successfully deleted. Would you like to <a href="/moderation">go back to the admin panel</a>?</p></div>';
 				
 				exit();
 			}
@@ -819,7 +752,7 @@ if($core->verify("4") || $core->verify("2")){
 		} 
 		
 		
-		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=forumDeletePost&mode=delete">
+		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/forumDeletePost/mode/delete">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Are you sure?</legend>';
@@ -842,7 +775,7 @@ if($core->verify("4") || $core->verify("2")){
 
 					$query = "UPDATE reply SET `hidden` = '1' WHERE reply_id = $postid";
 					mysqli_query($dbc, $query);
-					echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a href="moderation">go back to replies</a>?</p></div>';
+					echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a href="/moderation">go back to replies</a>?</p></div>';
 					
 					exit();
 				}
@@ -851,7 +784,7 @@ if($core->verify("4") || $core->verify("2")){
 				}
 			} 
 			
-			echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=ForumHideReply&mode=hide">
+			echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/ForumHideReply/mode/hide">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Are you sure?</legend>';
@@ -873,7 +806,7 @@ if($core->verify("4") || $core->verify("2")){
 
 					$query = "UPDATE posts SET `hidden` = '1' WHERE post_id = $postid";
 					mysqli_query($dbc, $query);
-					echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a class="Link LButton" href="index.php?action=moderation">go back to the admin panel</a>?</p></div>';
+					echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a class="Link LButton" href="/moderation">go back to the admin panel</a>?</p></div>';
 					
 					exit();
 				}
@@ -882,7 +815,7 @@ if($core->verify("4") || $core->verify("2")){
 				}
 			} 
 			
-			echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=ForumHidePost&mode=hide">
+			echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/ForumHidePost/mode/hide">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Are you sure?</legend>';
@@ -904,7 +837,7 @@ if($core->verify("4") || $core->verify("2")){
 
 					$query = "UPDATE posts SET `hidden` = '0' WHERE post_id = $postid";
 					mysqli_query($dbc, $query);
-					echo '<div class="shadowbar"><p>Post has been successfully unhidden. Would you like to <a class="Link LButton" href="index.php?action=acp">go back to the Admin panel</a>?</p></div>';
+					echo '<div class="shadowbar"><p>Post has been successfully unhidden. Would you like to <a class="Link LButton" href="/acp">go back to the Admin panel</a>?</p></div>';
 					
 					exit();
 				}
@@ -914,7 +847,7 @@ if($core->verify("4") || $core->verify("2")){
 			} 
 			
 			
-			echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=ForumUnHidePost&mode=unhide">
+			echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/ForumUnHidePost/mode/unhide">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Are you sure?</legend>';
@@ -937,7 +870,7 @@ if($core->verify("4") || $core->verify("2")){
 
 					$query = "UPDATE reply SET `hidden` = '0' WHERE reply_id = $postid";
 					mysqli_query($dbc, $query);
-					echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a href="moderation">go back to replies</a>?</p></div>';
+					echo '<div class="shadowbar"><p>Post has been successfully hidden. Would you like to <a href="/moderation">go back to replies</a>?</p></div>';
 					
 					exit();
 				}
@@ -947,7 +880,7 @@ if($core->verify("4") || $core->verify("2")){
 			} 
 			
 			
-			echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=ForumUnHideReply&mode=unhide">
+			echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/ForumUnHideReply/mode/unhide">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Are you sure?</legend>';
@@ -969,7 +902,7 @@ if($core->verify("4") || $core->verify("2")){
 
 					$query = "DELETE FROM reply WHERE reply_id = $postid";
 					mysqli_query($dbc, $query);
-					echo '<div class="shadowbar"><p> has been successfully deleted. Would you like to <a href="index.php?action=moderation">go back to replies</a>?</p></div>';
+					echo '<div class="shadowbar"><p> has been successfully deleted. Would you like to <a href="/moderation">go back to replies</a>?</p></div>';
 					
 					exit();
 				}
@@ -979,13 +912,13 @@ if($core->verify("4") || $core->verify("2")){
 			} 
 			
 			
-			echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=forumDeleteReply&mode=dr">
+			echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/forumDeleteReply/mode/dr">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Are you sure?</legend>';
 			echo'<input type="hidden" name="postid" value="'.$_GET['del'].'">
 		</fieldset>
-		<input type="submit" value="Delete Post" name="submit" />   <a class="button" href="mcp.php">Cancel</a> 
+		<input type="submit" value="Delete Post" name="submit" />   <a class="button" href="/moderation">Cancel</a> 
 	</form>
 	</div>';
 			
@@ -1033,14 +966,14 @@ if($core->verify("4") || $core->verify("2")){
 			$data = mysqli_query($dbc, $query);
 			$row = mysqli_fetch_array($data);
 			$post = $row['postlink'];
-				$link = 'index.php?action=viewpost&post='.$post;
+				$link = '/viewpost/post/'.$post;
 				$description = 'Someone has replied to a post you are involved in';
 				$infoquery = "SELECT DISTINCT `user_id` FROM reply WHERE `post_id` = '" .$replyid. "' AND `user_id` !='".$username."' ";
 				$data = mysqli_query($dbc, $infoquery);
 				while ($rows = mysqli_fetch_array($data)){
 				$core->addNotification($rows['user_id'], $link, $description);
 				}
-				$link = 'index.php?action=viewpost&post='.$post;
+				$link = '/viewpost/post/'.$post;
 				$description = 'Someone has replied to your post';
 				$infoquery = "SELECT DISTINCT `user_id` FROM posts WHERE `post_id` = '" .$replyid. "' ";
 				$data = mysqli_query($dbc, $infoquery); 
@@ -1053,14 +986,14 @@ if($core->verify("4") || $core->verify("2")){
 				$query = "INSERT INTO reply (`post_id`, `user_id`, `reply`, `date`) VALUES ('$replyid', '$username', '$reply', NOW())";
 				mysqli_query($dbc, $query) or die(mysqli_error($dbc));
 				// Confirm success with the user
-				echo '<div class="shadowbar"><p>Your post has been successfully added. Would you like to <a href="index.php?action=viewcategory">view all of the posts</a>?</p></div>';
+				echo '<div class="shadowbar"><p>Your post has been successfully added. Would you like to <a href="/viewcategory">view all of the posts</a>?</p></div>';
 				exit();
 			}
 			else {
 				echo '<div class="shadowbar"><p class="error">You must enter information into all of the fields.</p></div>';
 			}
 		} // End of check for form submission
-		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=postreply">
+		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/postreply">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Reply:</legend>
@@ -1068,7 +1001,7 @@ if($core->verify("4") || $core->verify("2")){
 		<script>edToolbar(\'bbcodeEditor\'); </script>
 		<textarea name="reply" id="bbcodeEditor" style="height:300px;width:100%;"></textarea><br />
 		</fieldset>
-		<input type="submit" value="Save Post" name="submit" />    <a class="button" href="index.php?action=vp&post_id='.$_GET['postid'].'">Cancel</a> 
+		<input type="submit" value="Save Post" name="submit" /> 
 	</form>
 	</div>';
 	}
@@ -1121,7 +1054,7 @@ if($core->verify("4") || $core->verify("2")){
 			exit();
 		}
 		echo '
-		<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=markAs">
+		<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/markAs">
 				<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 				<fieldset>
 				<legend>Mark As:</legend>
@@ -1133,57 +1066,21 @@ if($core->verify("4") || $core->verify("2")){
 		</div>		
 		';
 	}
-	public function forumConf(){
-		global $settings, $version, $dbc, $layout, $core, $parser;
-	if(isset($_POST['submit'])){
-		$homeDisp = mysqli_real_escape_string($dbc, trim($_POST['homeDisp']));
-		$homeNum = mysqli_real_escape_string($dbc, trim($_POST['homeNum']));
-
-		$query = "UPDATE `FConf` SET `homeDisp`='$homeDisp', `homeNum`='$homeNum' ";
-		mysqli_query($dbc, $query);
-		
-		echo '<div class="shadowbar">Forum Module Configuration Updated.</div>';
-	}
-	$query = "SELECT * FROM `FConf` ";
-	$data = mysqli_query($dbc, $query);
-	$FConf = mysqli_fetch_array($data);
-	echo '
-<div class="shadowbar"><div class="alert alert-info">Please refer to the documentation <a href="http://cheesecakebb.org/index.php?action=pages&page=Settings">Here</a> for settings</div>
-		<form method="post" action="index.php?action=moderation">
-		<fieldset>
-		<legend>Settings</legend>
-		<div class="input-group">
-		<span class="input-group-addon">Home Page Display</span>
-		<input class="form-control" type="text" name="homeDisp" value="'.$FConf['homeDisp'].'" />
-		</div>
-		<div class="input-group">
-		<span class="input-group-addon">Number of Latest Post/Polls</span>
-		<input class="form-control" type="text" name="homeNum" value="'.$FConf['homeNum'].'" />
-		</div>
-		</fieldset>
-		<input class="Link LButton" type="submit" value="Submit Edits" name="submit" />
-	</form>
-	</div>	
-	';
-	}
 	public function forumModeration(){
 		global $settings, $version, $dbc, $layout, $core, $parser;
 		echo '<div class="shadowbar"> <div class="panel-body"><div role="tabpanel">
 
   <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation"><a href="#posts" aria-controls="home" role="tab" data-toggle="tab">Posts</a></li>
+    <li role="presentation" class="active"><a href="#posts" aria-controls="home" role="tab" data-toggle="tab">Posts</a></li>
     <li role="presentation"><a href="#replies" aria-controls="profile" role="tab" data-toggle="tab">Replies</a></li>
-	<li role="presentation" class="active"><a href="#Conf" aria-controls="profile" role="tab" data-toggle="tab">Configuration</a></li>
   </ul>
 
   <div class="tab-content">
-    <div role="tabpanel" class="tab-pane" id="posts">';
+    <div role="tabpanel" class="tab-pane active" id="posts">';
 		$this->forumPostAdmin();
 		echo '</div>  <div role="tabpanel" class="tab-pane" id="replies">';
 		$this->forumReplyAdmin();
-		echo '</div><div role="tabpanel" class="tab-pane active" id="Conf">';
-		$this->forumConf();
-		echo'</div></div></div></div></div>';
+		echo '</div></div></div></div></div>';
 	}
 }
 ?>

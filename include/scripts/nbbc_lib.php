@@ -157,7 +157,6 @@
 				'plain_start' => "<i>",
 				'plain_end' => "</i>",
 			),
-
 			'font' => Array(
 				'mode' => BBCODE_MODE_LIBRARY,
 				'allow' => Array('_default' => '/^[a-zA-Z0-9._ -]+$/'),

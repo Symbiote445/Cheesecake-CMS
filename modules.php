@@ -5,49 +5,48 @@ $modules = array(
 			'link'=> 'forum.class.php',
 			'enabled'=> '1',
 			'admin'=>'0',
-			'href'=> 'index.php?action=viewcategory',
-			'sidebar'=>'index.php?action=posttopic',
+			'href'=> '/viewcategory',
+			'sidebar'=>'/posttopic',
 			'sidebarDesc'=>'Post Topic',
-			'acp'=>'',
-			'homepageDo'=>'homepage'
+			'acp'=>''
 	),
 	'Pages' => array(
 			'description'=> 'Pages',
 			'link'=> 'pages.class.php',
-			'enabled'=> '0',
+			'enabled'=> '1',
 			'admin'=>'1',
-			'href'=> 'index.php?action=pages',
+			'href'=> '/pages',
 			'sidebar'=>'',
 			'sidebarDesc'=>'Add Page',
-			'acp'=>'index.php?action=pages&mode=addpage'
+			'acp'=>'/pages/mode/addpage'
 	),
 	'Gallery' => array(
 			'description'=> 'Gallery',
 			'link'=> 'gallery.class.php',
-			'enabled'=> '0',
-			'admin'=>'0',
-			'href'=> 'index.php?action=viewgallery',
+			'enabled'=> '1',
+			'admin'=>'1',
+			'href'=> '/viewgallery',
 			'sidebar'=>'',
 			'sidebarDesc'=>'Add Picture to Gallery',
-			'acp'=>'index.php?action=uploadphoto'
+			'acp'=>'/uploadphoto'
 	),
 	'Blog' => array(
 			'description'=> 'Blog',
 			'link'=> 'blog.class.php',
 			'enabled'=> '0',
 			'admin'=>'1',
-			'href'=> 'index.php?action=Blog',
+			'href'=> '/Blog',
 			'sidebar'=>'',
 			'sidebarDesc'=>'Post Blog',
-			'acp'=>'index.php?action=Blog&mode=postblog'
+			'acp'=>'/Blog/mode/postblog'
 	),
 	'Chat' => array(
 			'description'=> 'Chat',
 			'link'=> 'chat.class.php',
-			'enabled'=> '0',
+			'enabled'=> '1',
 			'admin'=>'0',
-			'href'=> 'index.php?action=chat',
-			'sidebar'=>'index.php?action=chat',
+			'href'=> '/chat',
+			'sidebar'=>'/chat',
 			'sidebarDesc'=>'Join Chat',
 			'acp'=>''
 	)
