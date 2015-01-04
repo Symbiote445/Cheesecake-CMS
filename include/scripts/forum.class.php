@@ -1,6 +1,5 @@
 <?php
-global $core;
-$core->loadModule("initialLoad");
+$forum = new Forums;
 if(isset($_GET['action'])){
 	if (($_GET['action'] == 'viewcategory')){
 		$forum->searchBar();
@@ -101,27 +100,6 @@ class Forums{
 		if($core->verify("4") || $core->verify("2")){
 		echo sprintf($layout['adminBar'], '/moderation', 'Forum');
 	}
-	}
-	static function stats(){
-		global $dbc;
-		$query = "SELECT * FROM `posts`";
-		$data = mysqli_query($dbc, $query);
-		$pcount = mysqli_num_rows($data);
-		$day = date("j");
-		$month = date("M");
-		$year = date("Y");
-		$filename = $day . $month . $year;
-		$str = "Posts: $pcount\r\n";
-		file_put_contents("include/".$filename, $str, FILE_APPEND);
-		$query = "SELECT * FROM `reply`";
-		$data = mysqli_query($dbc, $query);
-		$rcount = mysqli_num_rows($data);
-		$day = date("j");
-		$month = date("M");
-		$year = date("Y");
-		$filename = $day . $month . $year;
-		$str = "Replies: $rcount\r\n";
-		file_put_contents("include/".$filename, $str, FILE_APPEND);
 	}
 	public function searchBar(){
 		global $dbc, $parser, $layout, $main, $settings, $core;

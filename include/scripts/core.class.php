@@ -146,9 +146,6 @@ class admin {
 			if($_GET['mode'] == 'editperms'){
 				$this->eur();
 			}
-			if($_GET['mode'] == 'stats'){
-				$this->stats();
-			}
 			if($_GET['mode'] == 'layout'){
 				if(isset($_POST['submit'])){
 					$layoutSettings = $_POST['layout'];
@@ -350,41 +347,10 @@ Database
 </div>
 
 ';
-$query = "SELECT * FROM `users`";
-$data = mysqli_query($dbc, $query);
-$ucount = mysqli_num_rows($data);
-echo (<<<EOD
-<div class="shadowbar">
-<table class="table table-bordered table-striped">
-<thead>
-<th>Statistics</th>
-</thead>
-<tr><td>Users: $ucount</td></tr>
-</table>
-</div>
-EOD
-);
-		}
-	}
-	public function stats(){
-		global $dbc, $core;
-		$core->loadModule("globalVar");
-		$query = "SELECT * FROM `users`";
-		$data = mysqli_query($dbc, $query);
-		$ucount = mysqli_num_rows($data);
-		$day = date("j");
-		$month = date("M");
-		$year = date("Y");
-		$filename = $day . $month . $year;
-		$str = "Users: $ucount\r\n";
-		file_put_contents("include/".$filename, $str);
-		require("modules.php");
-		foreach($modules as $name => $module) if ($module['enabled']) {
-			$module['class']::stats();
 		}
 	}
 }
-
+ 
 
 class core {
 	public function checkLogin(){
@@ -441,15 +407,7 @@ class core {
 			if($option === 'initialLoad'){
 				foreach($modules as $name => $module) if ($module['enabled']) {
 					require_once('include/scripts/'.$module['link']);
-					$$module['classVar'] = new $module['class'];
-					$$module['classVar'] = $module['classVar'];
-					global $$module['classVar'];
 				}
-			}
-			if($option === 'globalVar'){
-				foreach($modules as $name => $module) if ($module['enabled']) {
-					global $$module['classVar'];
-				}				
 			}
 			if($option === 'sidebar'){
 				foreach($modules as $name => $module) if ($module['enabled'] && ($module['admin'] == '0')) {
@@ -547,7 +505,8 @@ class core {
 						setcookie("ID", $row['uid'], time()+3600*24);
 						setcookie("IP", $ip, time()+3600*24);
 						setcookie("HASH", $row['hash'], time()+3600*24);
-						header( 'Location: /index.php' ) ;
+						echo "<div class=\"shadowbar\"><script type=\"text/javascript\">document.write(\"You will be redirected to main page in 5 seconds.\");
+				setTimeout('Redirect()', 5000);</script> if not click <a href=\"index.php\">here</a></div>";
 						exit();
 					} else {
 						echo '<div class="shadowbar">It seems we have run into a problem... Either your username or password are incorrect or you haven\'t activated your account yet.</div>' ;

@@ -7,9 +7,6 @@ class pageGeneration {
 			if($_GET['action'] === 'logout'){
 				$core->logout();
 			}
-			if($_GET['action'] === 'doLogin'){
-				$core->login();
-			}
 	}
 		$parser->SetSmileyURL("http://".$settings['b_url']."/include/images/smileys");
 		$core->checkLogin();
@@ -17,10 +14,9 @@ class pageGeneration {
 		$core->loadModule("nav");
 		print($layout['header-end']);
 		sidebar();
-		$core->loadModule("initialLoad");
 		if(isset($_GET['action'])){
 			if($_GET['action'] === 'login'){
-				print($layout['login']);
+				$core->login();
 			}
 			if($_GET['action'] === 'signup'){
 				$core->signup();
@@ -62,6 +58,7 @@ class pageGeneration {
 				}
 			}
 		}
+		$core->loadModule("initialLoad");
 		echo sprintf($layout['footer'], $settings['b_url'], $settings['site_name'], $version['core']);
 	}
 }
