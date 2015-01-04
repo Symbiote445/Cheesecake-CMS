@@ -134,7 +134,7 @@ $layout = array(
 	</div>
 	',
 	'login'=>'
-	<div class="shadowbar"><form method="post" action="/login">
+	<div class="shadowbar"><form method="post" action="/doLogin">
 
     <fieldset>
 
