@@ -29,6 +29,19 @@ class pages{
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		echo sprintf($layout['adminBar'], '/pages/mode/pageadmin', 'Page');
 	}
+	static function stats(){
+		global $dbc;
+		$query = "SELECT * FROM pages";
+		$data = mysqli_query($dbc, $query);
+		$pcount = mysqli_num_rows($data);
+		$day = date("j");
+		$month = date("M");
+		$year = date("Y");
+		$filename = $day . $month . $year . '.dat';
+		$str = "Pages: \r\n Pages: $pcount \r\n";
+		file_put_contents("include/".$filename, $str, FILE_APPEND);
+		echo '<div class="shadowbar">Pages stats finished...</div>';		
+	}
 	public function addpage(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();

@@ -335,6 +335,22 @@ if(isset($_GET['action'])){
 }
 
 class gallery{
+	static function stats(){
+		global $dbc;
+		$query = "SELECT * FROM gallery_cat";
+		$data = mysqli_query($dbc, $query);
+		$gcCount = mysqli_num_rows($data);
+		$query = "SELECT * FROM gallery";
+		$data = mysqli_query($dbc, $query);
+		$gpCount = mysqli_num_rows($data);
+		$day = date("j");
+		$month = date("M");
+		$year = date("Y");
+		$filename = $day . $month . $year . '.dat';
+		$str = "Gallery: \r\n Galleries: $gcCount \r\n Gallery Uploads: $gpCount \r\n";
+		file_put_contents("include/".$filename, $str, FILE_APPEND);
+		echo '<div class="shadowbar">Gallery stats finished...</div>';		
+	}
 	public function vg(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		if($core->verify("4") || $core->verify("2")){

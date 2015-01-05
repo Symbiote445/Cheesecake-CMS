@@ -133,7 +133,7 @@ class admin {
 			die('<div class="shadowbar">You don\'t have significant privilege</div>');
 		}
 		echo '<div class="shadowbar">
-		<a class="Link LButton" href="/acp">Admin </a><a class="Link LButton" href="/acp/mode/users">Users </a><a class="Link LButton" href="/acp/mode/Settings">Settings </a><a class="Link LButton" href="/acp/mode/modules">Module Settings </a><a class="Link LButton" href="/acp/mode/layout">Advanced Layout Editor</a>';
+		<a class="Link LButton" href="/acp">Admin </a><a class="Link LButton" href="/acp/mode/users">Users </a><a class="Link LButton" href="/acp/mode/Settings">Settings </a><a class="Link LButton" href="/acp/mode/modules">Module Settings </a><a class="Link LButton" href="/acp/mode/layout">Advanced Layout Editor</a><a class="Link LButton" href="/acp/mode/stats">Record Stats</a>';
 		echo '</div>
 ';
 		if(isset($_GET['mode'])){
@@ -295,6 +295,9 @@ $dbc=mysqli_connect($settings[\'db_host\'],$settings[\'db_user\'],$settings[\'db
 				
 				
 			}
+			if($_GET['mode'] == 'stats'){
+				$this->stats();
+			}
 		}
 
 		if(!isset($_GET['mode'])){
@@ -347,6 +350,36 @@ Database
 </div>
 
 ';
+echo'
+<div class="shadowbar">
+<table class="table table-bordered">
+<thead>
+<th>Stats Files</th>
+</thead>';
+foreach (glob('include/*.dat') as $stats) {
+	$stats = preg_replace("/(include\/)/", "", $stats);
+	echo '<tr><td><a href="//'.$settings['b_url'].'/include/'.$stats.'">'.$stats.'</a></td></tr>';
+}
+echo '</table></div>
+';
+		}
+	}
+	public function stats() {
+		global $dbc, $settings;
+		$query = "SELECT * FROM users";
+		$data = mysqli_query($dbc, $query);
+		$ucount = mysqli_num_rows($data);
+		$day = date("j");
+		$month = date("M");
+		$year = date("Y");
+		$filename = $day . $month . $year . '.dat';
+		$str = "Users: $ucount \r\n";
+		file_put_contents("include/".$filename, $str);
+		echo '<div class="shadowbar">Stats file can be found at '. $settings['b_url'] . '/include/' . $filename.'</div>';
+		echo '<div class="shadowbar">Core stats finished...</div>';
+		require("modules.php");
+		foreach($modules as $name => $module) if ($module['enabled'] && $module['stats'] == 'true') {
+			$module['class']::stats();
 		}
 	}
 }
@@ -505,18 +538,19 @@ class core {
 						setcookie("ID", $row['uid'], time()+3600*24);
 						setcookie("IP", $ip, time()+3600*24);
 						setcookie("HASH", $row['hash'], time()+3600*24);
-						echo "<div class=\"shadowbar\"><script type=\"text/javascript\">document.write(\"You will be redirected to main page in 5 seconds.\");
-				setTimeout('Redirect()', 5000);</script> if not click <a href=\"index.php\">here</a></div>";
+						header('Location: /index.php');
 						exit();
 					} else {
-						echo '<div class="shadowbar">It seems we have run into a problem... Either your username or password are incorrect or you haven\'t activated your account yet.</div>' ;
+						$error = '<div class="shadowbar">It seems we have run into a problem... Either your username or password are incorrect or you haven\'t activated your account yet.</div>' ;
+						return $error;
 					}
 				} else {
-					echo '<div class="shadowbar">You must enter both your username AND password.</div>';
+					$error = '<div class="shadowbar">You must enter both your username AND password.</div>';
+					return $error;
 				}
 			}
-			print($layout['login']);
 		}
+		return $error;
 	}
 	public function editprofile(){
 		global $dbc, $parser, $layout, $main, $settings, $core; 

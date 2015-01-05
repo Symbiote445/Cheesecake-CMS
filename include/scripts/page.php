@@ -7,6 +7,9 @@ class pageGeneration {
 			if($_GET['action'] === 'logout'){
 				$core->logout();
 			}
+			if($_GET['action'] == 'doLogin'){
+				$error = $core->login();
+			}
 	}
 		$parser->SetSmileyURL("http://".$settings['b_url']."/include/images/smileys");
 		$core->checkLogin();
@@ -15,8 +18,9 @@ class pageGeneration {
 		print($layout['header-end']);
 		sidebar();
 		if(isset($_GET['action'])){
-			if($_GET['action'] === 'login'){
-				$core->login();
+			if($_GET['action'] == 'login' || $_GET['action'] == 'doLogin'){
+				echo $error;
+				print($layout['login']);
 			}
 			if($_GET['action'] === 'signup'){
 				$core->signup();

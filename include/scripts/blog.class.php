@@ -42,6 +42,19 @@ class blog {
 		}
 		echo '</div>';
 	}
+	static function stats(){
+		global $dbc;
+		$query = "SELECT * FROM blog";
+		$data = mysqli_query($dbc, $query);
+		$bcount = mysqli_num_rows($data);
+		$day = date("j");
+		$month = date("M");
+		$year = date("Y");
+		$filename = $day . $month . $year . '.dat';
+		$str = "Blogs: \r\n Blog Posts: $bcount \r\n";
+		file_put_contents("include/".$filename, $str, FILE_APPEND);
+		echo '<div class="shadowbar">Blog stats finished...</div>';		
+	}
 	public function blogAdminBar(){
 	global $dbc, $parser, $layout, $main, $settings, $core;
 	if($core->verify("4")){
