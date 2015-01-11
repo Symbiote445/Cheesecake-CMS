@@ -1015,7 +1015,7 @@ class core {
 		</div>
 		<div class="input-group">
 		<span class="input-group-addon">Email</span>
-		<input class="form-control" type="text" id="email" name="email" />
+		<input class="form-control" type="email" id="email" name="email" />
 		</div>
 		<div class="input-group">
 		<span class="input-group-addon">Password</span>

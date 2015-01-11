@@ -193,13 +193,13 @@ class Forums{
 		</fieldset>
 		<input type="submit" value="Save Forum" name="submit" />     
 	</form>';
-		echo '<table class"table">';
-		echo '<thead><th>Forums</th></thead>';
+		echo '<table class="table">';
+		echo '<thead><th>Forums</th><th>Options</th></thead>';
 		$query = "SELECT * FROM categories ORDER BY cat_id ASC";
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
 			echo '<tr>';
-			echo '<td>'.$row['name'].'<a href="/deleteforum/f/'.$row['cat_id'].'">Delete Forum</a></td></tr>';
+			echo '<td>'.$row['name'].'</td><td><a href="/deleteforum/f/'.$row['cat_id'].'">Delete Forum</a></td></tr>';
 		}
 		
 		echo'</table>';
@@ -209,7 +209,7 @@ class Forums{
 	public function deletecat(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();
-		if($core->verify("4") || $core->verify("2")){
+		if($core->verify("4")){
 		if (isset($_POST['submit'])) {
 			$postid = mysqli_real_escape_string($dbc, trim($_POST['postid']));
 			if (!empty($postid)) {
@@ -241,7 +241,7 @@ class Forums{
 	public function deleteforum(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();
-		if($core->verify("4") || $core->verify("2")){
+		if($core->verify("4")){
 		if (isset($_POST['submit'])) {
 			$postid = mysqli_real_escape_string($dbc, trim($_POST['postid']));
 			if (!empty($postid)) {
@@ -262,7 +262,7 @@ class Forums{
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Are you sure?</legend>';
-		echo'<input type="hidden" name="postid" value="'.$_GET['f'].'">
+		echo'<input class="Link LButton" type="hidden" name="postid" value="'.$_GET['f'].'">
 		</fieldset>
 		<input type="submit" value="Delete" name="submit" />   <a class="button" href="index.php">Cancel</a> 
 	</form>
@@ -276,8 +276,10 @@ class Forums{
 		echo '<div class="shadowbar">';
 		if (isset($_POST['submit'])) {
 			$catt = mysqli_real_escape_string($dbc, strip_tags( trim($_POST['catt'])));
+			$perm = preg_replace("/[^0-9]/", "", $_POST['perm']);
+			$securePerm = mysqli_real_escape_string($dbc, trim($perm));
 			if (!empty($catt)) { 
-				$query = "INSERT INTO category_groups (`cg_name`) VALUES ('$catt')";
+				$query = "INSERT INTO category_groups (`cg_name`, `perm`) VALUES ('$catt', '$securePerm')";
 				mysqli_query($dbc, $query);
 				echo '<p>Your category has been successfully added. Would you like to go back to the <a href="index.php?action=acp">Admin Panel</a>?</p>';
 				exit();
@@ -290,17 +292,23 @@ class Forums{
 		echo'<form enctype="multipart/form-data" method="post" action="/newcat">
 		<fieldset>
 		<legend>Create Category:</legend>
-			<label type="hidden" for="catt">Category name:</label><br />
-			<input type="text" name="catt"><br /><br />
-		<input type="submit" value="Save Category" name="submit" />     
+		  <div class="form-group">
+			<label for="">Category Name</label>
+			<input type="text" class="form-control" id="" name="catt" placeholder="Category Name">
+		  </div>
+		  <div class="form-group">
+			<label for="">Permissions</label>
+			<input type="text" class="form-control" id="" name="perm" placeholder="Perms">
+		  </div>
+		<input class="Link LButton" type="submit" value="Save Category" name="submit" />     
 	</form>';
-		echo '<table class"table">';
-		echo '<thead><th>Categories</th></thead>';
+		echo '<table class="table">';
+		echo '<thead><th>Categories</th><th>Perms</th><th>Options</th></thead>';
 		$query = "SELECT * FROM category_groups";
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
 			echo '<tr>';
-			echo '<td>'.$row['cg_name'].' <a href="/deletecat/cat/'.$row['cg_id'].'">Delete Category</a></td></tr>';
+			echo '<td>'.$row['cg_name'].'</td><td>'.$row['perm'].'</td><td><a href="/deletecat/cat/'.$row['cg_id'].'">Delete Category</a></td></tr>';
 		}
 		
 		echo'</table>';
@@ -324,7 +332,15 @@ class Forums{
 
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="categories">';
-		$query = "SELECT * FROM category_groups";
+	if(isset($_SESSION['uid'])){
+		$query = "SELECT `adminlevel` FROM `users` WHERE `uid` = '" . $_SESSION['uid'] . "'";
+		$data = mysqli_query($dbc, $query);
+		$row = mysqli_fetch_array($data);
+		$uPerm = $row['adminlevel'];
+	} else {
+		$uPerm = 0;
+	}
+		$query = "SELECT * FROM category_groups WHERE `perm` <= $uPerm";
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
 			$category = $row['cg_id'];

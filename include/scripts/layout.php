@@ -115,23 +115,6 @@ $layout['blogPostFormat'] =
 		</fieldset>
 		<input type="submit" value="Save Post" name="submit" />     
 		</form>
-		',
-	'footer'=>'
-		</div>
-	</div>
-	<div class="row footer">
-		<div class="col-md-12">
-			<div class="bottom-right">
-				Template designed by <a href="http://cheesecakebb.org/">Cheesecake Productions</a>
-			</div>
-			<div class="col-md-5">
-			Copyright <a href="http://%s">%s</a> - All Rights Reserved<br>
-			</div>
-			<div class="col-md-4">
-			Cheesecake CMS Version: %s
-			</div>
-		</div>
-	</div>
 EOD
 );
 
@@ -146,7 +129,7 @@ $layout['login'] =
 	<div class="input-group">
       <span class="input-group-addon">E-Mail</span>
 
-      <input type="text" class="form-control" name="email" value="" /><br />
+      <input type="email" class="form-control" name="email" value="" /><br />
 	</div>
 	<div class="input-group">
       <span class="input-group-addon">Password</span>
