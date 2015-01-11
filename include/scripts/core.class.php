@@ -63,7 +63,7 @@ class admin {
 			$user = mysqli_real_escape_string($dbc, strip_tags( trim($_POST['user'])));
 			$perm = mysqli_real_escape_string($dbc, trim($_POST['perm']));
 			if (!empty($perm) && !empty($user)) {
-				$query = "UPDATE users SET adminlevel = '$perm' WHERE username = '$user'";
+				$query = "UPDATE `users` SET `adminlevel` = '$perm' WHERE `uid` = '$user'";
 				mysqli_query($dbc, $query);
 				echo '<div class="shadowbar"><p>User has been successfully edited. Would you like to <a href="index.php">return to the ACP</a>?</p></a>';
 				
@@ -98,7 +98,7 @@ class admin {
 
 		
 
-		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=acp&mode=editperms">
+		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/acp/mode/editperms">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 			<label type="hidden" for="perm">Permission:</label><br />
@@ -123,7 +123,7 @@ class admin {
 		$query = "SELECT * FROM users ORDER BY uid DESC";
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
-			echo sprintf($layout['adminUserLayout'], $row['username'], $row['uid'], $row['uid'], $row['activated'], $row['hash'], $row['adminlevel'], $row['username']);
+			echo sprintf($layout['adminUserLayout'], $row['username'], $row['uid'], $row['uid'], $row['activated'], $row['hash'], $row['adminlevel'], $row['uid']);
 		}
 		echo '</div>';
 	}
@@ -203,12 +203,13 @@ EOD
 					$style = $_POST['style'];
 					$db = $settings['db'];
 					$pass = $settings['db_password'];
+					$user = $settings['user'];
 					
 					$newSettings = array (         // the default settings array
 					'home_display'=>''.$home.'',
 					'style'=>''.$style.'',
 					'db_host'=>'localhost',
-					'db_user'=>'root',
+					'db_user'=>''.$user.'',
 					'db_password'=>''.$pass.'',
 					'db'=>''.$db.'',
 					'login_enabled'=>true,
@@ -386,9 +387,103 @@ echo '</table></div>
  
 
 class core {
+	public function notifBar(){
+		global $layout, $dbc;
+		if(isset($_SESSION['uid'])){
+			echo '</div><div class="col-md-3"><div class="shadowbar">';
+			if(isset($_GET['action']) && ($_GET['action'] == 'markasread')){
+				$query = "UPDATE notifications SET `read` = '1' WHERE `user` = ".$_SESSION['uid']." ";
+				$data = mysqli_query($dbc, $query);
+				echo '<div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>Marked as read</div>';
+				}
+			if(isset($_GET['action']) && ($_GET['action'] == 'markasunread')){
+				$query = "UPDATE notifications SET `read` = '0' WHERE `user` = ".$_SESSION['uid']." ";
+				$data = mysqli_query($dbc, $query);
+				echo '<div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>Marked as unread</div>';
+				}
+			print($layout['sidebarNotif']);
+				$query = "SELECT * FROM notifications WHERE `user` = '" .$_SESSION['uid']. "' AND `read` = 0";
+				$data = mysqli_query($dbc, $query);
+				if(mysqli_num_rows($data) > 0){
+				echo '<a href="/markasread">Mark all as read</a><br />';
+				echo '<ul class="list-group">';
+				while($row = mysqli_fetch_array($data)){
+					echo '
+					<li class="list-group-item"><a href="'.$row['link'].'">'.$row['description'].'</a></li>
+					';
+				}
+				echo '</ul>';
+				} else {
+				echo 'No new notifications.';
+				}
+			
+			echo'</div><div role="tabpanel" class="tab-pane" id="read">';
+				$query = "SELECT * FROM notifications WHERE `user` = '" .$_SESSION['uid']. "' AND `read`= 1";
+				$data = mysqli_query($dbc, $query);
+				if(mysqli_num_rows($data) > 0){
+				echo '<a href="/markasunread">Mark all as unread</a>';
+				echo '<ul class="list-group">';
+				while($row = mysqli_fetch_array($data)){
+					echo '
+					<li class="list-group-item"><a href="'.$row['link'].'">'.$row['description'].'</a></li>
+					';
+				}
+				echo '</ul>';
+				} else {
+				echo 'No new notifications.';
+				}
+			print($layout['notifEnd']);	
+		}
+	}
+	public function sidebar() {
+		global $dbc, $layout;
+			print($layout['sidebarBegin']);
+				// Generate the navigation menu
+				if (isset($_SESSION['uid'])) {
+				$query = "SELECT * FROM users WHERE `uid` = ".$_SESSION['uid']."";
+				$data = mysqli_query($dbc, $query);
+				$row = mysqli_fetch_array($data);
+				$uid = $_SESSION['uid'];
+				echo sprintf($layout['sidebar-core'], $row['username'], $row['picture'], $row['username']);
+					$this->loadModule("sidebar");
+					if($this->verify("4")){
+						echo sprintf($layout['sidebarLink'], "/acp", "Admin Panel");
+						}
+					if($this->verify("4") || $this->verify("2")){
+						$this->loadModule("acp");
+					}
+					echo '</div>';
+				}
+				else {
+					echo sprintf($layout['sidebarLink'], "/login", "Log In");
+					echo sprintf($layout['sidebarLink'], "/signup", "Sign Up");
+				}
+				print($layout['sidebarMid']);
+			if(isset($_SESSION['uid'])){
+				$time = time();
+				$query = "UPDATE users SET `active` = '$time' WHERE `uid` = ".$_SESSION['uid']."";
+				mysqli_query($dbc, $query);	
+				}
+				print($layout['onlineUsersPanel']);
+				$query = "SELECT * FROM users";
+				$data = mysqli_query($dbc, $query);
+				while ($row = mysqli_fetch_array($data)){
+				if(time() - 300 < $row['active']){
+				echo '<a href="/ucp/uid/'.$row['uid'].'">'.$row['username'].'</a>, ';
+				}
+				}
+				print($layout['onlineUsersEnd']);
+		print($layout['sidebarEnd']);
+}
+
 	public function checkLogin(){
 		if(!isset($_SESSION['uid']) && isset($_COOKIE['ID'])){
 			global $dbc;
+			$UID = $_COOKIE['ID'];
+			$query = "SELECT * FROM `loggedIn` WHERE `uid` = '$UID'";
+			$data = mysqli_query($dbc, $query);
+			$row = mysqli_fetch_array($data);
+			if($row['uid'] == $_COOKIE['ID'] && $row['hash'] == $_COOKIE['HASH'] && $row['ip'] == $_COOKIE['IP']){
 			$query = "SELECT username, ip, hash FROM users WHERE uid = '" . $_COOKIE['ID'] . "'";
 			$data = mysqli_query($dbc, $query);
 			$row = mysqli_fetch_array($data);
@@ -398,6 +493,7 @@ class core {
 			$_SESSION['username'] = $row['username'];
 			}
 			}
+		}
 		}
 	}
 	public function Version($local, $remote){

@@ -314,7 +314,7 @@ class Forums{
 			echo '<a class="Link LButton" href="/newcat">New Category</a><a class="Link LButton" href="/newforum">New Forum</a><a class="Link LButton" href="/postPoll">Post Poll</a>';
 		}
 		echo'
-      <div class="panel-body"><div role="tabpanel">
+      <div id="transp" class="panel-body"><div role="tabpanel">
 
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#categories" aria-controls="home" role="tab" data-toggle="tab">Forums</a></li>

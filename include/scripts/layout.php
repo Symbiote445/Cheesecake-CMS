@@ -1,6 +1,9 @@
 <?php
-$layout = array(
-	'header-begin'=>'
+$layout = array();
+
+$layout['header-begin'] = 
+(
+<<<EOD
 		<!DOCTYPE html>
 		<html><head>
 		<meta name="viewport" content="width=device-width, user-scalable=no">
@@ -30,20 +33,6 @@ $layout = array(
 			window.location="index.php";
 		}
 			</script>
-			<script>
-			iFrameResize({
-				log                     : true,                  // Enable console logging
-				enablePublicMethods     : true,                  // Enable methods within iframe hosted page
-				resizedCallback         : function(messageData){ // Callback fn when resize is received
-					$(\'p#callback\').html(
-						\'<b>Frame ID:</b> \'    + messageData.iframe.id +
-						\' <b>Height:</b> \'     + messageData.height +
-						\' <b>Width:</b> \'      + messageData.width + 
-						\' <b>Event type:</b> \' + messageData.type
-					);
-				}
-			});
-			</script>
 
 		</head>
 		<body>
@@ -66,9 +55,12 @@ $layout = array(
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
                 <li><a href="/index.php">Home</a></li>
-										
-		',
-	'header-end'=>'
+EOD
+);									
+
+$layout['header-end'] = 
+(
+<<<EOD
               </ul>
             </div>
           </div>
@@ -79,8 +71,12 @@ $layout = array(
 				<div class="col-md-1"></div>
 			</div>
 			<div class="row content">	
-			',
-	'blogViewFormat'=>'
+EOD
+);
+
+$layout['blogViewFormat'] = 
+(
+<<<EOD
 		<div class="shadowbar">
 		<h3>%s</h3>
 		<div class="row">
@@ -97,8 +93,12 @@ $layout = array(
 		</div>
 		</div>
 		</div>
-		',
-	'postBlogFormat'=>'
+EOD
+);
+
+$layout['blogPostFormat'] = 
+(
+<<<EOD
 		<form enctype="multipart/form-data" method="post" action="/Blog/mode/postblog"> 
 		<fieldset>
 		<legend>Blog Article:</legend>
@@ -132,9 +132,13 @@ $layout = array(
 			</div>
 		</div>
 	</div>
-	',
-	'login'=>'
-	<div class="shadowbar"><form method="post" action="/login">
+EOD
+);
+
+$layout['login'] = 
+(
+<<<EOD
+	<div class="shadowbar"><form method="post" action="/doLogin">
 
     <fieldset>
 
@@ -154,9 +158,13 @@ $layout = array(
 
     <input type="submit"  class="btn btn-primary" value="Log In" name="submit" />
 
-	</form></div>',
-	
-	'adminPostLayout'=>'
+	</form></div>
+EOD
+);	
+
+$layout['adminPostLayout'] = 
+(
+<<<EOD
 		  <table class="table">
 			<tr><td>Title: %s<a class="Link LButton" href="/markAs/p/%s">Mark As...</a></td></tr>
 		  <tr><td><div class="col-md-8"><pre>Post:<br/><br />%s</pre></div></td></tr>
@@ -165,8 +173,12 @@ $layout = array(
 		  <tr><td>UserName: %s</td></tr>
 		  <tr><td>Rank: %s</td></tr>
 		</table>
-	',
-	'adminReplyLayout'=>'
+EOD
+);
+
+$layout['adminReplyLayout'] = 
+(
+<<<EOD
 		  <table class="table">
 			<tr><td>Title: %s</td></tr>
 		  <tr><td><div class="col-md-8"><pre>Post:<br/><br />%s</pre></div></td></tr>
@@ -175,24 +187,13 @@ $layout = array(
 		  <tr><td>UserName: %s</td></tr>
 		  <tr><td>Rank: %s</td></tr>
 		</table>
-	',
-	'adminBar'=>'
-	<div class="shadowbar">
-		<a class="text-center" href="%s">%s Admin</a>
-	</div>
-	',
-	'adminPageEditLayout'=>'
-	<form enctype="multipart/form-data" method="post" action="/pages/mode/edit"> 
-		<fieldset>
-		<legend>Edit Page</legend>
-		<label type="hidden" for="post1">Page Body:</label><br />
-		<textarea rows="8"  name="content" id="post1" cols="100">%s</textarea><br />
-		<input type="hidden" value="%s" name="page" />
-		<input type="submit" value="Save Post" name="submit" />
-		</fieldset>     
-		</form>
-	',
-	'adminPageAddLayout'=>'
+EOD
+);
+
+$layout['adminPageAddLayout'] = 
+(
+<<<EOD
+
 <div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/pages/mode/addpage"> 
 		<fieldset>
 		<legend>New Page</legend>
@@ -205,8 +206,13 @@ $layout = array(
 		<input type="submit" value="Save Post" name="submit" />     
 		</form>
 		</div>
-	',
-	'adminDeleteLayout'=>'
+EOD
+);
+
+$layout['adminDeleteLayout'] = 
+(
+<<<EOD
+
 	<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/Blog/mode/%s">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
@@ -216,86 +222,69 @@ $layout = array(
 		<input type="submit" value="Yes" name="submit" />   <a class="button" href="/Blog/mode/admin">Cancel</a> 
 	</form>
 	</div>
-	',
-	'adminUserLayout'=>'
+EOD
+);
+
+$layout['adminUserLayout'] = 
+(
+<<<EOD
+
 		  <table class="table">
 			<tr><td>Username: %s<td></tr>
 			<tr><td>User ID: %s<a class="Link LButton" href="/acp/mode/deleteuser/del/%s"> Delete User</a></td></tr>
 		  <tr><td>Activation Status: %s<a href="/verifyaccount/hash/%s"> Activate User</a></td></tr>
 		  <tr><td>Admin Level: %s<a href="/acp/mode/editperms/r/%s"> Edit Perms</a></td></tr>
 		</table><hr> 
-	',
-	'pollChoices' =>'
-		<li class="list-group-item"><a href="/pollvote/poll/%s/choice/%s">%s</a></li>
-	'
+EOD
 );
 
+$layout['pollChoices'] = 
+(
+<<<EOD
 
+		<li class="list-group-item"><a href="/pollvote/poll/%s/choice/%s">%s</a></li>
+EOD
+);
 
-$postBlogFormat = 
-'
-		<form enctype="multipart/form-data" method="post" action="/pb"> 
-		<fieldset>
-		<legend>Blog Article:</legend>
-			<label type="hidden" for="title">Title:</label><br />
-			<input type="text" name="title"><br /><br />
-			<label type="hidden" for="post1">News Content:</label><br />
-		<textarea rows="4"  name="post1" id="post1" cols="50"></textarea><br />
-		<label type="hidden" for="id">Display</label>
-		<select id="display" name="display">
-			<option value="0">Hidden</option>
-			<option value="1">Displayed</option>
-		</select>
-		</fieldset>
-		<input type="submit" value="Save Post" name="submit" />     
-		</form>
-';
-function sidebar() {
-global $dbc, $core;
-	echo '
-		<div class="col-md-3">
-			<div class="shadowbar">';
-				// Generate the navigation menu
-				if (isset($_SESSION['uid'])) {
-				$query = "SELECT * FROM users WHERE `uid` = ".$_SESSION['uid']."";
-				$data = mysqli_query($dbc, $query);
-				$row = mysqli_fetch_array($data);
-				echo '
-				
-				<h3>'.$row['username'].'</h3>
-				<img style="max-height:120px;" class="postedBy" src="/include/images/profile/'.$row['picture'].'">
-				<div class="btn-group-vertical width100">';
-				$uid = $_SESSION['uid'];
-					echo ' <a class="btn btn-default width100" href="/ucp">View Profile</a>';
-					echo ' <a class="btn btn-default width100" href="/messages">Messages</a>';
-					echo ' <a class="btn btn-default width100" href="/sendmessage">Send Message</a>';
-					echo ' <a class="btn btn-default width100" href="/logout">Log Out (' . $row['username'] . ')</a> ';
-					$core->loadModule("sidebar");
+$layout['sidebarBegin'] = 
+(
+<<<EOD
+<div class="col-md-3">
+	<div class="shadowbar">
+EOD
+);
 
+$layout['sidebar-core'] = 
+(
+<<<EOD
+<h3>%s</h3>
+<img style="max-height:120px;" class="postedBy" src="/include/images/profile/%s">
+<div class="btn-group-vertical width100">
+	<a class="btn btn-default width100" href="/ucp">View Profile</a>
+	<a class="btn btn-default width100" href="/messages">Messages</a>
+	<a class="btn btn-default width100" href="/sendmessage">Send Message</a>
+	<a class="btn btn-default width100" href="/logout">Log Out (%s)</a>
+EOD
+);
 
-					if($core->verify("4")){
-						echo '<a class="btn btn-default width100" href="/acp">Admin Panel</a>';
-						}
+$layout['sidebarLink'] = 
+(
+<<<EOD
+<a class="btn btn-default width100" href="%s">%s</a>
+EOD
+);
 
-					if($core->verify("4") || $core->verify("2")){
-						//echo '<a class="btn btn-default width100" href="index.php?action=mcp">Blog Entry</a>';
-						$core->loadModule("acp");
-					}
-					echo '</div>';
-				}
-				else {
-					echo ' <a class="btn btn-default width100" href="/login">Log In</a> ';
-					echo ' <a class="btn btn-default width100" href="/signup">Signup</a> ';
-				}
-				echo'
-			</div>
-			<div class="shadowbar">';
-			if(isset($_SESSION['uid'])){
-				$time = time();
-				$query = "UPDATE users SET `active` = '$time' WHERE `uid` = ".$_SESSION['uid']."";
-				mysqli_query($dbc, $query);	
-				}
-				echo '
+$layout['sidebarMid'] = 
+(
+<<<EOD
+</div>
+<div class="shadowbar">
+EOD
+);
+
+$layout['onlineUsersPanel'] = 
+(
+<<<EOD
 			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 			  <div class="panel panel-default">
 				<div class="panel-heading" role="tab" id="headingOne">
@@ -305,36 +294,27 @@ global $dbc, $core;
 				  </a>
 				  </h4>
 				  </div>
-				      <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-      <div class="panel-body">';
-				$query = "SELECT * FROM users";
-				$data = mysqli_query($dbc, $query);
-				while ($row = mysqli_fetch_array($data)){
-				if(time() - 300 < $row['active']){
-				echo '<a href="/ucp/uid/'.$row['uid'].'">'.$row['username'].'</a>, ';
-				}
-				}
-				echo '<br /><small>This list updates every five minutes</small>';
-			echo'
+				  <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+				  <div class="panel-body">
+EOD
+);
+
+$layout['onlineUsersEnd'] = 
+(
+<<<EOD
+<br /><small>This list updates every five minutes</small>
 			</div>
 			</div>
 			</div>
-			
-		</div>
-		</div>';
-		if(isset($_SESSION['uid'])){
-		echo'<div class="shadowbar">';
-			if(isset($_GET['action']) && ($_GET['action'] == 'markasread')){
-				$query = "UPDATE notifications SET `read` = '1' WHERE `user` = ".$_SESSION['uid']." ";
-				$data = mysqli_query($dbc, $query);
-				echo '<div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>Marked as read</div>';
-				}
-			if(isset($_GET['action']) && ($_GET['action'] == 'markasunread')){
-				$query = "UPDATE notifications SET `read` = '0' WHERE `user` = ".$_SESSION['uid']." ";
-				$data = mysqli_query($dbc, $query);
-				echo '<div class="alert alert-success"><span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>Marked as unread</div>';
-				}
-			echo '			<div class="panel-group" id="notifAccordion" role="tablist" aria-multiselectable="true">
+			</div>
+
+EOD
+);
+
+$layout['sidebarNotif'] = 
+(
+<<<EOD
+<div class="panel-group" id="notifAccordion" role="tablist" aria-multiselectable="true">
 			  <div class="panel panel-default">
 				<div class="panel-heading" role="tab" id="notifOne">
 				  <h4 class="panel-title">
@@ -352,44 +332,72 @@ global $dbc, $core;
   </ul>
 
   <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="unread">';
-				$query = "SELECT * FROM notifications WHERE `user` = '" .$_SESSION['uid']. "' AND `read` = 0";
-				$data = mysqli_query($dbc, $query);
-				if(mysqli_num_rows($data) > 0){
-				echo '<a href="/markasread">Mark all as read</a><br />';
-				echo '<ul class="list-group">';
-				while($row = mysqli_fetch_array($data)){
-					echo '
-					<li class="list-group-item"><a href="'.$row['link'].'">'.$row['description'].'</a></li>
-					';
-				}
-				echo '</ul>';
-				} else {
-				echo 'No new notifications.';
-				}
-			
-			echo'</div>  <div role="tabpanel" class="tab-pane" id="read">';
-				$query = "SELECT * FROM notifications WHERE `user` = '" .$_SESSION['uid']. "' AND `read`= 1";
-				$data = mysqli_query($dbc, $query);
-				if(mysqli_num_rows($data) > 0){
-				echo '<a href="/markasunread">Mark all as unread</a>';
-				echo '<ul class="list-group">';
-				while($row = mysqli_fetch_array($data)){
-					echo '
-					<li class="list-group-item"><a href="'.$row['link'].'">'.$row['description'].'</a></li>
-					';
-				}
-				echo '</ul>';
-				} else {
-				echo 'No new notifications.';
-				}
-			echo'</div></div></div></div></div>
+    <div role="tabpanel" class="tab-pane active" id="unread">
+EOD
+);
+
+$layout['notifEnd'] = 
+(
+<<<EOD
+</div></div></div></div></div>
 			</div>
-			</div></div>';		
-		}
-		echo '</div>
-		<div class="col-md-7">';
-}
+			</div>
+			</div>
+			</div>
+EOD
+);
 
+$layout['sidebarEnd'] = 
+(
+<<<EOD
+</div>
+</div>
+<div class="col-md-6">
+EOD
+);
 
+$layout['footer'] = 
+(
+<<<EOD
+</div>
+	</div>
+	<div class="row footer">
+		<div class="col-md-12">
+			<div class="bottom-right">
+				Template designed by <a href="http://cheesecakebb.org/">Cheesecake Productions</a>
+			</div>
+			<div class="col-md-5">
+			Copyright <a href="http://%s">%s</a> - All Rights Reserved<br>
+			</div>
+			<div class="col-md-4">
+			Cheesecake CMS Version: %s
+			</div>
+		</div>
+	</div>
+EOD
+);
+
+$layout['adminBar'] = 
+(
+<<<EOD
+	<div class="shadowbar">
+		<a class="text-center" href="%s">%s Admin</a>
+	</div>
+EOD
+);
+
+$layout['adminPageEditLayout'] = 
+(
+<<<EOD
+	<form enctype="multipart/form-data" method="post" action="/pages/mode/edit"> 
+		<fieldset>
+		<legend>Edit Page</legend>
+		<label type="hidden" for="post1">Page Body:</label><br />
+		<textarea rows="8"  name="content" id="post1" cols="100">%s</textarea><br />
+		<input type="hidden" value="%s" name="page" />
+		<input type="submit" value="Save Post" name="submit" />
+		</fieldset>     
+		</form>
+EOD
+);
 ?> 

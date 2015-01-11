@@ -16,7 +16,16 @@ class pageGeneration {
 		echo sprintf($layout['header-begin'], $settings['site_name'], $settings['style'], $settings['style'], $settings['style'], $settings['style'], $settings['site_name']);
 		$core->loadModule("nav");
 		print($layout['header-end']);
-		sidebar();
+		$core->sidebar();
+			if(!isset($_GET['action'])){
+				if($settings['home_display'] == 'none' || $settings['home_display'] == 'about'){
+					echo '<div class="shadowbar">';
+					$parsed = $parser->parse($settings['about']);
+					print($parsed);
+					echo '</div>';
+				}
+			}
+		$core->loadModule("initialLoad");
 		if(isset($_GET['action'])){
 			if($_GET['action'] == 'login' || $_GET['action'] == 'doLogin'){
 				echo $error;
@@ -52,17 +61,9 @@ class pageGeneration {
 			if($_GET['action'] == "passwordReset"){
 			$core->deactivateAndReset();
 			}
-		} else {
-			if(!isset($_GET['action'])){
-				if($settings['home_display'] == 'none' || $settings['home_display'] == 'about'){
-					echo '<div class="shadowbar">';
-					$parsed = $parser->parse($settings['about']);
-					print($parsed);
-					echo '</div>';
-				}
-			}
 		}
 		$core->loadModule("initialLoad");
+		$core->notifBar();
 		echo sprintf($layout['footer'], $settings['b_url'], $settings['site_name'], $version['core']);
 	}
 }
