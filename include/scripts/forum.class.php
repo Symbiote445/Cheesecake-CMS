@@ -672,7 +672,7 @@ class Forums{
 			echo sprintf($layout['blogViewFormat'], $Title, $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);	
 		}
 
-		echo '</div></div></div><br />';
+		echo '</div>';
 	} else {
 	echo '<div class="shadowbar">Invalid Query!</div>';
 	}
@@ -781,7 +781,19 @@ class Forums{
 			$post1 = mysqli_real_escape_string($dbc, strip_tags( trim($_POST['post1'])));
 			$title = mysqli_real_escape_string($dbc, trim($_POST['title']));
 			$category = mysqli_real_escape_string($dbc, trim($_POST['category']));
-			
+			$query = "SELECT `cg` FROM `categories` WHERE `cat_id` = '$category'";
+			$data = mysqli_query($dbc, $query);
+			$row = mysqli_fetch_array($data);
+			$cg = $row['cg'];
+			$query = "SELECT `perm` FROM `category_groups` WHERE `cg_id` = '$category'";
+			$data = mysqli_query($dbc, $query);
+			$row = mysqli_fetch_array($data);
+			$perm = $row['perm'];
+			$query = "SELECT `adminlevel` FROM `users` WHERE `uid` = '" . $_SESSION['uid'] . "'";
+			$data = mysqli_query($dbc, $query);
+			$row = mysqli_fetch_array($data);
+			$uPerm = $row['adminlevel'];
+			if($perm <= $uPerm){
 			// Update the post data in the database
 			if (!empty($post1) && !empty($title)) {
 				$query = "INSERT INTO posts (`user_id`, `date`, `title`, `post`, `category`) VALUES ('$username', NOW(), '$title', '$post1', '$category')";
@@ -807,7 +819,12 @@ class Forums{
 			else {
 				echo '<p class="error">You must enter information into all of the fields.</p>';
 			}
-		} // End of check for form submission
+		} else {
+			echo 'You do not have the permission required to post there.';
+		}
+		}		
+		
+		// End of check for form submission
 		echo'<form enctype="multipart/form-data" method="post" action="/posttopic">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>

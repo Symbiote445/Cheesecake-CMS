@@ -203,7 +203,7 @@ EOD
 					$style = $_POST['style'];
 					$db = $settings['db'];
 					$pass = $settings['db_password'];
-					$user = $settings['user'];
+					$user = $settings['db_user'];
 					
 					$newSettings = array (         // the default settings array
 					'home_display'=>''.$home.'',

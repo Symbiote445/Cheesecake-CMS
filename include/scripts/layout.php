@@ -152,7 +152,7 @@ $layout['adminPostLayout'] =
 			<tr><td>Title: %s<a class="Link LButton" href="/markAs/p/%s">Mark As...</a></td></tr>
 		  <tr><td><div class="col-md-8"><pre>Post:<br/><br />%s</pre></div></td></tr>
 			<tr><td>Post ID: %s<a class="Link LButton" href="/%s/mode/%s/del/%s">Delete Post</a></td></tr>
-			<tr><td>Display Status: %s<a class="Link LButton" href="/%s/mode/hide/del/%s">Hide Post</a><a class="Link LButton" href="index.php?action=%s&mode=unhide&del=%s">Unhide Post</a></td></tr>
+			<tr><td>Display Status: %s<a class="Link LButton" href="/%s/del/%s">Hide Post</a><a class="Link LButton" href="/%s/del/%s">Unhide Post</a></td></tr>
 		  <tr><td>UserName: %s</td></tr>
 		  <tr><td>Rank: %s</td></tr>
 		</table>
