@@ -157,6 +157,14 @@
 				'plain_start' => "<i>",
 				'plain_end' => "</i>",
 			),
+			'header' => Array(
+				'simple_start' => "<h3>",
+				'simple_end' => "</h3>",
+				'class' => 'inline',
+				'allow_in' => Array('listitem', 'block', 'columns', 'inline', 'link'),
+				'plain_start' => "<h3>",
+				'plain_end' => "</h3>",
+			),
 			'font' => Array(
 				'mode' => BBCODE_MODE_LIBRARY,
 				'allow' => Array('_default' => '/^[a-zA-Z0-9._ -]+$/'),
@@ -351,7 +359,7 @@
 
 			'code' => Array(
 				'mode' => BBCODE_MODE_ENHANCED,
-				'template' => "\n<div class=\"bbcode_code\">\n<div class=\"bbcode_code_head\">Code:</div>\n<div class=\"bbcode_code_body\" style=\"white-space: pre; overflow: auto; background: #FFC; width: 90%; padding: 5px; border-left: 1px solid #555; border-right: 1px solid #555;\">{\$_content/v}</div>\n</div>\n",
+				'template' => "\n<div class=\"bbcode_code\">\n<div class=\"bbcode_code_head\">Code:</div>\n<pre class='prettyprint'>{\$_content/v}</pre>\n</div>\n",
 				'class' => 'code',
 				'allow_in' => Array('listitem', 'block', 'columns'),
 				'content' => BBCODE_VERBATIM,
@@ -370,8 +378,8 @@
 				'after_tag' => "sns",
 				'before_endtag' => "sns",
 				'after_endtag' => "sns",
-				'plain_start' => "\n<b>Quote:</b>\n",
-				'plain_end' => "\n",
+				'plain_start' => "\n<b>Quote:</b>\n<code>",
+				'plain_end' => "</code>\n",
 			),
 
 			'list' => Array(
@@ -582,7 +590,7 @@
 				$title = "Quote:";
 			else $title = htmlspecialchars(trim($default)) . " wrote:";
 			return "\n<div class=\"bbcode_quote\">\n<div class=\"bbcode_quote_head\">"
-				. $title . "</div>\n<div class=\"bbcode_quote_body\">"
+				. $title . "</div>\n<div class=\"bbcode_code_body\" style=\"white-space: pre; overflow: auto; background: #FFC; color:#000; width: 90%; padding: 5px; border-left: 1px solid #555; border-right: 1px solid #555;\">\n"
 				. $content . "</div>\n</div>\n";
 		}
 

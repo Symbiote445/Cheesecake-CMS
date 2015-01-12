@@ -11,7 +11,8 @@ $layout['header-begin'] =
 			<title>%s</title>
 			<link rel="stylesheet" type="text/css" href="/include/style/%s/style.css">
 			<link rel="stylesheet" type="text/css" href="/include/style/%s/template.css">
-			<script type="text/javascript" src="/include/scripts/js/ed.js"></script> 
+			<script type="text/javascript" src="/include/scripts/js/ed.js"></script>
+			<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?autoload=true&skin=sunburst"></script>			
 			<script src="/include/style/%s/jquery.js"></script>
 			<script src="/include/style/%s/bootstrap.js"></script>
 			<script src="/include/scripts/js/iframeResizer.contentWindow.min.js"></script>
@@ -35,7 +36,7 @@ $layout['header-begin'] =
 			</script>
 
 		</head>
-		<body>
+		<body onload="">
 			<div class="row header">
 				<div class="col-md-1"></div>
    <div class="navbar-wrapper">

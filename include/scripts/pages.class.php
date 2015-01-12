@@ -48,24 +48,9 @@ class pages{
 		if (isset($_POST['submit'])) {
 			$page = mysqli_real_escape_string($dbc, trim($_POST['page']));
 			$title = mysqli_real_escape_string($dbc, trim($_POST['title']));
-			//Lower case everything
-			$pagelink = strtolower($title);
-			//Make alphanumeric (removes all other characters)
-			$pagelink = preg_replace("/[^a-z0-9_\s-]/", "", $pagelink);
-			//Clean up multiple dashes or whitespaces
-			$pagelink = preg_replace("/[\s-]+/", " ", $pagelink);
-			//Convert whitespaces and underscore to dash
-			$pagelink = preg_replace("/[\s_]/", "-", $pagelink);		
+			if (!empty($page) && !empty($title)) {
 
-			$query = "SELECT * FROM pages WHERE pagelink = '$pagelink'";
-			$data = mysqli_query($dbc, $query);
-			if((mysqli_num_rows($data)) > 0){
-				echo 'Page already exists. Try a different name.';
-			}
-			
-			elseif (!empty($page) && !empty($title)) {
-
-				$query = "INSERT INTO pages (`pagename`, `body`, `pagelink`) VALUES ('$title', '$page', '$pagelink')";
+				$query = "INSERT INTO pages (`pagename`, `body`) VALUES ('$title', '$page')";
 				mysqli_query($dbc, $query);
 
 				echo '<div class="shadowbar"><p>Your page has been successfully added. Would you like to <a href="/pages/mode/pageadmin">go back to the admin panel</a>?</p></div>';
@@ -75,6 +60,23 @@ class pages{
 			else {
 				echo '<p class="error">You must enter information into all of the fields.</p>';
 			}
+			$query = "SELECT * FROM `pages` WHERE `title` = '$title'";
+			$data = mysqli_query($dbc, $query);
+			$row = mysqli_fetch_array($data);
+			$pid = $row['page_id'];
+			$pagelink = $title.'-'.$pid;
+			//Lower case everything
+			$pagelink = strtolower($pagelink);
+			//Make alphanumeric (removes all other characters)
+			$pagelink = preg_replace("/[^a-z0-9_\s-]/", "", $pagelink);
+			//Clean up multiple dashes or whitespaces
+			$pagelink = preg_replace("/[\s-]+/", " ", $pagelink);
+			//Convert whitespaces and underscore to dash
+			$pagelink = preg_replace("/[\s_]/", "-", $pagelink);	
+			$query = "UPDATE `pages` SET `pagelink` = '$pagelink' WHERE `page_id` = '$pid'";
+			mysqli_query($dbc, $query);
+
+
 		}
 		if($core->verify("4") || $core->verify("2")){
 			print($layout['adminPageAddLayout']);
@@ -96,7 +98,7 @@ class pages{
 			echo '<div class="shadowbar">';
 			echo'<h3>' . $row['pagename'] . '</h3>';
 			$parsed = $parser->parse($row['body']);
-			echo '<pre>'.$parsed.'</pre>';
+			echo $parsed;
 			echo '</div>'; 
 		}
 	}
