@@ -18,6 +18,7 @@ $layout['header-begin'] =
 			<script src="/include/scripts/js/iframeResizer.contentWindow.min.js"></script>
 			<script src="/include/scripts/js/iframeResizer.min.js"></script>
 			<script language="javascript" type="text/javascript" src="/include/scripts/codeEdit/edit_area_full.js"></script>
+			<script src="/include/scripts/js/jquery.form.js"></script>
 			<script language="javascript" type="text/javascript">
 			editAreaLoader.init({
 				id : "codeEdit"		// textarea id
@@ -34,6 +35,7 @@ $layout['header-begin'] =
 			window.location="index.php";
 		}
 			</script>
+
 
 		</head>
 		<body onload="">

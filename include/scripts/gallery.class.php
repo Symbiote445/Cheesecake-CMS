@@ -295,8 +295,7 @@ $(document).ready(function(){
 </script>
 -->
 
-<script src="include/scripts/js/modernizr.custom.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="/include/scripts/js/modernizr.custom.js"></script>
 
 <script>
      $(document).ready(function(){
@@ -429,6 +428,31 @@ class gallery{
 		echo '<div class="shadowbar">
 		<h3>Photo Upload</h3>';
 		if (isset($_POST['submit'])) {
+		echo (<<<EOL
+		<script>
+		$(function() {
+
+    var bar = $('.bar');
+    var percent = $('.percent');
+    var status = $('#status');
+
+    $('form').ajaxForm({
+        beforeSend: function() {
+            status.empty();
+            var percentVal = '0%';
+            bar.width(percentVal);
+            percent.html(percentVal);
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+            var percentVal = percentComplete + '%';
+            bar.width(percentVal);
+            percent.html(percentVal);
+        }
+    });
+}); 
+</script>
+EOL
+		);
 		$query = "SELECT * FROM gallery";
 		$data = mysqli_query($dbc, $query);
 		$pnum = mysqli_num_rows($data);
@@ -461,7 +485,6 @@ class gallery{
 						$query = "INSERT INTO gallery (name, descr, filename, cat) VALUES ('$name', '$desc', '$pnumname', '$cat')";
 						mysqli_query($dbc, $query);
 						echo "Success!";
-						exit();
 					}
 				}
 			} else {
@@ -470,7 +493,11 @@ class gallery{
 		}
 		
 		
-		echo'<form enctype="multipart/form-data" method="post" action="/uploadphoto">
+		echo'
+		<div class="bar"></div>
+		<div class="percent">0%</div>
+		<div id="status"></div>
+		<form enctype="multipart/form-data" method="post" action="/uploadphoto">
 		<fieldset>
 		<legend>Picture Upload</legend>
 		<label for="name">Picture Name:</label><br />
