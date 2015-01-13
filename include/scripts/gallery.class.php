@@ -375,7 +375,7 @@ class gallery{
 		while($row = mysqli_fetch_array($data)){
 			if(!empty($row['filename'])){
 				echo'<li>
-						<a href="http://'.$settings['b_url'].'/viewgallery" data-largesrc="include/images/'.$row['filename'].'" data-title="'.$row['name'].'" data-description="'.$row['descr'].'">
+						<a href="'.$_SERVER['REQUEST_URI'].'" data-largesrc="/include/images/'.$row['filename'].'" data-title="'.$row['name'].'" data-description="'.$row['descr'].'">
 							<img style="max-height:70px;" src="/include/images/'.$row['filename'].'" alt="img01"/>
 						</a>
 					</li>';
@@ -428,31 +428,6 @@ class gallery{
 		echo '<div class="shadowbar">
 		<h3>Photo Upload</h3>';
 		if (isset($_POST['submit'])) {
-		echo (<<<EOL
-		<script>
-		$(function() {
-
-    var bar = $('.bar');
-    var percent = $('.percent');
-    var status = $('#status');
-
-    $('form').ajaxForm({
-        beforeSend: function() {
-            status.empty();
-            var percentVal = '0%';
-            bar.width(percentVal);
-            percent.html(percentVal);
-        },
-        uploadProgress: function(event, position, total, percentComplete) {
-            var percentVal = percentComplete + '%';
-            bar.width(percentVal);
-            percent.html(percentVal);
-        }
-    });
-}); 
-</script>
-EOL
-		);
 		$query = "SELECT * FROM gallery";
 		$data = mysqli_query($dbc, $query);
 		$pnum = mysqli_num_rows($data);
@@ -494,9 +469,9 @@ EOL
 		
 		
 		echo'
-		<div class="bar"></div>
-		<div class="percent">0%</div>
-		<div id="status"></div>
+		<div class="progress" style="color:#000;">
+			<div class="progress-bar progress-bar-success progress-bar-striped bar"><div class="percent">0%</div></div>
+		</div>
 		<form enctype="multipart/form-data" method="post" action="/uploadphoto">
 		<fieldset>
 		<legend>Picture Upload</legend>
@@ -513,11 +488,39 @@ EOL
 		<label for="desc">Description</label><br />
 		<textarea id="desc" name="desc" rows="4" cols="30"></textarea><br />
 		<label for="file">Picture:</label>';
-		echo'<input type="file" id="file" name="file" />
+		echo'<input class="Link LButton" type="file" id="file" name="file" />
 		</fieldset>
 		<input type="submit" value="Save Picture" name="submit" /> <a class="button" href="/viewgallery">Cancel</a>
 	</form>
 	</div>';
+		echo (<<<EOL
+		<script>
+    $(function() {
+
+    var bar = $('.bar');
+    var percent = $('.percent');
+    var status = $('#status');
+
+    $('form').ajaxForm({
+        beforeSend: function() {
+            status.empty();
+            var percentVal = '0%';
+            bar.width(percentVal);
+            percent.html(percentVal);
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+            var percentVal = percentComplete + '%';
+            bar.width(percentVal);
+            percent.html(percentVal);
+        },
+		complete: function() {
+			document.getElementById("fUP").reset();
+		}
+    });
+    }); 
+</script>
+EOL
+		);
 	} else {
 	die("<p style=\"color: white;\">Insufficient Permissions</p>");
 	}
@@ -563,7 +566,7 @@ EOL
 	}
 
 ?>
-<script src="include/scripts/js/grid.js"></script>
+<script src="/include/scripts/js/grid.js"></script>
 		<script>
 			$(function() {
 				Grid.init();

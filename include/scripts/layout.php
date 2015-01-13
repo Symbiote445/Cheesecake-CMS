@@ -29,7 +29,9 @@ $layout['header-begin'] =
 			});
 			</script>
 			<script>
-			
+			$(function () {
+			  $('[data-toggle="tooltip"]').tooltip()
+			})
 			function Redirect()
 		{
 			window.location="index.php";
@@ -384,6 +386,36 @@ $layout['adminPageEditLayout'] =
 		<input type="submit" value="Save Post" name="submit" />
 		</fieldset>     
 		</form>
+EOD
+);
+$layout['dlListBegin'] = 
+(
+<<<EOD
+<div class="shadowbar">
+	<table class="table table-bordered">
+		<thead>
+			<th>File</th>
+			<th>Description</th>
+		</thead>
+		<tbody>
+EOD
+);
+$layout['dlListEnd'] = 
+(
+<<<EOD
+		</tbody>
+	</table>
+</div>
+EOD
+);
+
+$layout['dlListMid'] = 
+(
+<<<EOD
+			<tr>
+			<td><a href="include/files/%s"><span class="glyphicon glyphicon-file"></span>%s</a></td>
+			<td>%s</td>
+			</tr>
 EOD
 );
 ?> 
