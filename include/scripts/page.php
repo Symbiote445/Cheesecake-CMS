@@ -28,7 +28,9 @@ class pageGeneration {
 		$core->loadModule("initialLoad");
 		if(isset($_GET['action'])){
 			if($_GET['action'] == 'login' || $_GET['action'] == 'doLogin'){
-				echo $error;
+				if(isset($error)){
+					echo $error;
+				}
 				print($layout['login']);
 			}
 			if($_GET['action'] === 'signup'){

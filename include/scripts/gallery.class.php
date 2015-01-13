@@ -494,7 +494,6 @@ class gallery{
 	} else {
 	die("<p style=\"color: white;\">Insufficient Permissions</p>");
 	}
-	echo '</div>';
 	}
 	public function galleryCategory() {
 		global $dbc, $parser, $layout, $main, $settings, $core;

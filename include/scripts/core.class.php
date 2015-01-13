@@ -645,6 +645,9 @@ class core {
 					return $error;
 				}
 			}
+		} else {
+			echo "<div class='shadowbar'>You're Logged In!</div>";
+			exit();
 		}
 		return $error;
 	}
@@ -962,6 +965,7 @@ class core {
 		if(($settings['signup_enabled'] === 'false')){
 			die('<div class="alert alert-warning"><strong>Registration Disabled.</strong></div>');
 		}
+		if(!isset($_SESSION['uid'])){
 		if (isset($_POST['submit'])) {
 			$username = mysqli_real_escape_string($dbc, trim($_POST['username']));
 			$password1 = mysqli_real_escape_string($dbc, trim($_POST['password1']));
@@ -1003,6 +1007,11 @@ class core {
 			else {
 				echo '<p class="error">You must enter all of the sign-up data, including the desired password twice.</p>';
 			}
+		
+		}
+		} else {
+			echo "<div class='shadowbar'>You're Logged In!</div>";
+			exit();
 		}
 		
 		echo'<div class="shadowbar"><div class="alert alert-info"><strong>Please enter your username and desired password to sign up.</strong></div>
