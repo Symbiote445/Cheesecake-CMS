@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteRule ^([a-zA-Z0-9-=_?]+)/?$ index.php?action=$1 
+RewriteRule ^([a-zA-Z0-9-=_?]+)/([a-zA-Z0-9-=_?]+)/([a-zA-Z0-9-=_?]+)/?$ index.php?action=$1&$2=$3
+RewriteRule ^([a-zA-Z0-9-=_?]+)/([a-zA-Z0-9-=_?]+)/([a-zA-Z0-9-=_?]+)/([a-zA-Z0-9-=_?]+)/([a-zA-Z0-9-=_?]+)/?$ index.php?action=$1&$2=$3&$4=$5
