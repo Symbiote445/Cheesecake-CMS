@@ -82,165 +82,175 @@ $dbc=mysqli_connect($settings[\'db_host\'],$settings[\'db_user\'],$settings[\'db
 				$uip = $_SERVER['REMOTE_ADDR'];	
 				$query = 
 				"
-			CREATE TABLE IF NOT EXISTS `blog` (
-			  `id` int(11) NOT NULL AUTO_INCREMENT,
-			  `title` text NOT NULL,
-			  `content` text NOT NULL,
-			  `display` int(11) NOT NULL DEFAULT '1',
-			  `user` int(11) NOT NULL,
-			  `date` datetime NOT NULL,
-			  `hidden` int(11) NOT NULL DEFAULT '0',
-			  PRIMARY KEY (`id`)
-			) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+		CREATE TABLE IF NOT EXISTS `blog` (
+		  `id` int(11) NOT NULL AUTO_INCREMENT,
+		  `title` text NOT NULL,
+		  `content` text NOT NULL,
+		  `display` int(11) NOT NULL DEFAULT '1',
+		  `user` int(11) NOT NULL,
+		  `date` datetime NOT NULL,
+		  `hidden` int(11) NOT NULL DEFAULT '0',
+		  PRIMARY KEY (`id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-			CREATE TABLE IF NOT EXISTS `categories` (
-			  `cat_id` int(11) NOT NULL AUTO_INCREMENT,
-			  `name` text NOT NULL,
-			  `desc` text NOT NULL,
-			  `cg` int(11) NOT NULL,
-			  PRIMARY KEY (`cat_id`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+		CREATE TABLE IF NOT EXISTS `categories` (
+		  `cat_id` int(11) NOT NULL AUTO_INCREMENT,
+		  `name` text NOT NULL,
+		  `desc` text NOT NULL,
+		  `cg` int(11) NOT NULL,
+		  PRIMARY KEY (`cat_id`)
+		) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
-			CREATE TABLE IF NOT EXISTS `category_groups` (
-			  `cg_id` int(11) NOT NULL AUTO_INCREMENT,
-			  `cg_name` text NOT NULL,
-			  `perm` int(11) NOT NULL,
-			  PRIMARY KEY (`cg_id`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+		CREATE TABLE IF NOT EXISTS `category_groups` (
+		  `cg_id` int(11) NOT NULL AUTO_INCREMENT,
+		  `cg_name` text NOT NULL,
+		  `perm` int(11) NOT NULL,
+		  PRIMARY KEY (`cg_id`)
+		) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
-			CREATE TABLE IF NOT EXISTS `convo` (
-			  `id` int(11) NOT NULL AUTO_INCREMENT,
-			  `first_message` int(11) NOT NULL,
-			  `sent_by` int(11) NOT NULL,
-			  `sent_to` text NOT NULL,
-			  `title` text NOT NULL,
-			  PRIMARY KEY (`id`)
-			) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+		CREATE TABLE IF NOT EXISTS `comments` (
+		  `cid` int(11) NOT NULL AUTO_INCREMENT,
+		  `body` text NOT NULL,
+		  `user` int(11) NOT NULL,
+		  `module` text NOT NULL,
+		  `id` int(11) NOT NULL,
+		  PRIMARY KEY (`cid`)
+		) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
-			CREATE TABLE IF NOT EXISTS `downloads` (
-			  `id` int(11) NOT NULL AUTO_INCREMENT,
-			  `filename` text NOT NULL,
-			  `fileDesc` text NOT NULL,
-			  `rawName` text NOT NULL,
-			  PRIMARY KEY (`id`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+		CREATE TABLE IF NOT EXISTS `convo` (
+		  `id` int(11) NOT NULL AUTO_INCREMENT,
+		  `first_message` int(11) NOT NULL,
+		  `sent_by` int(11) NOT NULL,
+		  `sent_to` text NOT NULL,
+		  `title` text NOT NULL,
+		  PRIMARY KEY (`id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-			CREATE TABLE IF NOT EXISTS `FConf` (
-			  `fsID` int(11) NOT NULL AUTO_INCREMENT,
-			  `homeDisp` text NOT NULL,
-			  `homeNum` int(11) NOT NULL,
-			  PRIMARY KEY (`fsID`)
-			) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+		CREATE TABLE IF NOT EXISTS `downloads` (
+		  `id` int(11) NOT NULL AUTO_INCREMENT,
+		  `filename` text NOT NULL,
+		  `fileDesc` text NOT NULL,
+		  `rawName` text NOT NULL,
+		  PRIMARY KEY (`id`)
+		) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
-			CREATE TABLE IF NOT EXISTS `gallery` (
-			  `name` text NOT NULL,
-			  `descr` text NOT NULL,
-			  `filename` text NOT NULL,
-			  `p_id` int(11) NOT NULL AUTO_INCREMENT,
-			  `cat` int(11) NOT NULL,
-			  PRIMARY KEY (`p_id`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+		CREATE TABLE IF NOT EXISTS `fconf` (
+		  `fsID` int(11) NOT NULL AUTO_INCREMENT,
+		  `homeDisp` text NOT NULL,
+		  `homeNum` int(11) NOT NULL,
+		  PRIMARY KEY (`fsID`)
+		) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-			CREATE TABLE IF NOT EXISTS `gallery_cat` (
-			  `cg_id` int(11) NOT NULL AUTO_INCREMENT,
-			  `cg_name` text NOT NULL,
-			  PRIMARY KEY (`cg_id`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+		CREATE TABLE IF NOT EXISTS `gallery` (
+		  `name` text NOT NULL,
+		  `descr` text NOT NULL,
+		  `filename` text NOT NULL,
+		  `p_id` int(11) NOT NULL AUTO_INCREMENT,
+		  `cat` int(11) NOT NULL,
+		  PRIMARY KEY (`p_id`)
+		) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
-			CREATE TABLE IF NOT EXISTS `loggedIn` (
-			  `loggedInID` int(11) NOT NULL AUTO_INCREMENT,
-			  `hash` text NOT NULL,
-			  `ip` text NOT NULL,
-			  `uid` int(11) NOT NULL,
-			  PRIMARY KEY (`loggedInID`)
-			) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+		CREATE TABLE IF NOT EXISTS `gallery_cat` (
+		  `cg_id` int(11) NOT NULL AUTO_INCREMENT,
+		  `cg_name` text NOT NULL,
+		  PRIMARY KEY (`cg_id`)
+		) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
-			CREATE TABLE IF NOT EXISTS `messages` (
-			  `mid` int(11) NOT NULL AUTO_INCREMENT,
-			  `user` int(11) NOT NULL,
-			  `convo` int(11) NOT NULL,
-			  `content` text NOT NULL,
-			  `date` datetime NOT NULL,
-			  PRIMARY KEY (`mid`)
-			) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+		CREATE TABLE IF NOT EXISTS `loggedin` (
+		  `loggedInID` int(11) NOT NULL AUTO_INCREMENT,
+		  `hash` text NOT NULL,
+		  `ip` text NOT NULL,
+		  `uid` int(11) NOT NULL,
+		  PRIMARY KEY (`loggedInID`)
+		) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-			CREATE TABLE IF NOT EXISTS `notifications` (
-			  `nid` int(11) NOT NULL AUTO_INCREMENT,
-			  `user` int(11) NOT NULL,
-			  `description` text NOT NULL,
-			  `link` text NOT NULL,
-			  `read` int(11) NOT NULL,
-			  PRIMARY KEY (`nid`)
-			) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+		CREATE TABLE IF NOT EXISTS `messages` (
+		  `mid` int(11) NOT NULL AUTO_INCREMENT,
+		  `user` int(11) NOT NULL,
+		  `convo` int(11) NOT NULL,
+		  `content` text NOT NULL,
+		  `date` datetime NOT NULL,
+		  PRIMARY KEY (`mid`)
+		) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-			CREATE TABLE IF NOT EXISTS `pages` (
-			  `page_id` int(11) NOT NULL AUTO_INCREMENT,
-			  `pagename` text NOT NULL,
-			  `body` text NOT NULL,
-			  `pagelink` text NOT NULL,
-			  PRIMARY KEY (`page_id`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+		CREATE TABLE IF NOT EXISTS `notifications` (
+		  `nid` int(11) NOT NULL AUTO_INCREMENT,
+		  `user` int(11) NOT NULL,
+		  `description` text NOT NULL,
+		  `link` text NOT NULL,
+		  `read` int(11) NOT NULL,
+		  PRIMARY KEY (`nid`)
+		) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-			CREATE TABLE IF NOT EXISTS `polls` (
-			  `pid` int(11) NOT NULL AUTO_INCREMENT,
-			  `user_id` int(11) NOT NULL,
-			  `title` text NOT NULL,
-			  `post` text NOT NULL,
-			  `date` datetime NOT NULL,
-			  `choices` text NOT NULL,
-			  `postlink` text NOT NULL,
-			  PRIMARY KEY (`pid`)
-			) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+		CREATE TABLE IF NOT EXISTS `pages` (
+		  `page_id` int(11) NOT NULL AUTO_INCREMENT,
+		  `pagename` text NOT NULL,
+		  `body` text NOT NULL,
+		  `pagelink` text NOT NULL,
+		  PRIMARY KEY (`page_id`)
+		) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
-			CREATE TABLE IF NOT EXISTS `posts` (
-			  `post_id` int(11) NOT NULL AUTO_INCREMENT,
-			  `home` varchar(5) NOT NULL,
-			  `user_id` varchar(32) NOT NULL,
-			  `date` datetime NOT NULL,
-			  `title` varchar(50) NOT NULL,
-			  `tag` text NOT NULL,
-			  `post` mediumtext,
-			  `category` text NOT NULL,
-			  `postlink` text NOT NULL,
-			  `reported` varchar(1) NOT NULL DEFAULT '0',
-			  `locked` varchar(1) NOT NULL,
-			  `hidden` int(11) NOT NULL DEFAULT '0',
-			  PRIMARY KEY (`post_id`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+		CREATE TABLE IF NOT EXISTS `polls` (
+		  `pid` int(11) NOT NULL AUTO_INCREMENT,
+		  `user_id` int(11) NOT NULL,
+		  `title` text NOT NULL,
+		  `post` text NOT NULL,
+		  `date` datetime NOT NULL,
+		  `choices` text NOT NULL,
+		  `postlink` text NOT NULL,
+		  PRIMARY KEY (`pid`)
+		) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-			CREATE TABLE IF NOT EXISTS `reply` (
-			  `reply_id` int(11) NOT NULL AUTO_INCREMENT,
-			  `post_id` text NOT NULL,
-			  `user_id` varchar(32) NOT NULL,
-			  `reply` text NOT NULL,
-			  `hidden` int(11) NOT NULL DEFAULT '0',
-			  `date` datetime NOT NULL,
-			  PRIMARY KEY (`reply_id`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+		CREATE TABLE IF NOT EXISTS `posts` (
+		  `post_id` int(11) NOT NULL AUTO_INCREMENT,
+		  `home` varchar(5) NOT NULL,
+		  `user_id` varchar(32) NOT NULL,
+		  `date` datetime NOT NULL,
+		  `title` varchar(50) NOT NULL,
+		  `tag` text NOT NULL,
+		  `post` mediumtext,
+		  `category` text NOT NULL,
+		  `postlink` text NOT NULL,
+		  `reported` varchar(1) NOT NULL DEFAULT '0',
+		  `locked` varchar(1) NOT NULL,
+		  `hidden` int(11) NOT NULL DEFAULT '0',
+		  PRIMARY KEY (`post_id`)
+		) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
-			CREATE TABLE IF NOT EXISTS `users` (
-			  `uid` int(11) NOT NULL AUTO_INCREMENT,
-			  `username` varchar(32) NOT NULL,
-			  `email` text NOT NULL,
-			  `sig` text NOT NULL,
-			  `hash` text NOT NULL,
-			  `password` text NOT NULL,
-			  `activated` int(11) NOT NULL DEFAULT '0',
-			  `passwordReset` int(11) NOT NULL,
-			  `adminlevel` int(11) NOT NULL DEFAULT '0',
-			  `picture` text NOT NULL,
-			  `ip` varchar(16) NOT NULL,
-			  `active` int(11) NOT NULL,
-			  PRIMARY KEY (`uid`)
-			) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+		CREATE TABLE IF NOT EXISTS `reply` (
+		  `reply_id` int(11) NOT NULL AUTO_INCREMENT,
+		  `post_id` text NOT NULL,
+		  `user_id` varchar(32) NOT NULL,
+		  `reply` text NOT NULL,
+		  `hidden` int(11) NOT NULL DEFAULT '0',
+		  `date` datetime NOT NULL,
+		  PRIMARY KEY (`reply_id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-			CREATE TABLE IF NOT EXISTS `votes` (
-			  `vid` int(11) NOT NULL AUTO_INCREMENT,
-			  `choice` text NOT NULL,
-			  `user` int(11) NOT NULL,
-			  `poll` int(11) NOT NULL,
-			  PRIMARY KEY (`vid`)
-			) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+		CREATE TABLE IF NOT EXISTS `users` (
+		  `uid` int(11) NOT NULL AUTO_INCREMENT,
+		  `username` varchar(32) NOT NULL,
+		  `email` text NOT NULL,
+		  `sig` text NOT NULL,
+		  `hash` text NOT NULL,
+		  `password` text NOT NULL,
+		  `activated` int(11) NOT NULL DEFAULT '0',
+		  `passwordReset` int(11) NOT NULL,
+		  `adminlevel` int(11) NOT NULL DEFAULT '0',
+		  `picture` text NOT NULL,
+		  `ip` varchar(16) NOT NULL,
+		  `active` int(11) NOT NULL,
+		  PRIMARY KEY (`uid`)
+		) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+		CREATE TABLE IF NOT EXISTS `votes` (
+		  `vid` int(11) NOT NULL AUTO_INCREMENT,
+		  `choice` text NOT NULL,
+		  `user` int(11) NOT NULL,
+		  `poll` int(11) NOT NULL,
+		  PRIMARY KEY (`vid`)
+		) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 
 INSERT INTO users (username, password, email, ip, adminlevel, activated) VALUES ('$username', SHA('$password1'), '$email', '$uip', '4', '1')
