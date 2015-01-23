@@ -116,7 +116,7 @@ class pages{
 			<div class="shadowbar">
 			<div id="alert"></div>
 			<form id="commentForm" method="post" action="/postComment">
-			<textarea style="width:100%;" placeholder="Comment..." id="rs" name="comment"></textarea>
+			<textarea class="editor" style="width:100%;" placeholder="Comment..." id="rs" name="comment"></textarea>
 			<input type="hidden" value="$UID" name="user" id="user">
 			<input type="hidden" value="pages" name="module">
 			<input type="hidden" value="$ID" name="id">

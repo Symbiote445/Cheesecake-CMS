@@ -160,8 +160,7 @@ $layout['blogPostFormat'] =
 			<label type="hidden" for="title">Title:</label><br />
 			<input type="text" name="title"><br /><br />
 			<label type="hidden" for="post1">Blog Content:</label><br />
-		<script>edToolbar(\'bbcodeEditor\'); </script>
-		<textarea name="post1" id="bbcodeEditor" style="height:300px;width:100%;"></textarea><br />
+		<textarea name="post1" id="editor" style="height:300px;width:100%;"></textarea><br />
 		<label type="hidden" for="id">Display</label>
 		<select id="display" name="display">
 			<option value="0">Hidden</option>
@@ -464,7 +463,7 @@ $layout['adminPageEditLayout'] =
 		<fieldset>
 		<legend>Edit Page</legend>
 		<label type="hidden" for="post1">Page Body:</label><br />
-		<textarea rows="8"  name="content" id="post1" cols="100">%s</textarea><br />
+		<textarea rows="8"  name="content" id="editor" cols="100">%s</textarea><br />
 		<input type="hidden" value="%s" name="page" />
 		<input type="submit" value="Save Post" name="submit" />
 		</fieldset>     

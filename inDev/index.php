@@ -16,7 +16,4 @@
 	global $dbc, $parser, $layout, $main, $settings, $core;
 	$page = new pageGeneration;
 	$page->Generate();
-	
-	
-	
 ?>

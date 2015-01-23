@@ -220,16 +220,7 @@ EOD
 					'board_enabled'=>false,
 					'about' => "".$about.""
 					);
-					$end = '<?php
-define(\'MM_UPLOADPATH\', \'include/images/profile/\');
-define(\'MM_MAXFILESIZE\', 32768);
-define(\'MM_MAXIMGWIDTH\', 120);
-define(\'MM_MAXIMGHEIGHT\', 120);
-define(\'MM_DLPATH\', \'files/\');
-define(\'MM_DLIMGPATH\', \'files/images/\');
-define(\'MM_GALLERY\', \'include/images/\');	
-$dbc=mysqli_connect($settings[\'db_host\'],$settings[\'db_user\'],$settings[\'db_password\'],$settings[\'db\']);
-			?>';
+					$end = '<?php $dbc=mysqli_connect($settings[\'db_host\'],$settings[\'db_user\'],$settings[\'db_password\'],$settings[\'db\']); ?>';
 					file_put_contents($mySettingsFile, $this->array2php($newSettings, "settings"));
 					file_put_contents($mySettingsFile, $end, FILE_APPEND | LOCK_EX );
 
