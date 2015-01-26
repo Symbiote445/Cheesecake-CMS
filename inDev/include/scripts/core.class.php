@@ -471,7 +471,7 @@ class core {
 		if(!isset($_SESSION['uid']) && isset($_COOKIE['ID'])){
 			global $dbc;
 			$UID = $_COOKIE['ID'];
-			$query = "SELECT * FROM `loggedIn` WHERE `uid` = '$UID'";
+			$query = "SELECT * FROM `loggedin` WHERE `uid` = '$UID'";
 			$data = mysqli_query($dbc, $query);
 			$row = mysqli_fetch_array($data);
 			if($row['uid'] == $_COOKIE['ID'] && $row['hash'] == $_COOKIE['HASH'] && $row['ip'] == $_COOKIE['IP']){

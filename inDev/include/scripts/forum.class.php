@@ -826,7 +826,6 @@ class Forums{
 		
 		// End of check for form submission
 		echo'<form enctype="multipart/form-data" method="post" action="/posttopic">
-		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Post Here:</legend>
 			<label type="hidden" for="title">Title:</label><br />
@@ -1109,12 +1108,10 @@ if($core->verify("4") || $core->verify("2")){
 			}
 		} // End of check for form submission
 		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/postreply">
-		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Reply:</legend>
 		<input type="hidden" name="replyid" value="'.$_GET['postid'].'">
-		<script>edToolbar(\'bbcodeEditor\'); </script>
-		<textarea name="reply" id="bbcodeEditor" style="height:300px;width:100%;"></textarea><br />
+		<textarea name="reply" id="editor" style="height:300px;width:100%;"></textarea><br />
 		</fieldset>
 		<input type="submit" value="Save Post" name="submit" /> 
 	</form>
