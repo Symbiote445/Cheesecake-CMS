@@ -19,6 +19,7 @@ $layout['header-begin'] =
 			<script src="/include/scripts/js/iframeResizer.min.js"></script>
 			<script language="javascript" type="text/javascript" src="/include/scripts/codeEdit/edit_area_full.js"></script>
 			<script src="/include/scripts/js/jquery.form.js"></script>
+			<script src="/include/scripts/js/jquery.validate.js"></script>
 			<script language="javascript" type="text/javascript">
 			editAreaLoader.init({
 				id : "codeEdit"		// textarea id
@@ -37,10 +38,59 @@ $layout['header-begin'] =
 			window.location="index.php";
 		}
 			</script>
+<style type="text/css">
+#rs {
+    border: 0 none white;
+    overflow: hidden;
+    padding: 0;
+    outline: none;
+    resize: none;
+}
+</style>
+<script type="text/javascript">
+var observe;
+if (window.attachEvent) {
+    observe = function (element, event, handler) {
+        element.attachEvent('on'+event, handler);
+    };
+}
+else {
+    observe = function (element, event, handler) {
+        element.addEventListener(event, handler, false);
+    };
+}
+function init () {
+    var text = document.getElementById('rs');
+    function resize () {
+        text.style.height = 'auto';
+        text.style.height = text.scrollHeight+'px';
+    }
+    /* 0-timeout to get the already changed text */
+    function delayedResize () {
+        window.setTimeout(resize, 0);
+    }
+    observe(text, 'change',  resize);
+    observe(text, 'cut',     delayedResize);
+    observe(text, 'paste',   delayedResize);
+    observe(text, 'drop',    delayedResize);
+    observe(text, 'keydown', delayedResize);
 
-
+    text.focus();
+    text.select();
+    resize();
+}
+</script>
 		</head>
-		<body onload="">
+<noscript>
+    <style type="text/css">
+        .pagecontainer {display:none;}
+    </style>
+    <div class="noscriptmsg">
+    Javascript is required for this site to work properly.
+    </div>
+</noscript>
+		<body onload="init();">
+		<div class="pagecontainer">
 			<div class="row header">
 				<div class="col-md-1"></div>
    <div class="navbar-wrapper">
@@ -110,8 +160,7 @@ $layout['blogPostFormat'] =
 			<label type="hidden" for="title">Title:</label><br />
 			<input type="text" name="title"><br /><br />
 			<label type="hidden" for="post1">Blog Content:</label><br />
-		<script>edToolbar(\'bbcodeEditor\'); </script>
-		<textarea name="post1" id="bbcodeEditor" style="height:300px;width:100%;"></textarea><br />
+		<textarea name="post1" id="editor" style="height:300px;width:100%;"></textarea><br />
 		<label type="hidden" for="id">Display</label>
 		<select id="display" name="display">
 			<option value="0">Hidden</option>
@@ -126,8 +175,8 @@ EOD
 $layout['login'] = 
 (
 <<<EOD
-	<div class="shadowbar"><form method="post" action="/doLogin">
-
+	<div class="shadowbar"><form id="login" method="post" action="/doLogin">
+	<div id="alert"></div>
     <fieldset>
 
      <legend>Log In</legend>
@@ -147,6 +196,38 @@ $layout['login'] =
     <input type="submit"  class="btn btn-primary" value="Log In" name="submit" />
 
 	</form></div>
+	<script>
+    $(function login() {
+    $("#login").validate({ // initialize the plugin
+        // any other options,
+        onkeyup: false,
+        rules: {
+            email: {
+                required: true,
+                email: true
+            },
+			password: {
+				required: true
+			}
+        }
+    });
+
+    $('form').ajaxForm({
+        beforeSend: function() {
+			return $("#login").valid();
+        },
+				success : function(result) {
+					console.log(result);
+					if(result == " success"){
+						window.location = "/index.php";
+					}else if(result == " failure"){
+						$("#alert").html("<div class='alert alert-warning'>Either you're username or password are incorrect, or you've not activated your account.</div>");
+						//$("#alert").show();
+					}
+			   }
+    });
+    }); 
+</script>
 EOD
 );	
 
@@ -348,6 +429,7 @@ $layout['footer'] =
 (
 <<<EOD
 </div>
+</div>
 	</div>
 	<div class="row footer">
 		<div class="col-md-12">
@@ -381,7 +463,7 @@ $layout['adminPageEditLayout'] =
 		<fieldset>
 		<legend>Edit Page</legend>
 		<label type="hidden" for="post1">Page Body:</label><br />
-		<textarea rows="8"  name="content" id="post1" cols="100">%s</textarea><br />
+		<textarea rows="8"  name="content" id="editor" cols="100">%s</textarea><br />
 		<input type="hidden" value="%s" name="page" />
 		<input type="submit" value="Save Post" name="submit" />
 		</fieldset>     

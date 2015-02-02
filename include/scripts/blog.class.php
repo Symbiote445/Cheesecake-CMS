@@ -102,7 +102,7 @@ class blog {
 					echo '<p class="error">You must enter information into all of the fields.</p>';
 				}
 			}
-			print($layout['postBlogFormat']);
+			print($layout['blogPostFormat']);
 			echo'</div>';
 		}
 	}

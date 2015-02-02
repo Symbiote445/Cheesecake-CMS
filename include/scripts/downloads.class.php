@@ -56,25 +56,32 @@ class dLoad {
 		<label for="file">File:</label>';
 		echo'<input class="Link LButton" type="file" id="file" name="file" />
 		</fieldset>
-		<input class="Link LButton" type="submit" id="save" value="&#10004;" name="submit" /> <a class="button" href="/viewgallery">Cancel</a>
+		<input title="Save File" data-placement="bottom" data-toggle="tooltip" class="Link LButton" type="submit" id="save" value="&#10004;" name="submit" /> <a class="button" href="/viewgallery">Cancel</a>
 	</form>
 	</div>';
 		echo (<<<EOL
 		<script>
     $(function upload() {
-$("#save").click(function(event) {
-var name = $("#name").val();
-if (name == '') {
-$("#alert").html("You must have a title.");
-event.preventDefault();
-}
-});
+    $("#fUP").validate({ // initialize the plugin
+        // any other options,
+        onkeyup: false,
+        rules: {
+            name: {
+                required: true,
+                minlength: 3
+            },
+			file: {
+				required: true
+			}
+        }
+    });
     var bar = $('.bar');
     var percent = $('.percent');
     var status = $('#status');
 
     $('form').ajaxForm({
         beforeSend: function() {
+			return $("#fUP").valid();
             status.empty();
             var percentVal = '0%';
             bar.width(percentVal);

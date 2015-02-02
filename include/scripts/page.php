@@ -8,7 +8,12 @@ class pageGeneration {
 				$core->logout();
 			}
 			if($_GET['action'] == 'doLogin'){
-				$error = $core->login();
+				$core->login();
+				exit();
+			}
+			if($_GET['action'] == 'postComment'){
+				$core->addcomment();
+				exit();
 			}
 	}
 		$parser->SetSmileyURL("http://".$settings['b_url']."/include/images/smileys");
@@ -27,7 +32,7 @@ class pageGeneration {
 			}
 		$core->loadModule("initialLoad");
 		if(isset($_GET['action'])){
-			if($_GET['action'] == 'login' || $_GET['action'] == 'doLogin'){
+			if($_GET['action'] == 'login'){
 				if(isset($error)){
 					echo $error;
 				}

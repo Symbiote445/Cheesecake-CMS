@@ -427,7 +427,7 @@ class gallery{
 		if($core->verify("4") || $core->verify("2")){
 		echo '<div class="shadowbar">
 		<h3>Photo Upload</h3>';
-		if (isset($_POST['submit'])) {
+		if (isset($_POST['file'])) {
 		$query = "SELECT * FROM gallery";
 		$data = mysqli_query($dbc, $query);
 		$pnum = mysqli_num_rows($data);
@@ -472,7 +472,8 @@ class gallery{
 		<div class="progress" style="color:#000;">
 			<div class="progress-bar progress-bar-success progress-bar-striped bar"><div class="percent">0%</div></div>
 		</div>
-		<form enctype="multipart/form-data" method="post" action="/uploadphoto">
+		<div id="alert"></div>
+		<form id="fUP" enctype="multipart/form-data" method="post" action="/uploadphoto">
 		<fieldset>
 		<legend>Picture Upload</legend>
 		<label for="name">Picture Name:</label><br />
@@ -496,13 +497,26 @@ class gallery{
 		echo (<<<EOL
 		<script>
     $(function() {
-
+    $("#fUP").validate({ // initialize the plugin
+        // any other options,
+        onkeyup: false,
+        rules: {
+            name: {
+                required: true,
+                minlength: 3
+            },
+			file: {
+				required: true
+			}
+        }
+    });
     var bar = $('.bar');
     var percent = $('.percent');
     var status = $('#status');
 
     $('form').ajaxForm({
         beforeSend: function() {
+			return $("#fUP").valid();
             status.empty();
             var percentVal = '0%';
             bar.width(percentVal);
@@ -513,8 +527,12 @@ class gallery{
             bar.width(percentVal);
             percent.html(percentVal);
         },
-		complete: function() {
+		complete: function(data) {
 			document.getElementById("fUP").reset();
+			$('#alert').html(data);
+		},
+		error: function(data) {
+			$('#alert').html(data);
 		}
     });
     }); 

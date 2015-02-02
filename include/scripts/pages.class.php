@@ -54,13 +54,11 @@ class pages{
 				mysqli_query($dbc, $query);
 
 				echo '<div class="shadowbar"><p>Your page has been successfully added. Would you like to <a href="/pages/mode/pageadmin">go back to the admin panel</a>?</p></div>';
-				
-				exit();
 			}
 			else {
 				echo '<p class="error">You must enter information into all of the fields.</p>';
 			}
-			$query = "SELECT * FROM `pages` WHERE `title` = '$title'";
+			$query = "SELECT * FROM `pages` WHERE `pagename` = '$title'";
 			$data = mysqli_query($dbc, $query);
 			$row = mysqli_fetch_array($data);
 			$pid = $row['page_id'];
@@ -95,11 +93,75 @@ class pages{
 			$data = mysqli_query($dbc, $query);
 
 			$row = mysqli_fetch_array($data);
+			$ID = $row['page_id'];
 			echo '<div class="shadowbar">';
 			echo'<h3>' . $row['pagename'] . '</h3>';
 			$parsed = $parser->parse($row['body']);
 			echo $parsed;
 			echo '</div>'; 
+			$query = "SELECT users.*, comments.* FROM `comments` JOIN `users` ON `user` = `uid` AND `module` = 'pages' AND `id` = '$ID'";
+			$data = mysqli_query($dbc, $query);
+			while($row = mysqli_fetch_array($data)){
+				$body = htmlentities($row['body']);
+				echo '<div class="shadowbar">';
+				echo '<a href="/ucp/uid/'.$row['uid'].'">' . $row['username'] . '</a><hr style="padding:0; margins:0;" />';
+				echo '<pre>'.$body.'</pre>';
+				echo '</div>';
+			}
+			if(isset($_SESSION['uid'])){
+				$UID = $_SESSION['uid'];
+			echo (
+			<<<EOD
+			<div class="shadowbar" style="display:none;" id="prev"><div id="cmm"></div></div>
+			<div class="shadowbar">
+			<div id="alert"></div>
+			<form id="commentForm" method="post" action="/postComment">
+			<textarea class="editor" style="width:100%;" placeholder="Comment..." id="rs" name="comment"></textarea>
+			<input type="hidden" value="$UID" name="user" id="user">
+			<input type="hidden" value="pages" name="module">
+			<input type="hidden" value="$ID" name="id">
+			<input class="Link LButton" type="submit" value="&#10004;" name="submit">
+			</form>
+			</div>
+		<script>
+    $(function comment() {
+    $("#commentForm").validate({ // initialize the plugin
+        // any other options,
+        onkeyup: false,
+        rules: {
+            comment: {
+                required: true,
+                minlength: 30,
+				maxlength: 400
+            }
+        }
+    });
+    $('#commentForm').ajaxForm({
+        beforeSend: function() {
+			return $("#commentForm").valid();
+        },
+				success : function(result) {
+					console.log(result);
+					if(result == " success"){
+						body = $("#rs").val();
+						htm = String(body).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+						cmm = "<a href='/ucp/uid/" + $("#user").val();
+						cmm += "'>Me</a><hr>" + htm;
+						cmm += "</div>";
+						$("#cmm").html(cmm);
+						$("#prev").show();
+					}else if(result == " failure"){
+						$("#alert").html("<div class='alert alert-warning'>Error</div>");
+						document.getElementById("commentForm").reset();
+						//$("#alert").show();
+					}
+			   }
+    });
+    }); 
+</script>
+EOD
+			);
+			}
 		}
 	}
 	public function pageadmin(){

@@ -533,11 +533,11 @@ class Forums{
 	}
 	public function homepage(){
 	global $dbc, $parser, $layout, $main, $settings, $core;
-	$query = "SELECT * FROM `FConf` ";
+	$query = "SELECT * FROM `fconf` ";
 	$data = mysqli_query($dbc, $query);
-	$FConf = mysqli_fetch_array($data);
-	if($FConf['homeDisp'] == 'posts'){
-	$query = "SELECT * FROM `posts` ORDER BY `date` DESC LIMIT ".$FConf['homeNum']." ";
+	$fconf = mysqli_fetch_array($data);
+	if($fconf['homeDisp'] == 'posts'){
+	$query = "SELECT * FROM `posts` ORDER BY `date` DESC LIMIT ".$fconf['homeNum']." ";
 	$data = mysqli_query($dbc, $query);
 	echo'
 	<div class="shadowbar">
@@ -557,8 +557,8 @@ class Forums{
 	</div>
 	';
 	}
-	if($FConf['homeDisp'] == 'polls'){
-	$query = "SELECT * FROM `polls` ORDER BY `date` DESC LIMIT ".$FConf['homeNum']." ";
+	if($fconf['homeDisp'] == 'polls'){
+	$query = "SELECT * FROM `polls` ORDER BY `date` DESC LIMIT ".$fconf['homeNum']." ";
 	$data = mysqli_query($dbc, $query);
 	echo'
 	<div class="shadowbar">
@@ -578,8 +578,8 @@ class Forums{
 	</div>
 	';
 	}
-	if($FConf['homeDisp'] == 'both'){
-	$query = "SELECT * FROM `posts` ORDER BY `date` DESC LIMIT ".$FConf['homeNum']." ";
+	if($fconf['homeDisp'] == 'both'){
+	$query = "SELECT * FROM `posts` ORDER BY `date` DESC LIMIT ".$fconf['homeNum']." ";
 	$data = mysqli_query($dbc, $query);
 	echo'
 	<div class="shadowbar">
@@ -599,7 +599,7 @@ class Forums{
 	</div>
 	';
 	
-	$query = "SELECT * FROM `polls` ORDER BY `date` DESC LIMIT ".$FConf['homeNum']." ";
+	$query = "SELECT * FROM `polls` ORDER BY `date` DESC LIMIT ".$fconf['homeNum']." ";
 	$data = mysqli_query($dbc, $query);
 	echo'
 	<div class="shadowbar">
@@ -826,7 +826,6 @@ class Forums{
 		
 		// End of check for form submission
 		echo'<form enctype="multipart/form-data" method="post" action="/posttopic">
-		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Post Here:</legend>
 			<label type="hidden" for="title">Title:</label><br />
@@ -840,8 +839,7 @@ class Forums{
 		}
 		echo'</select><br /><br />';	
 		echo'<label type="hidden" for="post1">Post Content:</label><br />
-		<script>edToolbar(\'bbcodeEditor\'); </script>
-		<textarea class="ed" name="post1" id="bbcodeEditor" style="height:300px;width:100%;"></textarea><br />
+		<textarea class="ed" name="post1" id="editor" style="height:300px;width:100%;"></textarea><br />
 		</fieldset>
 		<input type="submit" value="Save Post" name="submit" />     
 	</form>
@@ -1110,12 +1108,10 @@ if($core->verify("4") || $core->verify("2")){
 			}
 		} // End of check for form submission
 		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/postreply">
-		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Reply:</legend>
 		<input type="hidden" name="replyid" value="'.$_GET['postid'].'">
-		<script>edToolbar(\'bbcodeEditor\'); </script>
-		<textarea name="reply" id="bbcodeEditor" style="height:300px;width:100%;"></textarea><br />
+		<textarea name="reply" id="editor" style="height:300px;width:100%;"></textarea><br />
 		</fieldset>
 		<input type="submit" value="Save Post" name="submit" /> 
 	</form>
@@ -1188,14 +1184,14 @@ if($core->verify("4") || $core->verify("2")){
 		$homeDisp = mysqli_real_escape_string($dbc, trim($_POST['homeDisp']));
 		$homeNum = mysqli_real_escape_string($dbc, trim($_POST['homeNum']));
 
-		$query = "UPDATE `FConf` SET `homeDisp`='$homeDisp', `homeNum`='$homeNum' ";
+		$query = "UPDATE `fconf` SET `homeDisp`='$homeDisp', `homeNum`='$homeNum' ";
 		mysqli_query($dbc, $query);
 		
 		echo '<div class="shadowbar">Forum Module Configuration Updated.</div>';
 	}
-	$query = "SELECT * FROM `FConf` ";
+	$query = "SELECT * FROM `fconf` ";
 	$data = mysqli_query($dbc, $query);
-	$FConf = mysqli_fetch_array($data);
+	$fconf = mysqli_fetch_array($data);
 	echo '
 <div class="shadowbar"><div class="alert alert-info">Please refer to the documentation <a href="http://cheesecakebb.org/index.php?action=pages&page=Settings">Here</a> for settings</div>
 		<form method="post" action="/moderation">
@@ -1203,11 +1199,11 @@ if($core->verify("4") || $core->verify("2")){
 		<legend>Settings</legend>
 		<div class="input-group">
 		<span class="input-group-addon">Home Page Display</span>
-		<input class="form-control" type="text" name="homeDisp" value="'.$FConf['homeDisp'].'" />
+		<input class="form-control" type="text" name="homeDisp" value="'.$fconf['homeDisp'].'" />
 		</div>
 		<div class="input-group">
 		<span class="input-group-addon">Number of Latest Post/Polls</span>
-		<input class="form-control" type="text" name="homeNum" value="'.$FConf['homeNum'].'" />
+		<input class="form-control" type="text" name="homeNum" value="'.$fconf['homeNum'].'" />
 		</div>
 		</fieldset>
 		<input class="Link LButton" type="submit" value="Submit Edits" name="submit" />

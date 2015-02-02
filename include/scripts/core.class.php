@@ -220,16 +220,7 @@ EOD
 					'board_enabled'=>false,
 					'about' => "".$about.""
 					);
-					$end = '<?php
-define(\'MM_UPLOADPATH\', \'include/images/profile/\');
-define(\'MM_MAXFILESIZE\', 32768);
-define(\'MM_MAXIMGWIDTH\', 120);
-define(\'MM_MAXIMGHEIGHT\', 120);
-define(\'MM_DLPATH\', \'files/\');
-define(\'MM_DLIMGPATH\', \'files/images/\');
-define(\'MM_GALLERY\', \'include/images/\');	
-$dbc=mysqli_connect($settings[\'db_host\'],$settings[\'db_user\'],$settings[\'db_password\'],$settings[\'db\']);
-			?>';
+					$end = '<?php $dbc=mysqli_connect($settings[\'db_host\'],$settings[\'db_user\'],$settings[\'db_password\'],$settings[\'db\']); ?>';
 					file_put_contents($mySettingsFile, $this->array2php($newSettings, "settings"));
 					file_put_contents($mySettingsFile, $end, FILE_APPEND | LOCK_EX );
 
@@ -480,9 +471,11 @@ class core {
 		if(!isset($_SESSION['uid']) && isset($_COOKIE['ID'])){
 			global $dbc;
 			$UID = $_COOKIE['ID'];
-			$query = "SELECT * FROM `loggedIn` WHERE `uid` = '$UID'";
+			$query = "SELECT * FROM `loggedin` WHERE `uid` = '$UID'";
 			$data = mysqli_query($dbc, $query);
 			$row = mysqli_fetch_array($data);
+			$time = $row['time'];
+			if(time() - 86400 < $time){
 			if($row['uid'] == $_COOKIE['ID'] && $row['hash'] == $_COOKIE['HASH'] && $row['ip'] == $_COOKIE['IP']){
 			$query = "SELECT username, ip, hash FROM users WHERE uid = '" . $_COOKIE['ID'] . "'";
 			$data = mysqli_query($dbc, $query);
@@ -493,6 +486,7 @@ class core {
 			$_SESSION['username'] = $row['username'];
 			}
 			}
+		}
 		}
 		}
 	}
@@ -634,22 +628,46 @@ class core {
 						setcookie("ID", $row['uid'], time()+3600*24);
 						setcookie("IP", $ip, time()+3600*24);
 						setcookie("HASH", $row['hash'], time()+3600*24);
-						header('Location: /index.php');
+						$hash = $row['hash'];
+						$uid = $row['uid'];
+						$time = time();
+						$query = "INSERT INTO `loggedin` (`hash`, `ip`, `uid`, `time`) VALUES ('$hash', '$ip', '$uid', '$time')";
+						mysqli_query($dbc, $query);
+						echo 'success';
 						exit();
 					} else {
-						$error = '<div class="shadowbar">It seems we have run into a problem... Either your username or password are incorrect or you haven\'t activated your account yet.</div>' ;
-						return $error;
+						//$error = '<div class="shadowbar">It seems we have run into a problem... Either your username or password are incorrect or you haven\'t activated your account yet.</div>' ;
+						//return $error;
+					$err = 'failure';
+					echo($err);
+					exit();
 					}
 				} else {
-					$error = '<div class="shadowbar">You must enter both your username AND password.</div>';
-					return $error;
+					//$error = '<div class="shadowbar">You must enter both your username AND password.</div>';
+					//return $error;
+					$err = "{\"result\":\"failure\"}";
+					echo json_encode($err);
+					exit();
 				}
 			}
 		} else {
-			echo "<div class='shadowbar'>You're Logged In!</div>";
+			echo '{"result":"success"}';
 			exit();
 		}
 		return $error;
+	}
+	public function addcomment(){
+		global $dbc;
+		if(isset($_POST['submit'])){
+			$comment = mysqli_real_escape_string($dbc, trim($_POST['comment']));
+			$user = mysqli_real_escape_string($dbc, trim($_POST['user']));
+			$module = mysqli_real_escape_string($dbc, trim($_POST['module']));
+			$id = mysqli_real_escape_string($dbc, trim($_POST['id']));
+			$query = "INSERT INTO `comments` (`body`, `user`, `module`, `id`) VALUES ('$comment', '$user', '$module', '$id')";
+			$data = mysqli_query($dbc, $query);
+				echo 'success';
+				exit();
+			}
 	}
 	public function editprofile(){
 		global $dbc, $parser, $layout, $main, $settings, $core; 
