@@ -240,7 +240,7 @@ EOD
 					file_put_contents($mySettingsFile, $this->array2php($newSettings, "settings"));
 					file_put_contents($mySettingsFile, $end, FILE_APPEND | LOCK_EX );
 
-					echo '<div class="alert alert-success">Settings Edited</div>';
+					echo '<div class="shadowbar"><div class="alert alert-success">Settings Edited</div></div>';
 				}
 				global $settings;
 				
