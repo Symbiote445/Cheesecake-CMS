@@ -22,6 +22,7 @@ class pageGeneration {
 		$core->loadModule("nav");
 		print($layout['header-end']);
 		$core->sidebar();
+		$core->securityAgent("check");
 			if(!isset($_GET['action'])){
 				if($settings['home_display'] == 'none' || $settings['home_display'] == 'about'){
 					echo '<div class="shadowbar">';

@@ -483,10 +483,6 @@ class Forums{
 		$postid = mysqli_real_escape_string($dbc, $_GET['p']);
 		$query = "SELECT `polls`.*, `users`.* FROM `polls` JOIN `users` ON `users`.`uid` = `polls`.`user_id` AND `polls`.`postlink` = '$postid' " ;
 		$data = mysqli_query($dbc, $query) or die(mysqli_error($dbc));
-		if($core->verify("2") || $core->verify("4")){
-			echo '<a class="Link LButton" href="/viewpost/post/'.$postid.'/mode/lock">Lock Post</a><br>';
-			echo '<a class="Link LButton" href="/viewpost/post/'.$postid.'/mode/unlock">Unlock Post</a><br>';
-		}
 		$row = mysqli_fetch_array($data);
 			$replyTitle = $row['title'];
 			$ID = $row['pid'];
@@ -500,10 +496,13 @@ class Forums{
 			';
 			$choices = explode(",", $row['choices']);
 			foreach($choices as $choice){
-			$query = "SELECT * FROM `votes` WHERE `poll` = '$ID' AND `choice` = '$choice' ";
+			$choice = str_replace("'", "", $choice);
+			$choiceO = str_replace(" ", "-", $choice);
+			$choiceO = strtolower($choiceO);
+			$query = "SELECT * FROM `votes` WHERE `poll` = '$ID' AND `choice` = '$choiceO'";
 			$data = mysqli_query($dbc, $query);
 			echo $choice.': '.mysqli_num_rows($data);
-			echo sprintf($layout['pollChoices'], $ID, $choice, $choice);
+			echo sprintf($layout['pollChoices'], $ID, $choiceO, $choice);
 			}
 			echo '
 			</ul>

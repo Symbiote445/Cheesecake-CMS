@@ -123,7 +123,7 @@ class admin {
 		$query = "SELECT * FROM users ORDER BY uid DESC";
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
-			echo sprintf($layout['adminUserLayout'], $row['username'], $row['uid'], $row['uid'], $row['activated'], $row['hash'], $row['adminlevel'], $row['uid']);
+			echo sprintf($layout['adminUserLayout'], $row['username'], $row['uid'], $row['uid'], $row['activated'], $row['hash'], $row['adminlevel'], $row['uid'], $row['uid']);
 		}
 		echo '</div>';
 	}
@@ -145,6 +145,20 @@ class admin {
 			}
 			if($_GET['mode'] == 'editperms'){
 				$this->eur();
+			}
+			if($_GET['mode'] == 'ban'){
+				if(isset($_POST['submit'])){
+					$core->securityAgent("ban");
+				} else {
+				echo '
+				<form action="/acp/mode/ban" method="post">
+					<input type="text" name="res"  placeholder="Ban Reason"/>
+					<input type="hidden" name="user" value="'.$_GET['u'].'" />
+					<input type="submit" name="submit" value="Ban User" class="Link LButton" />
+				</form>
+				';					
+				}
+				
 			}
 			if($_GET['mode'] == 'layout'){
 				if(isset($_POST['submit'])){
@@ -204,6 +218,8 @@ EOD
 					$db = $settings['db'];
 					$pass = $settings['db_password'];
 					$user = $settings['db_user'];
+					$about = str_replace("'", "", $about);
+					$about = str_replace('"', "", $about);
 					
 					$newSettings = array (         // the default settings array
 					'home_display'=>''.$home.'',
@@ -600,12 +616,38 @@ class core {
 					mail($to, $subject, $message, $headers); // Send our email	
 	}
 	public function addNotification($U, $L, $D){
-	global $dbc;
+	global $dbc, $layout;
 	$user = $U;
 	$link = $L;
 	$description = $D;
 	$query = "INSERT INTO notifications (`user`, `description`, `link`) VALUES ('$user', '$description', '$link')";
 	mysqli_query($dbc, $query);
+	}
+	public function securityAgent($opt){
+		global $dbc, $layout, $settings, $version;
+		$O = $opt;
+		if($O == 'check'){
+			$IP = $_SERVER['REMOTE_ADDR'];
+			$query = "SELECT * FROM `bans` WHERE `user` = '$IP' ";
+			$data = mysqli_query($dbc, $query);
+			$c = mysqli_num_rows($data);
+			$row = mysqli_fetch_array($data);
+			if($c > 0){
+				echo '<div class="shadowbar">You have been banned from this website for reason: '.$row['reason'].'.</div>';
+				die(sprintf($layout['footer'], $settings['b_url'], $settings['site_name'], $version['core']));
+			}
+		} 
+		if($O == 'ban'){
+			$reason = mysqli_real_escape_string($dbc, trim($_POST['res']));
+			$user = mysqli_real_escape_string($dbc, trim($_POST['user']));
+			$query = "SELECT ip FROM users WHERE uid = '$user' ";
+			$data = mysqli_query($dbc, $query);
+			$row = mysqli_fetch_array($data);
+			$user = $row['ip'];
+			$query = "INSERT INTO `bans` (`user`, `reason`) VALUES ('$user', '$reason')";
+			mysqli_query($dbc, $query);
+			echo '<div class="shadowbar">User banned.</div>';
+		}
 	}
 	public function login() {
 		global $dbc, $layout;
@@ -620,7 +662,7 @@ class core {
 						$row = mysqli_fetch_array($data);
 						$_SESSION['uid'] = $row['uid'];
 						$_SESSION['username'] = $row['username'];
-						$_SERVER['REMOTE_ADDR'] = isset($_SERVER["HTTP_CF_CONNECTING_IP"]) ? $_SERVER["HTTP_CF_CONNECTING_IP"] : $_SERVER["REMOTE_ADDR"];
+						//$_SERVER['REMOTE_ADDR'] = isset($_SERVER["HTTP_CF_CONNECTING_IP"]) ? $_SERVER["HTTP_CF_CONNECTING_IP"] : $_SERVER["REMOTE_ADDR"];
 						$ip = $_SERVER['REMOTE_ADDR'];
 						$user = $row['uid'];
 						$query = "UPDATE users SET ip = '$ip' WHERE uid = '$user' ";
@@ -632,6 +674,8 @@ class core {
 						$uid = $row['uid'];
 						$time = time();
 						$query = "INSERT INTO `loggedin` (`hash`, `ip`, `uid`, `time`) VALUES ('$hash', '$ip', '$uid', '$time')";
+						mysqli_query($dbc, $query);
+						$query = "UPDATE `users` SET `ip`='$ip' WHERE `uid` = '$user'";
 						mysqli_query($dbc, $query);
 						echo 'success';
 						exit();

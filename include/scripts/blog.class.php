@@ -5,6 +5,7 @@ if(isset($_GET['action']) && ($_GET['action'] == "Blog")){
 if(isset($_GET['action']) && !isset($_GET['mode'])){
 if($_GET['action'] === "Blog"){
 global $dbc, $parser, $layout, $main, $settings, $core;
+$blog->searchBar();
 $blog->viewBlog();
 }
 $blog->blogAdminBar();
@@ -21,6 +22,9 @@ $blog->blogDeletePost();
 }
 if($_GET['mode'] == "hide"){
 $blog->blogHideAdmin();
+}
+if($_GET['mode'] == "archive"){
+$blog->addArch();
 }
 if($_GET['mode'] == "unhide"){
 $blog->blogUnHideAdmin();
@@ -41,6 +45,33 @@ class blog {
 			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
 		}
 		echo '</div>';
+	}
+	public function searchBar(){
+		global $dbc, $parser, $layout, $main, $settings, $core;
+		if(isset($_POST['submit'])){
+			$search = mysqli_real_escape_string($dbc, trim($_POST['search']));
+			$query = "SELECT blog.*, users.* FROM blog INNER JOIN users ON users.uid = blog.user AND `title` LIKE '%$search%' OR `content` LIKE '%$search%' ";
+			$data = mysqli_query($dbc, $query);
+			echo '<div class="shadowbar"><h3>Search results</h3>';
+			while ($row = mysqli_fetch_array($data)){
+			$parsed = $parser->parse($row['content']);
+			$sig = $parser->parse($row['sig']);
+			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
+			}
+			echo '</div>';
+
+		}
+	echo '
+		<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/Blog">
+				<fieldset>
+				<legend>Search:</legend>
+				<input type="text" name="search" /><br />
+				</fieldset>
+				<input class="Link LButton" type="submit" value="Search Blog" name="submit" />
+			</form>
+		</div>	
+	';
+	
 	}
 	static function stats(){
 		global $dbc;
@@ -64,6 +95,24 @@ class blog {
 
 	public function viewBlog(){
 	global $dbc, $parser, $layout, $main, $settings, $core;
+	echo '<div class="shadowbar"><h3>Archives</h3>';
+	$query = "SELECT * FROM `archive` LIMIT 5";
+	$data = mysqli_query($dbc, $query);
+	while($row = mysqli_fetch_array($data)){
+		echo '<a class="Link LButton" href="/Blog/archive/'.$row['arch'].'">'.$row['arch'].'</a>';
+	}
+	echo '</div>';
+	if(isset($_GET['archive'])){
+		$arch = mysqli_real_escape_string($dbc, trim($_GET['archive']));
+		$query = "SELECT blog.*, users.* FROM blog INNER JOIN users ON users.uid = blog.user AND blog.arch = '$arch' ORDER BY blog.id DESC";
+		$data = mysqli_query($dbc, $query);
+
+		while ($row = mysqli_fetch_array($data)) {
+			$parsed = $parser->parse($row['content']);
+			$sig = $parser->parse($row['sig']);
+			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
+		}		
+	} else {
 		$query = "SELECT blog.*, users.* FROM blog INNER JOIN users ON users.uid = blog.user ORDER BY blog.id DESC";
 		$data = mysqli_query($dbc, $query);
 
@@ -71,7 +120,8 @@ class blog {
 			$parsed = $parser->parse($row['content']);
 			$sig = $parser->parse($row['sig']);
 			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
-		}
+		}	
+	}
 	}
 	
 	public function postBlog(){
@@ -80,6 +130,9 @@ class blog {
 		if($core->verify("4") || $core->verify("2")){
 
 			global $dbc;
+			$mon = date("M");
+			$Yr = date("Y");
+			$date = $mon.'-'.$Yr;
 			$query = "SELECT * FROM users WHERE uid = '" . $_SESSION['uid'] . "'";
 			$data = mysqli_query($dbc, $query);
 			$row = mysqli_fetch_array($data);
@@ -91,7 +144,7 @@ class blog {
 
 				if (!empty($post1) && !empty($title)) {
 
-					$query = "INSERT INTO blog (`title`, `content`, `display`, `user`, `date`) VALUES ('$title', '$post1', '$display', '$username', NOW())";
+					$query = "INSERT INTO blog (`title`, `content`, `display`, `user`, `date`, `arch`) VALUES ('$title', '$post1', '$display', '$username', NOW(), '$date')";
 					mysqli_query($dbc, $query);
 
 					echo '<p>Your post has been successfully added. Would you like to <a href="/Blog">view all of the blog posts</a>?</p>';
@@ -106,12 +159,28 @@ class blog {
 			echo'</div>';
 		}
 	}
+	public function addArch(){
+		global $dbc;
+		$mon = date("M");
+		$Yr = date("Y");
+		$date = $mon.'-'.$Yr;
+		$query = "SELECT * FROM `archive` WHERE `arch` = '$date'";
+		$data = mysqli_query($dbc, $query);
+		$row = mysqli_fetch_array($data);
+		$c = count($row);
+		if($c <= 0){
+			$query = "INSERT INTO `archive` (`arch`) VALUES ('$date')";
+			mysqli_query($dbc, $query);		
+			echo '<div class="shadowbar">Archiving complete</div>';
+		} else {
+		echo '<div class="shadowbar">Nothing to archive!</div>';	
+		}
+	}
 	public function blogPostAdmin(){
 		global $settings, $version, $dbc, $layout, $core, $parser;
-		echo '<div class="shadowbar">';
 		$core->isLoggedIn();
-		
-
+		echo '<div class="shadowbar">';		
+		echo '<a class="Link LButton" href="/Blog/mode/archive">Check archive and add as needed</a>';
 		if(!$core->verify("4")){
 			exit();
 		}

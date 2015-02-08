@@ -174,7 +174,7 @@ EOD
 
 $layout['login'] = 
 (
-<<<EOD
+<<<'EOD'
 	<div class="shadowbar"><form id="login" method="post" action="/doLogin">
 	<div id="alert"></div>
     <fieldset>
@@ -212,15 +212,16 @@ $layout['login'] =
         }
     });
 
-    $('form').ajaxForm({
+    $('#login').ajaxForm({
         beforeSend: function() {
 			return $("#login").valid();
         },
 				success : function(result) {
-					console.log(result);
-					if(result == " success"){
+					var res = $.trim(result);
+					console.log(res);
+					if(res == "success"){
 						window.location = "/index.php";
-					}else if(result == " failure"){
+					}else if(res == "failure"){
 						$("#alert").html("<div class='alert alert-warning'>Either you're username or password are incorrect, or you've not activated your account.</div>");
 						//$("#alert").show();
 					}
@@ -303,6 +304,7 @@ $layout['adminUserLayout'] =
 			<tr><td>User ID: %s<a class="Link LButton" href="/acp/mode/deleteuser/del/%s"> Delete User</a></td></tr>
 		  <tr><td>Activation Status: %s<a href="/verifyaccount/hash/%s"> Activate User</a></td></tr>
 		  <tr><td>Admin Level: %s<a href="/acp/mode/editperms/r/%s"> Edit Perms</a></td></tr>
+		  <tr><td><a class="Link LButton" href="/acp/mode/ban/u/%s">Ban User</a></td></tr>
 		</table><hr> 
 EOD
 );
