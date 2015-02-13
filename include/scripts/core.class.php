@@ -35,7 +35,7 @@ class admin {
 			if (!empty($userid)) {
 				$query = "DELETE FROM users WHERE uid = $userid";
 				mysqli_query($dbc, $query);
-				echo '<div class="shadowbar"><p>User has been successfully deleted. Would you like to <a href="index.php?action=acp&mode=users">go back to the admin panel</a>?</p></div>';
+				echo '<div class="shadowbar"><p>User has been successfully deleted. Would you like to <a href="/acp/mode/users">go back to the admin panel</a>?</p></div>';
 				
 				exit();
 			}
@@ -44,15 +44,17 @@ class admin {
 			}
 		} 
 		
-		
-		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="index.php?action=acp&mode=deleteuser">
+		if($_GET['del'] = $_SESSION['uid']){
+			die('<div class="shadowbar">Cannot delete yourself.</div>');
+		}		
+		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/acp/mode/deleteuser">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Are you sure?</legend>
 			<input type="hidden" name="userid" value="'.$_GET['del'].'">';
 		echo 'User ID: ' . $_GET['del'] . '<br /> <br />';
 		echo'</fieldset>
-		<input type="submit" value="Delete User" name="submit" />    <a class="button" href="index.php?action=acp">Cancel</a> 
+		<input type="submit" value="Delete User" name="submit" />    <a class="button" href="/acp">Cancel</a> 
 	</form>
 	</div>';
 	}
@@ -123,7 +125,7 @@ class admin {
 		$query = "SELECT * FROM users ORDER BY uid DESC";
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
-			echo sprintf($layout['adminUserLayout'], $row['username'], $row['uid'], $row['uid'], $row['activated'], $row['hash'], $row['adminlevel'], $row['uid'], $row['uid']);
+			echo sprintf($layout['adminUserLayout'], $row['username'], $row['uid'], $row['uid'], $row['activated'], $row['hash'], $row['adminlevel'], $row['uid'], $row['uid'], $row['uid']);
 		}
 		echo '</div>';
 	}
@@ -133,7 +135,7 @@ class admin {
 			die('<div class="shadowbar">You don\'t have significant privilege</div>');
 		}
 		echo '<div class="shadowbar">
-		<a class="Link LButton" href="/acp">Admin </a><a class="Link LButton" href="/acp/mode/users">Users </a><a class="Link LButton" href="/acp/mode/Settings">Settings </a><a class="Link LButton" href="/acp/mode/modules">Module Settings </a><a class="Link LButton" href="/acp/mode/layout">Advanced Layout Editor</a><a class="Link LButton" href="/acp/mode/stats">Record Stats</a>';
+		<a class="Link LButton" href="/acp">Admin </a><a class="Link LButton" href="/acp/mode/users">Users </a><a class="Link LButton" href="/acp/mode/banlist">Banned Users</a><a class="Link LButton" href="/acp/mode/Settings">Settings </a><a class="Link LButton" href="/acp/mode/modules">Module Settings </a><a class="Link LButton" href="/acp/mode/layout">Advanced Layout Editor</a><a class="Link LButton" href="/acp/mode/stats">Record Stats</a>';
 		echo '</div>
 ';
 		if(isset($_GET['mode'])){
@@ -146,19 +148,88 @@ class admin {
 			if($_GET['mode'] == 'editperms'){
 				$this->eur();
 			}
-			if($_GET['mode'] == 'ban'){
+			if($_GET['mode'] == 'banaccount'){
 				if(isset($_POST['submit'])){
-					$core->securityAgent("ban");
+					$core->securityAgent("banacc");
 				} else {
 				echo '
-				<form action="/acp/mode/ban" method="post">
+				<div class="shadowbar">
+				<form action="/acp/mode/banaccount" method="post">
 					<input type="text" name="res"  placeholder="Ban Reason"/>
 					<input type="hidden" name="user" value="'.$_GET['u'].'" />
 					<input type="submit" name="submit" value="Ban User" class="Link LButton" />
 				</form>
+				</div>
+				';					
+			}
+			}
+			if($_GET['mode'] == 'banip'){
+				if(isset($_POST['submit'])){
+					$core->securityAgent("banip");
+				} else {
+				echo '
+				<div class="shadowbar">
+				<form action="/acp/mode/banip" method="post">
+					<input type="text" name="res"  placeholder="Ban Reason"/>
+					<input type="hidden" name="user" value="'.$_GET['u'].'" />
+					<input type="submit" name="submit" value="Ban User" class="Link LButton" />
+				</form>
+				</div>
 				';					
 				}
 				
+			}
+			if($_GET['mode'] == 'unban'){
+				$bID = mysqli_real_escape_string($dbc, trim($_GET['b']));
+				$query = "DELETE FROM bans WHERE bID = '$bID'";
+				mysqli_query($dbc, $query);
+				echo '<div class="shadowbar">User Unbanned</div>';
+			}
+			if($_GET['mode'] == 'banlist'){
+				echo '<div class="shadowbar">
+				<h3>Account Bans</h3>
+					<table class="table">
+					<thead>
+					<th>User</th>
+					<th>Ban Reason</th>
+					<th>Options</th>
+					</thead>
+					<tbody>				
+				';
+				$query = "SELECT users.*, bans.* FROM `bans` JOIN users on users.username = bans.user";
+				$data = mysqli_query($dbc, $query);
+				while($row = mysqli_fetch_array($data)){
+					echo '
+					<tr><td>'.$row['username'].'</td><td>'.$row['reason'].'</td><td><a href="/acp/mode/unban/b/'.$row['bID'].'">Unban User</a></td></tr>
+					';
+				}
+				if(mysqli_num_rows($data) < 1){
+					echo '<tr><td>No user accounts banned.</td></tr>';
+				}
+				echo '</tbody>
+					</table></div>';
+				echo '<div class="shadowbar">
+				<h3>IP Bans</h3>
+					<table class="table">
+					<thead>
+					<th>User</th>
+					<th>Ban Reason</th>
+					<th>Options</th>
+					</thead>
+					<tbody>				
+				';
+				$query = "SELECT users.*, bans.* FROM `bans` JOIN users on users.ip = bans.user";
+				$data = mysqli_query($dbc, $query);
+				while($row = mysqli_fetch_array($data)){
+					echo '
+					<tr><td>'.$row['username'].' IP: '.$row['user'].'</td><td>'.$row['reason'].'</td><td><a href="/acp/mode/unban/b/'.$row['bID'].'">Unban User</a></td></tr>
+					';
+				}
+				if(mysqli_num_rows($data) < 1){
+					echo '<tr><td>No users banned by IP.</td></tr>';
+				}
+				echo '</tbody>
+					</table></div>';
 			}
 			if($_GET['mode'] == 'layout'){
 				if(isset($_POST['submit'])){
@@ -623,7 +694,7 @@ class core {
 	$query = "INSERT INTO notifications (`user`, `description`, `link`) VALUES ('$user', '$description', '$link')";
 	mysqli_query($dbc, $query);
 	}
-	public function securityAgent($opt){
+	public function securityAgent($opt, $u = null){
 		global $dbc, $layout, $settings, $version;
 		$O = $opt;
 		if($O == 'check'){
@@ -637,13 +708,34 @@ class core {
 				die(sprintf($layout['footer'], $settings['b_url'], $settings['site_name'], $version['core']));
 			}
 		} 
-		if($O == 'ban'){
+		if($O == 'checkacc'){
+			$query = "SELECT * FROM `bans` WHERE `user` = '$u' ";
+			$data = mysqli_query($dbc, $query);
+			$c = mysqli_num_rows($data);
+			$row = mysqli_fetch_array($data);
+			if($c > 0){
+				echo 'banned';
+				exit();
+			}
+		} 
+		if($O == 'banip'){
 			$reason = mysqli_real_escape_string($dbc, trim($_POST['res']));
 			$user = mysqli_real_escape_string($dbc, trim($_POST['user']));
 			$query = "SELECT ip FROM users WHERE uid = '$user' ";
 			$data = mysqli_query($dbc, $query);
 			$row = mysqli_fetch_array($data);
 			$user = $row['ip'];
+			$query = "INSERT INTO `bans` (`user`, `reason`) VALUES ('$user', '$reason')";
+			mysqli_query($dbc, $query);
+			echo '<div class="shadowbar">User banned.</div>';
+		}
+		if($O == 'banacc'){
+			$reason = mysqli_real_escape_string($dbc, trim($_POST['res']));
+			$user = mysqli_real_escape_string($dbc, trim($_POST['user']));
+			$query = "SELECT username FROM users WHERE uid = '$user' ";
+			$data = mysqli_query($dbc, $query);
+			$row = mysqli_fetch_array($data);
+			$user = $row['username'];
 			$query = "INSERT INTO `bans` (`user`, `reason`) VALUES ('$user', '$reason')";
 			mysqli_query($dbc, $query);
 			echo '<div class="shadowbar">User banned.</div>';
@@ -660,6 +752,7 @@ class core {
 					$data = mysqli_query($dbc, $query);
 					if((mysqli_num_rows($data) === 1)){
 						$row = mysqli_fetch_array($data);
+						$this->securityAgent("checkacc", $row['username']);
 						$_SESSION['uid'] = $row['uid'];
 						$_SESSION['username'] = $row['username'];
 						//$_SERVER['REMOTE_ADDR'] = isset($_SERVER["HTTP_CF_CONNECTING_IP"]) ? $_SERVER["HTTP_CF_CONNECTING_IP"] : $_SERVER["REMOTE_ADDR"];

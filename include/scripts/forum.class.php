@@ -513,6 +513,7 @@ class Forums{
 	}
 	public function pollvote(){
 	global $dbc, $parser, $layout, $main, $settings, $core;
+	$core->isLoggedIn();
 	$poll = mysqli_real_escape_string($dbc, $_GET['poll']);
 	$vote = mysqli_real_escape_string($dbc, $_GET['choice']);
 	$user = $_SESSION['uid'];

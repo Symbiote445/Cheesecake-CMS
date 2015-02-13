@@ -224,6 +224,8 @@ $layout['login'] =
 					}else if(res == "failure"){
 						$("#alert").html("<div class='alert alert-warning'>Either you're username or password are incorrect, or you've not activated your account.</div>");
 						//$("#alert").show();
+					}else if(res == "banned"){
+						$("#alert").html("<div class='alert alert-warning'>You are banned from this website.</div>");						
 					}
 			   }
     });
@@ -304,7 +306,7 @@ $layout['adminUserLayout'] =
 			<tr><td>User ID: %s<a class="Link LButton" href="/acp/mode/deleteuser/del/%s"> Delete User</a></td></tr>
 		  <tr><td>Activation Status: %s<a href="/verifyaccount/hash/%s"> Activate User</a></td></tr>
 		  <tr><td>Admin Level: %s<a href="/acp/mode/editperms/r/%s"> Edit Perms</a></td></tr>
-		  <tr><td><a class="Link LButton" href="/acp/mode/ban/u/%s">Ban User</a></td></tr>
+		  <tr><td><a class="Link LButton" href="/acp/mode/banaccount/u/%s">Ban User's Account</a><a class="Link LButton" href="/acp/mode/banip/u/%s">Ban User by IP</a></td></tr>
 		</table><hr> 
 EOD
 );
