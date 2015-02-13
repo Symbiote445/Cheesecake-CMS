@@ -427,7 +427,7 @@ class gallery{
 		if($core->verify("4") || $core->verify("2")){
 		echo '<div class="shadowbar">
 		<h3>Photo Upload</h3>';
-		if (isset($_POST['file'])) {
+		if (isset($_POST['submit'])) {
 		$query = "SELECT * FROM gallery";
 		$data = mysqli_query($dbc, $query);
 		$pnum = mysqli_num_rows($data);
