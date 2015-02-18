@@ -104,7 +104,7 @@ class pages{
 			while($row = mysqli_fetch_array($data)){
 				$body = htmlentities($row['body']);
 				echo '<div class="shadowbar">';
-				echo '<a href="/ucp/uid/'.$row['uid'].'">' . $row['username'] . '</a><hr style="padding:0; margins:0;" />';
+				echo '<a href="/ucp/'.$row['uid'].'">' . $row['username'] . '</a><hr style="padding:0; margins:0;" />';
 				echo '<pre>'.$body.'</pre>';
 				echo '</div>';
 			}
@@ -203,7 +203,7 @@ EOD
 		while ($row = mysqli_fetch_array($data)) {
 
 			if(!empty($row['pagename'])) {
-				echo'<tr><td><a href="/pages/page/'.$row['pagelink'].'">'.$row['pagename'].'</a><br><hr style="margin:5px;"></td></tr>';
+				echo'<tr><td><a href="/pages/'.$row['pagelink'].'">'.$row['pagename'].'</a><br><hr style="margin:5px;"></td></tr>';
 			}
 		}
 		echo '</table><a class="Link LButton" href="/pages/f/'.($f - 5).'">Previous</a><a class="Link LButton" href="/pages/f/'.($f + 5).'">Next</a>';

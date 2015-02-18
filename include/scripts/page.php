@@ -3,6 +3,7 @@
 class pageGeneration {
 	public function Generate(){
 		global $dbc, $parser, $layout, $settings, $core, $admin, $version;
+		$core->counter();
 	if(isset($_GET['action'])){
 			if($_GET['action'] === 'logout'){
 				$core->logout();

@@ -131,7 +131,7 @@ class Forums{
 			';
 			while ($row = mysqli_fetch_array($data)){
 			echo '
-			<tr><td><a href="/viewpost/post/'.$row['postlink'].'">'.$row['title'].'</a></td></tr>
+			<tr><td><a href="/viewpost/'.$row['postlink'].'">'.$row['title'].'</a></td></tr>
 			';
 			}
 			echo '
@@ -358,13 +358,13 @@ class Forums{
 				$count = mysqli_query($dbc, $query2);
 				$rc = mysqli_fetch_array($count);
 				echo'<tr>';
-				echo'<td><a class="nav" href="/viewforum/cat/'.$row1['cat_id'].'">' .$row1['name']. '<span class="badge">' . mysqli_num_rows($count) . ' Post(s)</span></a>';
+				echo'<td><a class="nav" href="/viewforum/'.$row1['cat_id'].'">' .$row1['name']. '<span class="badge">' . mysqli_num_rows($count) . ' Post(s)</span></a>';
 				echo'<div class="col-md-6">'.$row1['desc'].'</div>';
 				echo'</td>';
 				echo'<td>';
 				if((mysqli_num_rows($count) > 0)){ 
-					echo'<a href="/viewpost/post/'.$rc['postlink'].'">'.$rc['tag'].' '.$rc['title'].'</a><br>';
-					echo'By: <a href="/ucp/uid/'.$rc['uid'].'">' . $rc['username'] . '</a>';
+					echo'<a href="/viewpost/'.$rc['postlink'].'">'.$rc['tag'].' '.$rc['title'].'</a><br>';
+					echo'By: <a href="/ucp/'.$rc['uid'].'">' . $rc['username'] . '</a>';
 				}
 				echo'</td></tr>';
 			}
@@ -382,7 +382,7 @@ class Forums{
 		$query = "SELECT * FROM polls";
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
-		echo '<tr><td><a href="/viewPoll/p/'.$row['postlink'].'">'.$row['title'].'</a></td></tr>';
+		echo '<tr><td><a href="/viewPoll/'.$row['postlink'].'">'.$row['title'].'</a></td></tr>';
 		}
 		echo '
 		</tbody>
@@ -400,7 +400,7 @@ class Forums{
 			<table class="table cgBox">
 			<tr>
 			<td>
-			<a href="/viewpost/post/'.$row['postlink'].'">'.$row['tag'].' '.$row['title'].'</a>
+			<a href="/viewpost/'.$row['postlink'].'">'.$row['tag'].' '.$row['title'].'</a>
 			<div class="col=md=6">'.$parsed.'</div>
 			</td>
 			</tr>
@@ -417,31 +417,6 @@ class Forums{
 		';
 		
 	}
-	/*
-		while ($row = mysqli_fetch_array($data)) {
-		$query2 = "SELECT user.*, posts.* FROM posts JOIN user ON user.id = posts.id AND category = ".$row['cat_id']." AND hidden = '0' ORDER BY post_id DESC";
-		$count = mysqli_query($dbc, $query2);
-			$rc = mysqli_fetch_array($count);
-			
-			if(!empty($row['name'])) {
-				echo'<tr>';
-				echo '<div class="col-md-10 cgBox">';
-				echo '<h3>'.$row['cg_name'].'</h3>';
-				echo'<td><a class="nav" href="index.php?action=viewforum&cat='.$row['cat_id'].'">' .$row['name']. '<span class="badge">' . mysqli_num_rows($count) . ' Post(s)</span></a>';
-				echo $row['desc'];
-				echo'</td>';
-				echo'<td>';
-				if((mysqli_num_rows($count) > 0)){
-				echo'<a href="index.php?action=viewpost&post_id='.$rc['post_id'].'">'.$rc['title'].'</a><br>';
-				echo'By: <a href="index.php?action=ucp&id='.$rc['id'].'">' . $rc['username'] . '</a>';
-				}
-				echo'</td></div></tr>';
-			}
-
-		}
-		echo '</tbody></table></div>';
-}
-*/
 	public function viewforum(){
 		echo '<div class="shadowbar">';
 		global $dbc;
@@ -463,14 +438,14 @@ class Forums{
 				echo'<tr>';
 				echo'<td>';
 				if(($row['locked'] === '1')){ 
-					echo'<a class="nav" href="/viewpost/post/'.$row['postlink'].'"><img width="25px" height="25px" src="/include/images/lock.png" />'.$row['tag'].' '.$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';  
+					echo'<a class="nav" href="/viewpost/'.$row['postlink'].'"><img width="25px" height="25px" src="/include/images/lock.png" />'.$row['tag'].' '.$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';  
 				} else {
-					echo'<a class="nav" href="/viewpost/post/'.$row['postlink'].'">'.$row['tag'].' '.$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';
+					echo'<a class="nav" href="/viewpost/'.$row['postlink'].'">'.$row['tag'].' '.$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';
 				}
 				echo'</td>';
 				echo'<td>';
 				echo'Posted By:';
-				echo '<a href="/ucp/uid/'.$row['uid'].'">' . $row['username'] . '</a>';
+				echo '<a href="/ucp/'.$row['uid'].'">' . $row['username'] . '</a>';
 				echo'</td>';
 			}
 			

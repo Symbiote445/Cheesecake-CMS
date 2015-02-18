@@ -82,10 +82,17 @@ $dbc=mysqli_connect($settings[\'db_host\'],$settings[\'db_user\'],$settings[\'db
 				$uip = $_SERVER['REMOTE_ADDR'];	
 				$query = 
 				"
-		CREATE TABLE IF NOT EXISTS `archive` (
+CREATE TABLE IF NOT EXISTS `archive` (
   `aID` int(11) NOT NULL AUTO_INCREMENT,
   `arch` text NOT NULL,
   PRIMARY KEY (`aID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `bans` (
+  `bID` int(11) NOT NULL AUTO_INCREMENT,
+  `user` text NOT NULL,
+  `reason` text NOT NULL,
+  PRIMARY KEY (`bID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `blog` (
@@ -98,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `blog` (
   `arch` text NOT NULL,
   `hidden` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `categories` (
   `cat_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -121,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `chat` (
   `msg` text NOT NULL,
   `time` int(11) NOT NULL,
   PRIMARY KEY (` cmID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `comments` (
   `cid` int(11) NOT NULL AUTO_INCREMENT,
@@ -130,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `comments` (
   `module` text NOT NULL,
   `id` int(11) NOT NULL,
   PRIMARY KEY (`cid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `convo` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -139,7 +146,7 @@ CREATE TABLE IF NOT EXISTS `convo` (
   `sent_to` text NOT NULL,
   `title` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `downloads` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -147,14 +154,14 @@ CREATE TABLE IF NOT EXISTS `downloads` (
   `fileDesc` text NOT NULL,
   `rawName` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `fconf` (
   `fsID` int(11) NOT NULL AUTO_INCREMENT,
   `homeDisp` text NOT NULL,
   `homeNum` int(11) NOT NULL,
   PRIMARY KEY (`fsID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `gallery` (
   `name` text NOT NULL,
@@ -163,13 +170,13 @@ CREATE TABLE IF NOT EXISTS `gallery` (
   `p_id` int(11) NOT NULL AUTO_INCREMENT,
   `cat` int(11) NOT NULL,
   PRIMARY KEY (`p_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `gallery_cat` (
   `cg_id` int(11) NOT NULL AUTO_INCREMENT,
   `cg_name` text NOT NULL,
   PRIMARY KEY (`cg_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `loggedin` (
   `loggedInID` int(11) NOT NULL AUTO_INCREMENT,
@@ -187,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `content` text NOT NULL,
   `date` datetime NOT NULL,
   PRIMARY KEY (`mid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `notifications` (
   `nid` int(11) NOT NULL AUTO_INCREMENT,
@@ -204,7 +211,7 @@ CREATE TABLE IF NOT EXISTS `pages` (
   `body` text NOT NULL,
   `pagelink` text NOT NULL,
   PRIMARY KEY (`page_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `polls` (
   `pid` int(11) NOT NULL AUTO_INCREMENT,
@@ -215,7 +222,7 @@ CREATE TABLE IF NOT EXISTS `polls` (
   `choices` text NOT NULL,
   `postlink` text NOT NULL,
   PRIMARY KEY (`pid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `posts` (
   `post_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -259,13 +266,20 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`uid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
+CREATE TABLE IF NOT EXISTS `views` (
+  `vcid` int(11) NOT NULL AUTO_INCREMENT,
+  `count` varchar(32) NOT NULL,
+  PRIMARY KEY (`vcid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
 CREATE TABLE IF NOT EXISTS `votes` (
   `vid` int(11) NOT NULL AUTO_INCREMENT,
   `choice` text NOT NULL,
   `user` int(11) NOT NULL,
   `poll` int(11) NOT NULL,
   PRIMARY KEY (`vid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+INSERT INTO `views` (`count`) VALUES ('1');
 
 
 

@@ -24,6 +24,25 @@ class admin {
 
 		return $out;
 	}
+	public function counter(){
+		global $dbc, $core;
+		$core->isLoggedIn();
+		$query = "SELECT * FROM `views`";
+		$data = mysqli_query($dbc, $query);
+		$row = mysqli_fetch_array($data);
+		$C = mysqli_num_rows($data);
+		$uC = array_unique($row);
+		$uCL = count($uC);
+		echo '
+		<div class="shadowbar">
+		<table class="table">
+		<thead><th>View Counter</th></thead>
+		<tr><td>View Count:</td><td>'.$C.'</td></tr>
+		<tr><td>Unique View Count:</td><td>'.$uCL.'</td></tr>
+		</table>
+		</div>
+		';
+	}
 	public function delu(){
 		global $settings, $version, $dbc, $layout, $core, $parser;
 		if(!$core->verify("4")){
@@ -135,12 +154,15 @@ class admin {
 			die('<div class="shadowbar">You don\'t have significant privilege</div>');
 		}
 		echo '<div class="shadowbar">
-		<a class="Link LButton" href="/acp">Admin </a><a class="Link LButton" href="/acp/mode/users">Users </a><a class="Link LButton" href="/acp/mode/banlist">Banned Users</a><a class="Link LButton" href="/acp/mode/Settings">Settings </a><a class="Link LButton" href="/acp/mode/modules">Module Settings </a><a class="Link LButton" href="/acp/mode/layout">Advanced Layout Editor</a><a class="Link LButton" href="/acp/mode/stats">Record Stats</a>';
+		<a class="Link LButton" href="/acp">Admin </a><a class="Link LButton" href="/acp/mode/users">Users </a><a class="Link LButton" href="/acp/mode/banlist">Banned Users</a><a class="Link LButton" href="/acp/mode/Settings">Settings </a><a class="Link LButton" href="/acp/mode/modules">Module Settings </a><a class="Link LButton" href="/acp/mode/layout">Advanced Layout Editor</a><a class="Link LButton" href="/acp/mode/stats">Record Stats</a><a class="Link LButton" href="/acp/mode/counter">View Counter</a>';
 		echo '</div>
 ';
 		if(isset($_GET['mode'])){
 			if($_GET['mode'] == 'users'){
 				$this->usr();
+			}
+			if($_GET['mode'] == 'counter'){
+				$this->counter();
 			}
 			if($_GET['mode'] == 'deleteuser'){
 				$this->delu();
@@ -1195,6 +1217,16 @@ class core {
 		<input class="Link LButton" type="submit" value="Sign Up" name="submit" />
 	</form>
 	</div>';
+	}
+	public function counter(){
+		global $dbc, $core;
+		if(!isset($_SESSION['uid'])){
+			$u = $_SERVER['REMOTE_ADDR'];
+			$q = "INSERT INTO `views` (`count`) VALUES ('$u')";
+			mysqli_query($dbc, $q);
+		} else {
+			return false;
+		}
 	}
 	
 }
