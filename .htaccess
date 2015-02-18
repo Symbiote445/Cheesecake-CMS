@@ -4,6 +4,6 @@ RewriteRule ^([a-zA-Z0-9-=_?]+)/([a-zA-Z0-9-=_?]+)/([a-zA-Z0-9-=_?]+)/?$ index.p
 RewriteRule ^([a-zA-Z0-9-=_?]+)/([a-zA-Z0-9-=_?]+)/([a-zA-Z0-9-=_?]+)/([a-zA-Z0-9-=_?]+)/([a-zA-Z0-9-=_?]+)/?$ index.php?action=$1&$2=$3&$4=$5
 RewriteRule ^pages\/([a-zA-Z0-9-=_?]+)\/?$ /pages/page/$1
 RewriteRule ^ucp\/([a-zA-Z0-9-=_?]+)\/?$ /ucp/uid/$1
-RewriteRule ^viewpost\/([a-zA-Z0-9-=_?]+)\/?$ /viewpost/post/$1
-RewriteRule ^viewforum\/([a-zA-Z0-9-=_?]+)\/?$ /viewforum/cat/$1
+RewriteRule ^post\/([a-zA-Z0-9-=_?]+)\/?$ /post/post/$1
+RewriteRule ^f\/([a-zA-Z0-9-=_?]+)\/?$ /f/cat/$1
 RewriteRule ^viewPoll\/([a-zA-Z0-9-=_?]+)\/?$ /viewPoll/p/$1

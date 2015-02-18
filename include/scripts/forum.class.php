@@ -1,7 +1,7 @@
 <?php
 $forum = new Forums;
 if(isset($_GET['action'])){
-	if (($_GET['action'] == 'viewcategory')){
+	if (($_GET['action'] == 'forums')){
 		$forum->searchBar();
 		$forum->category();
 		$forum->forumAdminBar();
@@ -12,12 +12,12 @@ if(isset($_GET['action'])){
 	if($_GET['action'] == 'newcat'){
 		$forum->newcat();
 	}
-	if (($_GET['action'] == 'viewforum')){
+	if (($_GET['action'] == 'f')){
 		$forum->searchBar();
 		$forum->viewforum();
 		$forum->forumAdminBar();
 	}
-	if(($_GET['action'] == 'viewpost')){
+	if(($_GET['action'] == 'post')){
 		$forum->searchBar();
 		$forum->vpost();
 	}
@@ -176,7 +176,7 @@ class Forums{
 			<label type="hidden" for="catt">Forum name:</label><br />
 			<input type="text" name="catt"><br /><br />
 			<label type="hidden" for="desc">Description</label><br />
-			<textarea rows="4"  name="desc" id="desc" cols="100"></textarea><br>
+			<textarea rows="4"  name="desc" id="desc" style="width:100%"></textarea><br>
 			<select name="cg">';
 		
 		$query = "SELECT * FROM category_groups";
@@ -358,12 +358,12 @@ class Forums{
 				$count = mysqli_query($dbc, $query2);
 				$rc = mysqli_fetch_array($count);
 				echo'<tr>';
-				echo'<td><a class="nav" href="/viewforum/'.$row1['cat_id'].'">' .$row1['name']. '<span class="badge">' . mysqli_num_rows($count) . ' Post(s)</span></a>';
+				echo'<td><a class="nav" href="/f/'.$row1['cat_id'].'">' .$row1['name']. '<span class="badge">' . mysqli_num_rows($count) . ' Post(s)</span></a>';
 				echo'<div class="col-md-6">'.$row1['desc'].'</div>';
 				echo'</td>';
 				echo'<td>';
 				if((mysqli_num_rows($count) > 0)){ 
-					echo'<a href="/viewpost/'.$rc['postlink'].'">'.$rc['tag'].' '.$rc['title'].'</a><br>';
+					echo'<a href="/post/'.$rc['postlink'].'">'.$rc['tag'].' '.$rc['title'].'</a><br>';
 					echo'By: <a href="/ucp/'.$rc['uid'].'">' . $rc['username'] . '</a>';
 				}
 				echo'</td></tr>';
@@ -438,9 +438,9 @@ class Forums{
 				echo'<tr>';
 				echo'<td>';
 				if(($row['locked'] === '1')){ 
-					echo'<a class="nav" href="/viewpost/'.$row['postlink'].'"><img width="25px" height="25px" src="/include/images/lock.png" />'.$row['tag'].' '.$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';  
+					echo'<a class="nav" href="/post/'.$row['postlink'].'"><img width="25px" height="25px" src="/include/images/lock.png" />'.$row['tag'].' '.$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';  
 				} else {
-					echo'<a class="nav" href="/viewpost/'.$row['postlink'].'">'.$row['tag'].' '.$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';
+					echo'<a class="nav" href="/post/'.$row['postlink'].'">'.$row['tag'].' '.$row['title']. '<span class="badge">' . mysqli_num_rows($count) . ' Replies</span></a>';
 				}
 				echo'</td>';
 				echo'<td>';

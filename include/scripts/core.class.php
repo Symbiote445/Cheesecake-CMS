@@ -941,7 +941,7 @@ class core {
 			'" alt="Profile Picture" /></td></tr>';
 			echo '</table>';
 			if (!isset($_GET['uid']) || ($_SESSION['uid'] == $_GET['uid'])) {
-				echo '<p><a class="button" href="/editprofile">Edit</a><a class="button" href="/passwordReset">Reset Password</a></p>';
+				echo '<p><a class="Link LButton" href="/editprofile">Edit</a><a class="Link LButton" href="/passwordReset">Reset Password</a></p>';
 			}
 		}
 		else {
