@@ -21,6 +21,9 @@ if(isset($_GET['action'])){
 		$forum->searchBar();
 		$forum->vpost();
 	}
+	if(($_GET['action'] == 'editpost')){
+		$forum->editPost();
+	}
 	if(($_GET['action'] == 'posttopic')){
 		$forum->upost();
 		$forum->forumAdminBar();
@@ -595,6 +598,51 @@ class Forums{
 	';
 	}
 	}
+	public function editPost(){
+		echo '<div class="shadowbar">';
+		global $dbc, $parser, $layout, $main, $settings, $core;
+		$postid = mysqli_real_escape_string($dbc, trim($_GET['post']));
+		$query = "SELECT `user_id`, `post_id`, `post` FROM `posts` WHERE `postlink` = '$postid' ";
+		$data = mysqli_query($dbc, $query);
+		$row = mysqli_fetch_array($data);
+		$pID = $row['post_id'];
+		$uID = $row['user_id'];
+		$post = $row['post'];
+		if(isset($_POST['submit'])){
+			$postid = mysqli_real_escape_string($dbc, trim($_POST['post']));
+			$edit = mysqli_real_escape_string($dbc, trim($_POST['editor']));
+			$uid = mysqli_real_escape_string($dbc, trim($_POST['user']));
+			$pid = mysqli_real_escape_string($dbc, trim($_POST['pid']));
+			$user = $_SESSION['uid'];
+			if($uid != $_SESSION['uid']){
+				echo 'You are not this user';
+				exit();
+			}
+			$query = "SELECT `post_id` FROM `posts` WHERE `user_id` = '$user'  AND `post_id` = '$pid' ";
+			$data = mysqli_query($dbc, $query);
+			$row = mysqli_fetch_array($data);
+			if(count($row) < 1){
+				echo 'This is not your post';
+				exit();				
+			}
+			$query = "UPDATE `posts` SET `post` = '$edit' WHERE `user_id` = '$uid' AND `post_id` = '$pid' ";
+			$data = mysqli_query($dbc, $query);
+			echo '<div class="shadowbar">Post Edited. <a href="/post/'.$postid.'">Go back to post</a>';
+			exit();
+			echo '</div>';
+		}
+		echo '
+		<form action="/editpost/post/'.$postid.'" method="POST">
+		<label for="edit">Edit post</label><br />
+		<input type="hidden" name="post" value="'.$postid.'" />
+		<input type="hidden" name="user" value="'.$uID.'" />
+		<input type="hidden" name="pid" value="'.$pID.'" />
+		<textarea rows="6" style="width:100%;" name="editor">'.$post.'</textarea>
+		<input type="submit" name="submit" value="Edit Post" />
+		</form>
+		';
+		echo '</div>';
+	}
 	public function vpost() {
 	global $dbc, $parser, $layout, $main, $settings, $core;
 		echo '<div class="shadowbar">';
@@ -606,14 +654,12 @@ class Forums{
 				mysqli_query($dbc, $query);
 				echo '<div class="alert alert-info"><strong>Post Locked</strong></div>';
 			}
-		} else {
-		if(isset($_GET['mode']) && ($_GET['mode'] == 'unlock')){
+		} elseif(isset($_GET['mode']) && ($_GET['mode'] == 'unlock')){
 			if($core->verify("2") || $core->verify("4")){
 				$query = "UPDATE posts SET locked = 0, tag = '' WHERE postlink = '$postid'";
 				mysqli_query($dbc, $query);
 				echo '<div class="alert alert-info"><strong>Post Unlocked</strong></div>';
 			}		
-		}
 		}
 		$query = "SELECT `posts`.*, `users`.* FROM `posts` JOIN `users` ON `users`.`uid` = `posts`.`user_id` AND `posts`.`postlink` = '$postid' AND `hidden` = '0' " ;
 		$data = mysqli_query($dbc, $query) or die(mysqli_error($dbc));
@@ -621,10 +667,13 @@ class Forums{
 		die("Invalid Action");
 		}
 		if($core->verify("2") || $core->verify("4")){
-			echo '<a class="Link LButton" href="/viewpost/post/'.$postid.'/mode/lock">Lock Post</a><br>';
-			echo '<a class="Link LButton" href="/viewpost/post/'.$postid.'/mode/unlock">Unlock Post</a><br>';
+			echo '<a class="Link LButton" href="/post/post/'.$postid.'/mode/lock">Lock Post</a><br>';
+			echo '<a class="Link LButton" href="/post/post/'.$postid.'/mode/unlock">Unlock Post</a><br>';
 		}
-		while ($row = mysqli_fetch_array($data)) {
+			$row = mysqli_fetch_array($data);
+		if($_SESSION['uid'] ==$row['user_id']){
+			echo '<a class="Link LButton" href="/editpost/post/'.$postid.'">Edit Post</a><br>';
+		}
 			$Title = $row['tag'].' '.$row['title'];
 			$ID = $row['post_id'];
 			if(($row['locked'] != '1')){
@@ -634,7 +683,6 @@ class Forums{
 			$parsed = $parser->parse($row['post']);
 			$sig = $parser->parse($row['sig']);
 			echo sprintf($layout['blogViewFormat'], $Title, $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
-		}
 		
 		//error_reporting(E_ALL);
 		global $dbc;;
