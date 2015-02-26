@@ -911,7 +911,7 @@ class core {
 	<label for="email">E-Mail:</label>
 	<input type="text" id="email" name="email" value="'.$email.'"/><br>
 	<label for="sig">Signature:</label><br>
-	<textarea style="width:100%;" rows="6" placeholder="Signature..." name="sig">'.$sig.'</textarea>
+	<textarea style="width:100%;" rows="6" id="editor" placeholder="Signature..." name="sig">'.$sig.'</textarea>
 		</fieldset>
 		<input type="submit" value="Save Profile" name="submit" /> <a class="button" href="/ucp">Cancel</a>
 	</form>

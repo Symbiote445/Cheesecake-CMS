@@ -403,7 +403,7 @@ class Forums{
 			<table class="table cgBox">
 			<tr>
 			<td>
-			<a href="/viewpost/'.$row['postlink'].'">'.$row['tag'].' '.$row['title'].'</a>
+			<a href="/post/'.$row['postlink'].'">'.$row['tag'].' '.$row['title'].'</a>
 			<div class="col=md=6">'.$parsed.'</div>
 			</td>
 			</tr>
@@ -515,7 +515,7 @@ class Forums{
 	$data = mysqli_query($dbc, $query);
 	$fconf = mysqli_fetch_array($data);
 	if($fconf['homeDisp'] == 'posts'){
-	$query = "SELECT * FROM `posts` ORDER BY `date` DESC LIMIT ".$fconf['homeNum']." ";
+	$query = "SELECT * FROM `posts` WHERE `hidden` = '0' ORDER BY `date` DESC LIMIT ".$fconf['homeNum']." ";
 	$data = mysqli_query($dbc, $query);
 	echo'
 	<div class="shadowbar">
@@ -526,7 +526,7 @@ class Forums{
 	';
 	while($row = mysqli_fetch_array($data)){
 	echo'<tr>';
-	echo'<td><a class="nav" href="/viewpost/post/'.$row['postlink'].'">'.$row['tag'].' '.$row['title']. '</a>';
+	echo'<td><a class="nav" href="/post/'.$row['postlink'].'">'.$row['tag'].' '.$row['title']. '</a>';
 	echo'</td>';
 	echo'</tr>';		
 	}
@@ -557,7 +557,7 @@ class Forums{
 	';
 	}
 	if($fconf['homeDisp'] == 'both'){
-	$query = "SELECT * FROM `posts` ORDER BY `date` DESC LIMIT ".$fconf['homeNum']." ";
+	$query = "SELECT * FROM `posts` WHERE `hidden` = '0' ORDER BY `date` DESC LIMIT ".$fconf['homeNum']." ";
 	$data = mysqli_query($dbc, $query);
 	echo'
 	<div class="shadowbar">
@@ -568,7 +568,7 @@ class Forums{
 	';
 	while($row = mysqli_fetch_array($data)){
 	echo'<tr>';
-	echo'<td><a class="nav" href="/viewpost/post/'.$row['postlink'].'">'.$row['tag'].' '.$row['title']. '</a>';
+	echo'<td><a class="nav" href="/post/'.$row['postlink'].'">'.$row['tag'].' '.$row['title']. '</a>';
 	echo'</td>';
 	echo'</tr>';		
 	}
@@ -661,18 +661,20 @@ class Forums{
 				echo '<div class="alert alert-info"><strong>Post Unlocked</strong></div>';
 			}		
 		}
-		$query = "SELECT `posts`.*, `users`.* FROM `posts` JOIN `users` ON `users`.`uid` = `posts`.`user_id` AND `posts`.`postlink` = '$postid' AND `hidden` = '0' " ;
+		$query = "SELECT `posts`.*, `users`.* FROM `posts` JOIN `users` ON `users`.`uid` = `posts`.`user_id` AND `posts`.`postlink` = '$postid' WHERE `hidden` = '0' " ;
 		$data = mysqli_query($dbc, $query) or die(mysqli_error($dbc));
 		if(empty($data)){
 		die("Invalid Action");
 		}
 		if($core->verify("2") || $core->verify("4")){
-			echo '<a class="Link LButton" href="/post/post/'.$postid.'/mode/lock">Lock Post</a><br>';
-			echo '<a class="Link LButton" href="/post/post/'.$postid.'/mode/unlock">Unlock Post</a><br>';
+			echo '<a class="Link LButton" href="/post/post/'.$postid.'/mode/lock">Lock Post</a>';
+			echo '<a class="Link LButton" href="/post/post/'.$postid.'/mode/unlock">Unlock Post</a>';
 		}
 			$row = mysqli_fetch_array($data);
-		if($_SESSION['uid'] ==$row['user_id']){
-			echo '<a class="Link LButton" href="/editpost/post/'.$postid.'">Edit Post</a><br>';
+		if(isset($_SESSION['uid'])){
+			if($_SESSION['uid'] ==$row['user_id']){
+				echo '<a class="Link LButton" href="/editpost/post/'.$postid.'">Edit Post</a>';
+			}
 		}
 			$Title = $row['tag'].' '.$row['title'];
 			$ID = $row['post_id'];

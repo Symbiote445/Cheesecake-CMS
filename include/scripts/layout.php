@@ -20,6 +20,16 @@ $layout['header-begin'] =
 			<script language="javascript" type="text/javascript" src="/include/scripts/codeEdit/edit_area_full.js"></script>
 			<script src="/include/scripts/js/jquery.form.js"></script>
 			<script src="/include/scripts/js/jquery.validate.js"></script>
+<!-- Load WysiBB JS and Theme -->
+<script src="http://cdn.wysibb.com/js/jquery.wysibb.min.js"></script>
+<link rel="stylesheet" href="http://cdn.wysibb.com/css/default/wbbtheme.css" />
+
+<!-- Init WysiBB BBCode editor -->
+<script>
+$(function() {
+  $("#editor").wysibb();
+})
+</script>
 			<script language="javascript" type="text/javascript">
 			editAreaLoader.init({
 				id : "codeEdit"		// textarea id
@@ -272,8 +282,7 @@ $layout['adminPageAddLayout'] =
 			<label type="hidden" for="title">Title:</label><br />
 			<input type="text" name="title"><br /><br />
 		<label type="hidden" for="post1">Page Body:</label><br />
-		<script>edToolbar(\'bbcodeEditor\'); </script>
-		<textarea name="page" id="bbcodeEditor" style="height:300px;width:100%;"></textarea><br />
+		<textarea name="page" id="editor" style="height:300px;width:100%;"></textarea><br />
 		</fieldset>
 		<input type="submit" value="Save Post" name="submit" />     
 		</form>
