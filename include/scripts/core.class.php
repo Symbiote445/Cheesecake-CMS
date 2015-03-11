@@ -939,6 +939,7 @@ class core {
 			echo '<tr><td>Email:</td><td>' . $row['email'] . '</td></tr>';
 			echo '<tr><td>Picture:</td><td><img style="max-height:100px;" class="img-square" src="/include/images/profile/' . $row['picture'] .
 			'" alt="Profile Picture" /></td></tr>';
+			echo '<tr><td>Signature:</td><td>'.$row['sig'].'</td></tr>';
 			echo '</table>';
 			if (!isset($_GET['uid']) || ($_SESSION['uid'] == $_GET['uid'])) {
 				echo '<p><a class="Link LButton" href="/editprofile">Edit</a><a class="Link LButton" href="/passwordReset">Reset Password</a></p>';
