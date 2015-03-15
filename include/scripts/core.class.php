@@ -609,7 +609,7 @@ class core {
 			$query = "SELECT adminlevel FROM users WHERE uid = '" . $_SESSION['uid'] . "'";
 			$data = mysqli_query($dbc, $query);
 			$row = mysqli_fetch_array($data);
-			if($row['adminlevel'] === $permissionName){
+			if($row['adminlevel'] >= $permissionName){
 				return true;
 			} else {
 				return false;

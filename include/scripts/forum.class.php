@@ -100,7 +100,7 @@ if(isset($_GET['action'])){
 class Forums{
 	public function forumAdminBar(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
-		if($core->verify("4") || $core->verify("2")){
+		if($core->verify("2")){
 		echo sprintf($layout['adminBar'], '/moderation', 'Forum');
 	}
 	}
@@ -172,7 +172,7 @@ class Forums{
 				echo '<p class="error">You must enter information into all of the fields.</p>';
 			}
 		} 
-		if($core->verify("4") || $core->verify("2")){
+		if($core->verify("2")){
 		echo'<form enctype="multipart/form-data" method="post" action="/newforum">
 		<fieldset>
 		<legend>Create Forum:</legend>
@@ -291,7 +291,7 @@ class Forums{
 				echo '<p class="error">You must enter information into all of the fields.</p>';
 			}
 		} 
-		if($core->verify("4") || $core->verify("2")){
+		if($core->verify("2")){
 		echo'<form enctype="multipart/form-data" method="post" action="/newcat">
 		<fieldset>
 		<legend>Create Category:</legend>
@@ -321,7 +321,7 @@ class Forums{
 	public function category(){
 		echo '<div class="shadowbar">';
 		global $dbc, $parser, $layout, $main, $settings, $core;
-		if($core->verify("4") || $core->verify("2")){
+		if($core->verify("2")){
 			echo '<a class="Link LButton" href="/newcat">New Category</a><a class="Link LButton" href="/newforum">New Forum</a><a class="Link LButton" href="/postPoll">Post Poll</a>';
 		}
 		echo'
@@ -637,7 +637,7 @@ class Forums{
 		<input type="hidden" name="post" value="'.$postid.'" />
 		<input type="hidden" name="user" value="'.$uID.'" />
 		<input type="hidden" name="pid" value="'.$pID.'" />
-		<textarea rows="6" style="width:100%;" name="editor">'.$post.'</textarea>
+		<textarea rows="6" style="width:100%;" id="editor" name="editor">'.$post.'</textarea>
 		<input type="submit" name="submit" value="Edit Post" />
 		</form>
 		';
@@ -649,13 +649,13 @@ class Forums{
 		if(isset($_GET['post'])){
 		$postid = mysqli_real_escape_string($dbc, $_GET['post']);
 		if(isset($_GET['mode']) && ($_GET['mode'] == 'lock')){
-			if($core->verify("2") || $core->verify("4")){
+			if($core->verify("2")){
 				$query = "UPDATE posts SET locked = 1, tag = '[Locked]' WHERE postlink = '$postid'";
 				mysqli_query($dbc, $query);
 				echo '<div class="alert alert-info"><strong>Post Locked</strong></div>';
 			}
 		} elseif(isset($_GET['mode']) && ($_GET['mode'] == 'unlock')){
-			if($core->verify("2") || $core->verify("4")){
+			if($core->verify("2")){
 				$query = "UPDATE posts SET locked = 0, tag = '' WHERE postlink = '$postid'";
 				mysqli_query($dbc, $query);
 				echo '<div class="alert alert-info"><strong>Post Unlocked</strong></div>';
@@ -666,7 +666,7 @@ class Forums{
 		if(empty($data)){
 		die("Invalid Action");
 		}
-		if($core->verify("2") || $core->verify("4")){
+		if($core->verify("2")){
 			echo '<a class="Link LButton" href="/post/post/'.$postid.'/mode/lock">Lock Post</a>';
 			echo '<a class="Link LButton" href="/post/post/'.$postid.'/mode/unlock">Unlock Post</a>';
 		}
@@ -873,7 +873,7 @@ class Forums{
 	public function delp(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();
-if($core->verify("4") || $core->verify("2")){
+if($core->verify("2")){
 
 		if (isset($_POST['submit'])) {
 			$postid = mysqli_real_escape_string($dbc, trim($_POST['postid']));
@@ -907,7 +907,7 @@ if($core->verify("4") || $core->verify("2")){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();
 
-		if($core->verify("2") || $core->verify("4")){
+		if($core->verify("2")){
 			if (isset($_POST['submit'])) {
 				$postid = mysqli_real_escape_string($dbc, trim($_POST['postid']));
 				if (!empty($postid)) {
@@ -938,7 +938,7 @@ if($core->verify("4") || $core->verify("2")){
 	public function hidep(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();
-		if($core->verify("2") || $core->verify("4")){
+		if($core->verify("2")){
 			if (isset($_POST['submit'])) {
 				$postid = mysqli_real_escape_string($dbc, trim($_POST['postid']));
 				if (!empty($postid)) {
@@ -969,7 +969,7 @@ if($core->verify("4") || $core->verify("2")){
 	public function unhidep(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn(); 
-		if($core->verify("2") || $core->verify("4")){
+		if($core->verify("2")){
 			if (isset($_POST['submit'])) {
 				$postid = mysqli_real_escape_string($dbc, trim($_POST['postid']));
 				if (!empty($postid)) {
@@ -1002,7 +1002,7 @@ if($core->verify("4") || $core->verify("2")){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();
 
-		if($core->verify("2") || $core->verify("4")){
+		if($core->verify("2")){
 			if (isset($_POST['submit'])) {
 				$postid = mysqli_real_escape_string($dbc, trim($_POST['postid']));
 				if (!empty($postid)) {
@@ -1034,7 +1034,7 @@ if($core->verify("4") || $core->verify("2")){
 	public function delr(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();
-		if($core->verify("2") || $core->verify("4")){
+		if($core->verify("2")){
 			if (isset($_POST['submit'])) {
 				$postid = mysqli_real_escape_string($dbc, trim($_POST['postid']));
 				if (!empty($postid)) {
@@ -1148,7 +1148,7 @@ if($core->verify("4") || $core->verify("2")){
 		$core->isLoggedIn();
 		
 
-		if($core->verify("4") || $core->verify("2")){
+		if($core->verify("2")){
 
 
 		$query = "SELECT reply.*, users.* FROM reply JOIN users ON users.uid = reply.user_id ORDER BY reply.reply_id DESC ";
@@ -1166,7 +1166,7 @@ if($core->verify("4") || $core->verify("2")){
 		$core->isLoggedIn();
 		
 
-		if($core->verify("4") || $core->verify("2")){
+		if($core->verify("2")){
 
 
 		$query = "SELECT posts.*, users.* FROM posts JOIN users ON users.uid = posts.user_id ORDER BY posts.post_id DESC ";

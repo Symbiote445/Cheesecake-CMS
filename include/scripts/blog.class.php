@@ -113,7 +113,7 @@ class blog {
 			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
 		}		
 	} else {
-		$query = "SELECT blog.*, users.* FROM blog INNER JOIN users ON users.uid = blog.user ORDER BY blog.id DESC";
+		$query = "SELECT blog.*, users.* FROM blog INNER JOIN users ON users.uid = blog.user WHERE display = '1' ORDER BY blog.id DESC";
 		$data = mysqli_query($dbc, $query);
 
 		while ($row = mysqli_fetch_array($data)) {
@@ -189,7 +189,7 @@ class blog {
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
 			$parsed = $parser->parse($row['content']);
-			echo sprintf($layout['adminPostLayout'], $row['title'], $parsed, $row['id'], 'Blog', 'delete', $row['id'], $row['display'], 'Blog', $row['id'], 'Blog', $row['id'], $row['username'], $row['adminlevel']);
+			echo sprintf($layout['adminBlogPostLayout'], $parsed, $row['id'], 'Blog', 'delete', $row['id'], $row['display'], 'Blog', $row['id'], 'Blog', $row['id'], $row['username'], $row['adminlevel']);
 		}
 		echo '</div>';
 	}
