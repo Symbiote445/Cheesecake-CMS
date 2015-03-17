@@ -88,7 +88,7 @@ class blog {
 	}
 	public function blogAdminBar(){
 	global $dbc, $parser, $layout, $main, $settings, $core;
-	if($core->verify("4")){
+	if($core->verify("blog.*")){
 	echo sprintf($layout['adminBar'], '/Blog/mode/admin', 'Blog');
 	}
 	}
@@ -127,7 +127,7 @@ class blog {
 	public function postBlog(){
 		global $settings, $version, $dbc, $layout, $core, $parser;
 		echo'<div class="shadowbar">';
-		if($core->verify("4") || $core->verify("2")){
+		if($core->verify("blog.*") || $core->verify("blog.write")){
 
 			global $dbc;
 			$mon = date("M");
@@ -181,7 +181,7 @@ class blog {
 		$core->isLoggedIn();
 		echo '<div class="shadowbar">';		
 		echo '<a class="Link LButton" href="/Blog/mode/archive">Check archive and add as needed</a>';
-		if(!$core->verify("4")){
+		if(!$core->verify("blog.*")){
 			exit();
 		}
 
@@ -196,7 +196,7 @@ class blog {
 	public function blogHideAdmin(){
 		global $settings, $version, $dbc, $layout, $core, $parser;
 		$core->isLoggedIn();
-		if(!$core->verify("4")){
+		if(!$core->verify("blog.*")){
 			exit();
 		}
 		if (isset($_POST['submit'])) {
@@ -220,7 +220,7 @@ class blog {
 	public function blogUnHideAdmin(){
 		global $settings, $version, $dbc, $layout, $core, $parser;
 		$core->isLoggedIn();
-		if(!$core->verify("4")){
+		if(!$core->verify("blog.*")){
 			exit();
 		}
 		if (isset($_POST['submit'])) {
@@ -244,7 +244,7 @@ class blog {
 	public function blogDeletePost(){
 		global $settings, $version, $dbc, $layout, $core, $parser;
 		$core->isLoggedIn();
-		if(!$core->verify("4")){
+		if(!$core->verify("blog.*")){
 			exit();
 		}
 		if (isset($_POST['submit'])) {

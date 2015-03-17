@@ -28,6 +28,7 @@ class dLoad {
 	public function uploadFile() {
 		echo '<div class="shadowbar">';
 		global $dbc, $layout, $core;
+		if($core->verify("dl.*") || $core->verify("dl.upload")){
 		if(isset($_POST['submit'])){
 			$filename = mysqli_real_escape_string($dbc, trim($_POST['name']));
 			$desc = mysqli_real_escape_string($dbc, trim($_POST['desc']));
@@ -100,10 +101,11 @@ class dLoad {
 </script>
 EOL
 		);
+		}
 	}
 	public function dlAdmin() {
 		global $dbc, $core;
-		if($core->verify("4")){
+		if($core->verify("dl.*")){
 			echo '<div class="shadowbar">';
 			if(isset($_GET['do'])){
 				if($_GET['do'] == "delete"){

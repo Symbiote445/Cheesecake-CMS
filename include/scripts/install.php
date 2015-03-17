@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `bans` (
   `user` text NOT NULL,
   `reason` text NOT NULL,
   PRIMARY KEY (`bID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `blog` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
 CREATE TABLE IF NOT EXISTS `category_groups` (
   `cg_id` int(11) NOT NULL AUTO_INCREMENT,
   `cg_name` text NOT NULL,
-  `perm` int(11) NOT NULL,
+  `perm` text NOT NULL,
   PRIMARY KEY (`cg_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `comments` (
   `module` text NOT NULL,
   `id` int(11) NOT NULL,
   PRIMARY KEY (`cid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `convo` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -146,7 +146,7 @@ CREATE TABLE IF NOT EXISTS `convo` (
   `sent_to` text NOT NULL,
   `title` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `downloads` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -154,14 +154,14 @@ CREATE TABLE IF NOT EXISTS `downloads` (
   `fileDesc` text NOT NULL,
   `rawName` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `fconf` (
   `fsID` int(11) NOT NULL AUTO_INCREMENT,
   `homeDisp` text NOT NULL,
   `homeNum` int(11) NOT NULL,
   PRIMARY KEY (`fsID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `gallery` (
   `name` text NOT NULL,
@@ -170,12 +170,19 @@ CREATE TABLE IF NOT EXISTS `gallery` (
   `p_id` int(11) NOT NULL AUTO_INCREMENT,
   `cat` int(11) NOT NULL,
   PRIMARY KEY (`p_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `gallery_cat` (
   `cg_id` int(11) NOT NULL AUTO_INCREMENT,
   `cg_name` text NOT NULL,
   PRIMARY KEY (`cg_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `groups` (
+  `groupID` int(11) NOT NULL AUTO_INCREMENT,
+  `groupName` text NOT NULL,
+  `groupPerms` text NOT NULL,
+  PRIMARY KEY (`groupID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `loggedin` (
@@ -194,7 +201,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `content` text NOT NULL,
   `date` datetime NOT NULL,
   PRIMARY KEY (`mid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `notifications` (
   `nid` int(11) NOT NULL AUTO_INCREMENT,
@@ -211,7 +218,7 @@ CREATE TABLE IF NOT EXISTS `pages` (
   `body` text NOT NULL,
   `pagelink` text NOT NULL,
   PRIMARY KEY (`page_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `polls` (
   `pid` int(11) NOT NULL AUTO_INCREMENT,
@@ -222,7 +229,7 @@ CREATE TABLE IF NOT EXISTS `polls` (
   `choices` text NOT NULL,
   `postlink` text NOT NULL,
   PRIMARY KEY (`pid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `posts` (
   `post_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -254,12 +261,12 @@ CREATE TABLE IF NOT EXISTS `users` (
   `uid` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(32) NOT NULL,
   `email` text NOT NULL,
+  `group` int(11) NOT NULL,
   `sig` text NOT NULL,
   `hash` text NOT NULL,
   `password` text NOT NULL,
   `activated` int(11) NOT NULL DEFAULT '0',
   `passwordReset` int(11) NOT NULL,
-  `adminlevel` int(11) NOT NULL DEFAULT '0',
   `picture` text NOT NULL,
   `ip` varchar(16) NOT NULL,
   `active` int(11) NOT NULL,
@@ -268,7 +275,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 CREATE TABLE IF NOT EXISTS `views` (
   `vcid` int(11) NOT NULL AUTO_INCREMENT,
-  `count` varchar(32) NOT NULL,
+  `count` int(11) NOT NULL,
   PRIMARY KEY (`vcid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
@@ -278,12 +285,16 @@ CREATE TABLE IF NOT EXISTS `votes` (
   `user` int(11) NOT NULL,
   `poll` int(11) NOT NULL,
   PRIMARY KEY (`vid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-INSERT INTO `views` (`count`) VALUES ('1');
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+INSERT INTO `groups` (`groupID`, `groupName`, `groupPerms`) VALUES
+(1, 'Default', 'forum.post'),
+(2, 'Trusted', 'forum.post;gallery.upload'),
+(3, 'Moderator', 'forum.mod;blog.write;forum.post;pages.addPage;core.mod;pages.editPage;gallery.*'),
+(4, 'Admin', 'core.*;forum.*;blog.*;dl.*;pages.*;gallery.*');
 
-INSERT INTO users (username, password, email, ip, adminlevel, activated) VALUES ('$username', SHA('$password1'), '$email', '$uip', '4', '1')
+INSERT INTO users (username, password, email, group, ip, activated) VALUES ('$username', SHA('$password1'), '$email', '4', '$uip', '1')
 ";
 				if (!empty($username) && !empty($password1) && !empty($password2) && !empty($email) && ($password1 == $password2)) {								
 					mysqli_multi_query($dbc, $query);	

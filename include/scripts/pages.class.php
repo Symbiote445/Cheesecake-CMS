@@ -45,6 +45,7 @@ class pages{
 	public function addpage(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();
+		if($core->verify("pages.*") || $core->verify("pages.addPage")){
 		if (isset($_POST['submit'])) {
 			$page = mysqli_real_escape_string($dbc, trim($_POST['page']));
 			$title = mysqli_real_escape_string($dbc, trim($_POST['title']));
@@ -76,7 +77,6 @@ class pages{
 
 
 		}
-		if($core->verify("4") || $core->verify("2")){
 			print($layout['adminPageAddLayout']);
 		}
 	}
@@ -166,11 +166,7 @@ EOD
 	}
 	public function pageadmin(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
-
-		echo '';
-		if(!$core->verify("4")){
-			exit();
-		}
+		if($core->verify("pages.*")){
 		global $dbc, $parser, $layout, $main, $settings, $core; 	
 		if(isset($_GET['pagename'])){
 			$pagename = mysqli_real_escape_string($dbc, $_GET['pagename']);
@@ -186,7 +182,7 @@ EOD
 		}
 		echo '</table></div>';
 		
-		
+		}
 	}
 	public function pagelist(){
 		global $dbc;
@@ -212,7 +208,7 @@ EOD
 	public function editPage(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 
-		if(!$core->verify("4")){
+		if($core->verify("pages.*") || $core->verify("pages.editPage")){
 			die('Insufficient Permissions.');
 		}
 		if(isset($_POST['submit'])){

@@ -283,6 +283,49 @@ $layout['adminReplyLayout'] =
 		</table>
 EOD
 );
+$layout['userGroupsAdmin'] = 
+(
+<<<EOD
+<div class="shadowbar">
+		  <table class="table">
+			<tr><td>Group Name: %s</td></tr>
+			<tr><td>Group Perms: %s</td></tr>
+			<tr><td>Group ID: %s</td></tr>
+			<tr><td>Options: <a class="Link LButton" href="/acp/mode/deleteGroup/g/%s">Delete Group</a><a class="Link LButton" href="/acp/mode/editGroupInfo/g/%s">Edit Gorup</a></td></tr>
+		</table>
+	</div>
+EOD
+);
+$layout['addGroup'] = 
+(
+<<<EOD
+<div class="shadowbar">
+<form method="post" action="/acp/mode/groups">
+<label>Group Name</label>
+<input type="text" name="groupName">
+<label>Group Perms</label>
+<input type="text" name="groupPerms">
+<input class="Link LButton" type="submit" name="submit" value="Save Group">
+</form>
+</div>
+EOD
+);
+
+$layout['groupEditLayout'] = 
+(
+<<<EOD
+<div class="shadowbar">
+<form method="post" action="/acp/mode/editGroupInfo">
+<label>Group Name</label>
+<input type="text" name="gName" value="%s">
+<label>Group Perms</label>
+<input type="text" name="perms" value="%s">
+<input type="hidden" name="gID" value="%s">
+<input class="Link LButton" type="submit" name="submit" value="Save Group">
+</form>
+</div>
+EOD
+);
 
 $layout['adminPageAddLayout'] = 
 (
@@ -326,7 +369,7 @@ $layout['adminUserLayout'] =
 			<tr><td>Username: %s<td></tr>
 			<tr><td>User ID: %s<a class="Link LButton" href="/acp/mode/deleteuser/del/%s"> Delete User</a></td></tr>
 		  <tr><td>Activation Status: %s<a href="/verifyaccount/hash/%s"> Activate User</a></td></tr>
-		  <tr><td>Admin Level: %s<a href="/acp/mode/editperms/r/%s"> Edit Perms</a></td></tr>
+		  <tr><td>Group: %s<a href="/acp/mode/editgroup/r/%s"> Edit Group</a></td></tr>
 		  <tr><td><a class="Link LButton" href="/acp/mode/banaccount/u/%s">Ban User's Account</a><a class="Link LButton" href="/acp/mode/banip/u/%s">Ban User by IP</a></td></tr>
 		</table><hr> 
 EOD

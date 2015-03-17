@@ -3,7 +3,6 @@
 class pageGeneration {
 	public function Generate(){
 		global $dbc, $parser, $layout, $settings, $core, $admin, $version;
-		$core->counter();
 	if(isset($_GET['action'])){
 			if($_GET['action'] === 'logout'){
 				$core->logout();
@@ -22,6 +21,7 @@ class pageGeneration {
 		echo sprintf($layout['header-begin'], $settings['site_name'], $settings['style'], $settings['style'], $settings['style'], $settings['style'], $settings['site_name']);
 		$core->loadModule("nav");
 		print($layout['header-end']);
+		$core->counter();
 		$core->sidebar();
 		$core->securityAgent("check");
 			if(!isset($_GET['action'])){

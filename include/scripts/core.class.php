@@ -30,7 +30,7 @@ class admin {
 		$query = "SELECT * FROM `views`";
 		$data = mysqli_query($dbc, $query);
 		$row = mysqli_fetch_array($data);
-		$C = mysqli_num_rows($data);
+		$C = count($row);
 		$uC = array_unique($row);
 		$uCL = count($uC);
 		echo '
@@ -43,9 +43,53 @@ class admin {
 		</div>
 		';
 	}
+	public function groupEdit(){
+		global $settings, $version, $dbc, $layout, $core, $parser;
+		if(isset($_POST['submit'])){
+			$groupID = mysqli_real_escape_string($dbc, trim($_POST['gID']));
+			$perms = mysqli_real_escape_string($dbc, trim($_POST['perms']));
+			$gName = mysqli_real_escape_string($dbc, trim($_POST['gName']));
+			$query = "UPDATE `groups` SET `groupName` = '$gName', `groupPerms` = '$perms' WHERE `groupID` = '$groupID' ";
+			mysqli_query($dbc, $query);
+			echo '<div class="shadowbar">Group Updated</div>';
+			exit();
+		}
+		$gID = mysqli_real_escape_string($dbc, trim($_GET['g']));
+		$secureGroup = preg_replace("/[^0-9]/", "", $gID);
+		$query = "SELECT * FROM `groups` WHERE `groupID` = '$secureGroup' ";
+		$data = mysqli_query($dbc, $query);
+		$row = mysqli_fetch_array($data);
+		echo sprintf($layout['groupEditLayout'], $row['groupName'], $row['groupPerms'], $secureGroup);
+	}
+	public function groups(){
+		global $settings, $version, $dbc, $layout, $core, $parser;
+		if(!$core->verify("core.*")){
+			die('Insignificant Permission');
+		}
+		if(isset($_POST['submit'])){
+		$gName = mysqli_real_escape_string($dbc, trim($_POST['groupName']));
+		$gPerms = mysqli_real_escape_string($dbc, trim($_POST['groupPerms']));
+		$query = "INSERT INTO groups (`groupName`, `groupPerms`) VALUES ('$gName', '$gPerms')";
+		$data = mysqli_query($dbc, $query);
+		echo '<div class="shadowbar">Group Added</div>';
+		}
+		if(isset($_GET['mode'])){
+		if($_GET['mode'] == 'deleteGroup'){
+		$gID = mysqli_real_escape_string($dbc, trim($_GET['g']));
+		$query = "DELETE FROM groups WHERE groupID = '$gID' ";
+		$data = mysqli_query($dbc, $query);
+		}
+		}
+		print ($layout['addGroup']);
+		$query = "SELECT * FROM groups";
+		$data = mysqli_query($dbc, $query);
+		while ($row = mysqli_fetch_array($data)){
+			echo sprintf($layout['userGroupsAdmin'], $row['groupName'], $row['groupPerms'], $row['groupID'], $row['groupID'], $row['groupID']);
+		}
+	}
 	public function delu(){
 		global $settings, $version, $dbc, $layout, $core, $parser;
-		if(!$core->verify("4")){
+		if(!$core->verify("core.*")){
 			exit();
 		}
 		$core->isLoggedIn();
@@ -86,7 +130,7 @@ class admin {
 			if (!empty($perm) && !empty($user)) {
 				$query = "UPDATE `users` SET `adminlevel` = '$perm' WHERE `uid` = '$user'";
 				mysqli_query($dbc, $query);
-				echo '<div class="shadowbar"><p>User has been successfully edited. Would you like to <a href="index.php">return to the ACP</a>?</p></a>';
+				echo '<div class="shadowbar"><p>User has been successfully edited. Would you like to <a href="/acp">return to the ACP</a>?</p></a>';
 				
 				exit();
 			}
@@ -95,7 +139,7 @@ class admin {
 			}
 
 		}
-		if(!$core->verify("4")){
+		if(!$core->verify("core.*")){
 			exit();
 
 		}
@@ -130,10 +174,48 @@ class admin {
 	</form>
 	</div>';
 	}
+	public function eug(){
+		global $settings, $version, $dbc, $layout, $core, $parser;
+		$core->isLoggedIn();
+		if (isset($_POST['submit'])) {
+			$user = mysqli_real_escape_string($dbc, strip_tags( trim($_POST['user'])));
+			$perm = mysqli_real_escape_string($dbc, trim($_POST['perm']));
+			if (!empty($perm) && !empty($user)) {
+				$query = "UPDATE `users` SET `group` = '$perm' WHERE `uid` = '$user'";
+				mysqli_query($dbc, $query);
+				echo '<div class="shadowbar"><p>User has been successfully edited. Would you like to <a href="/acp">return to the ACP</a>?</p></a>';
+				
+				exit();
+			}
+			else {
+				echo '<p class="error">You must enter information into all of the fields.</p>';
+			}
+
+		}
+		if(!$core->verify("core.*")){
+			exit();
+
+		}
+		echo'<div class="shadowbar"><form method="post" action="/acp/mode/editgroup">
+		<fieldset>
+			<label type="hidden" for="perm">Group:</label><br />';
+		echo'<select id="perm" name="perm">';
+		$query = "SELECT * FROM groups";
+		$data = mysqli_query($dbc, $query);
+		while ($row = mysqli_fetch_array($data)) {
+			echo '<option value="'.$row['groupID'].'">'.$row['groupName'].'</option>';
+		}
+		echo'</select><br /><br />
+			<input type="hidden" name="user" value="'. $_GET['r'] .'">
+		</fieldset>
+		<input type="submit" value="Save User" name="submit" />     
+	</form>
+	</div>';
+	}
 	public function usr() {
 		global $settings, $version, $dbc, $layout, $core, $parser;
 		echo '<div class="shadowbar">';
-		if(!$core->verify("4")){
+		if(!$core->verify("core.*")){
 			exit();
 		}
 
@@ -144,17 +226,17 @@ class admin {
 		$query = "SELECT * FROM users ORDER BY uid DESC";
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
-			echo sprintf($layout['adminUserLayout'], $row['username'], $row['uid'], $row['uid'], $row['activated'], $row['hash'], $row['adminlevel'], $row['uid'], $row['uid'], $row['uid']);
+			echo sprintf($layout['adminUserLayout'], $row['username'], $row['uid'], $row['uid'], $row['activated'], $row['hash'], $row['group'], $row['uid'], $row['uid'], $row['uid']);
 		}
 		echo '</div>';
 	}
 	public function acp(){
 		global $settings, $version, $dbc, $layout, $core, $parser;
-		if(!$core->verify("4")){
+		if(!$core->verify("core.*")){
 			die('<div class="shadowbar">You don\'t have significant privilege</div>');
 		}
 		echo '<div class="shadowbar">
-		<a class="Link LButton" href="/acp">Admin </a><a class="Link LButton" href="/acp/mode/users">Users </a><a class="Link LButton" href="/acp/mode/banlist">Banned Users</a><a class="Link LButton" href="/acp/mode/Settings">Settings </a><a class="Link LButton" href="/acp/mode/modules">Module Settings </a><a class="Link LButton" href="/acp/mode/layout">Advanced Layout Editor</a><a class="Link LButton" href="/acp/mode/stats">Record Stats</a><a class="Link LButton" href="/acp/mode/counter">View Counter</a>';
+		<a class="Link LButton" href="/acp">Admin </a><a class="Link LButton" href="/acp/mode/users">Users </a><a class="Link LButton" href="/acp/mode/groups">Groups </a><a class="Link LButton" href="/acp/mode/banlist">Banned Users</a><a class="Link LButton" href="/acp/mode/Settings">Settings </a><a class="Link LButton" href="/acp/mode/modules">Module Settings </a><a class="Link LButton" href="/acp/mode/layout">Advanced Layout Editor</a><a class="Link LButton" href="/acp/mode/stats">Record Stats</a><a class="Link LButton" href="/acp/mode/counter">View Counter</a>';
 		echo '</div>
 ';
 		if(isset($_GET['mode'])){
@@ -167,8 +249,20 @@ class admin {
 			if($_GET['mode'] == 'deleteuser'){
 				$this->delu();
 			}
+			if($_GET['mode'] == 'groups'){
+				$this->groups();
+			}
+			if($_GET['mode'] == 'deleteGroup'){
+				$this->groups();
+			}
+			if($_GET['mode'] == 'editGroupInfo'){
+				$this->groupEdit();
+			}
 			if($_GET['mode'] == 'editperms'){
 				$this->eur();
+			}
+			if($_GET['mode'] == 'editgroup'){
+				$this->eug();
 			}
 			if($_GET['mode'] == 'banaccount'){
 				if(isset($_POST['submit'])){
@@ -546,10 +640,10 @@ class core {
 				$uid = $_SESSION['uid'];
 				echo sprintf($layout['sidebar-core'], $row['username'], $row['picture'], $row['username']);
 					$this->loadModule("sidebar");
-					if($this->verify("4")){
+					if($this->verify("core.*")){
 						echo sprintf($layout['sidebarLink'], "/acp", "Admin Panel");
 						}
-					if($this->verify("4") || $this->verify("2")){
+					if($this->verify("core.*") || $this->verify("core.mod")){
 						$this->loadModule("acp");
 					}
 					echo '</div>';
@@ -603,13 +697,19 @@ class core {
 		$remoteVersion=trim(file_get_contents($remote));
 		return version_compare($local, $remoteVersion, 'ge');
 	}
-	public function verify($permissionName){
+	public function verify($permName){
 		global $dbc;
 		if(isset($_SESSION['uid'])){	
-			$query = "SELECT adminlevel FROM users WHERE uid = '" . $_SESSION['uid'] . "'";
+			$query = "SELECT `group` FROM users WHERE uid = '" . $_SESSION['uid'] . "'";
 			$data = mysqli_query($dbc, $query);
 			$row = mysqli_fetch_array($data);
-			if($row['adminlevel'] >= $permissionName){
+			$groupID = $row['group'];
+			$query = "SELECT groupPerms FROM groups WHERE groupID = '$groupID'";
+			$data = mysqli_query($dbc, $query);
+			$row = mysqli_fetch_array($data);
+			$perms = $row['groupPerms'];
+			$perms = explode(";", $perms);
+			if(in_array($permName, $perms)){
 				return true;
 			} else {
 				return false;
@@ -648,6 +748,7 @@ class core {
 			}
 			if($option === 'acp'){
 				foreach($modules as $name => $module) if ($module['enabled'] && ($module['admin'] == '1')) {
+					if($this->verify("core.*") ||  $this->verify($module['perms']))
 					echo '<a class="btn btn-default width100" href="'.$module['acp'].'">'.$module['sidebarDesc'].'</a>';
 				}
 			}

@@ -402,6 +402,17 @@ class BBCodeLibrary
 			'plain_start' => "\n * ",
 			'plain_end' => "\n",
 		),
+		'header' => Array(
+			'mode' => BBCODE_MODE_ENHANCED,
+			'template' => "<h3>{\$_content/v}</h3>",
+			'allow_in' => '',
+			'before_tag' => "sns",
+			'after_tag' => "sn",
+			'before_endtag' => "sn",
+			'after_endtag' => "sns",
+			'plain_start' => "<h3>",
+			'plain_end' => "</h3>",
+		),
 	);
 
 	
@@ -510,39 +521,39 @@ class BBCodeLibrary
 	{
 		switch ( $default )
 		{
-			case '0':
-				$size = '.5em';
+			case '50':
+				$size = '5pt';
 			break;
-			case '1': 
-				$size = '.67em';
+			case '85': 
+				$size = '10pt';
 			break;
-			case '2': 
-				$size = '.83em';
+			case '100': 
+				$size = '11pt';
 			break;
-			case '3':
-				$size = '1.0em';
+			case '150':
+				$size = '12pt';
 			break;
-			case '4':
-				$size = '1.17em';
+			case '200':
+				$size = '14pt';
 			break;
-			case '5':
-				$size = '1.5em';
+			case '250':
+				$size = '15pt';
 			break;
-			case '6':
-				$size = '2.0em';
+			case '300':
+				$size = '16pt';
 			break;
-			case '7':
-				$size = '2.5em';
+			case '350':
+				$size = '18pt';
 			break;
 			default:
 				$size = (int) $size;
 				if ( $size < 8 || $size > 48 ) 
 				{
-					$size = '1.0em';
+					$size = '12pt';
 				}
 				else
 				{
-					$size .= 'px';
+					$size .= 'pt';
 				}
 			break;
 		}

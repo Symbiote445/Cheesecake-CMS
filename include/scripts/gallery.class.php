@@ -391,7 +391,7 @@ class gallery{
 	public function deleteGallery(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();
-		if($core->verify("4") || $core->verify("2")){
+		if($core->verify("gallery.*")){
 		if (isset($_POST['submit'])) {
 			$postid = mysqli_real_escape_string($dbc, trim($_POST['postid']));
 			if (!empty($postid)) {
@@ -424,7 +424,7 @@ class gallery{
 	
 		global $dbc, $parser, $layout, $main, $settings, $core;
 		$core->isLoggedIn();
-		if($core->verify("4") || $core->verify("2")){
+		if($core->verify("gallery.*") || $core->verify("gallery.upload")){
 		echo '<div class="shadowbar">
 		<h3>Photo Upload</h3>';
 		if (isset($_POST['submit'])) {
@@ -548,6 +548,7 @@ EOL
 
 		$core->isLoggedIn();
 		echo '<div class="shadowbar">';
+		if($core->verify("gallery.*")){
 		if (isset($_POST['submit'])) {
 			$catt = mysqli_real_escape_string($dbc, strip_tags( trim($_POST['catt'])));
 			if (!empty($catt)) { 
@@ -560,7 +561,6 @@ EOL
 				echo '<p class="error">You must enter information into all of the fields.</p>';
 			}
 		} 
-		if($core->verify("4") || $core->verify("2")){
 		echo'<form enctype="multipart/form-data" method="post" action="/addGallery">
 		<fieldset>
 		<legend>Create Gallery:</legend>
