@@ -108,6 +108,9 @@ class blog {
 		$data = mysqli_query($dbc, $query);
 
 		while ($row = mysqli_fetch_array($data)) {
+			if(count($row) == 0){
+				echo '<div class="shadowbar">No blog posts to display.</div>';
+			}
 			$parsed = $parser->parse($row['content']);
 			$sig = $parser->parse($row['sig']);
 			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
@@ -117,6 +120,9 @@ class blog {
 		$data = mysqli_query($dbc, $query);
 
 		while ($row = mysqli_fetch_array($data)) {
+			if(count($row) == 0){
+				echo '<div class="shadowbar">No blog posts to display.</div>';
+			}
 			$parsed = $parser->parse($row['content']);
 			$sig = $parser->parse($row['sig']);
 			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
