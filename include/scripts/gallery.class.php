@@ -352,7 +352,7 @@ class gallery{
 	}
 	public function vg(){
 		global $dbc, $parser, $layout, $main, $settings, $core;
-		if($core->verify("4") || $core->verify("2")){
+		if($core->verify("gallery.*")){
 		echo '<div class="shadowbar"><a class="Link LButton" href="/uploadphoto">Upload File To Gallery </a><a class="Link LButton" href="/addGallery">Add Gallery</a></div>';
 		}
 		echo'<div class="shadowbar">';
