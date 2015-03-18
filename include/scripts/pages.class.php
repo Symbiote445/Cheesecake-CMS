@@ -209,8 +209,6 @@ EOD
 		global $dbc, $parser, $layout, $main, $settings, $core;
 
 		if($core->verify("pages.*") || $core->verify("pages.editPage")){
-			die('Insufficient Permissions.');
-		}
 		if(isset($_POST['submit'])){
 			$content = mysqli_real_escape_string($dbc, trim($_POST['content']));
 			$page = mysqli_real_escape_string($dbc, trim($_POST['page']));
@@ -232,6 +230,7 @@ EOD
 			}
 		}
 		echo'</div>';
+	}
 	}
 }
 ?>
