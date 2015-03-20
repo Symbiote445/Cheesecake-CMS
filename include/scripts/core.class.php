@@ -107,7 +107,7 @@ class admin {
 			}
 		} 
 		
-		if($_GET['del'] = $_SESSION['uid']){
+		if($_GET['del'] == $_SESSION['uid']){
 			die('<div class="shadowbar">Cannot delete yourself.</div>');
 		}		
 		echo'<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/acp/mode/deleteuser">
@@ -1240,7 +1240,7 @@ class core {
 	</div>';
 	}
 	public function signup(){
-		global $dbc, $parser, $layout, $main, $settings, $core;
+		global $dbc, $parser, $layout, $main, $settings, $core, $layout;
 		if(($settings['signup_enabled'] === 'false')){
 			die('<div class="alert alert-warning"><strong>Registration Disabled.</strong></div>');
 		}
@@ -1259,32 +1259,23 @@ class core {
 				if (mysqli_num_rows($data) == 0) {
 					$to      = $email; // Send email to our user
 					$subject = $settings['site_name']; // Give the email a subject
-					$message = '	
-			Thanks for signing up at '.$settings['site_name'].'
-			Your account has been created, however you must activate your account. Your username and password are below, and the link you need to click is below that.
-			------------------------
-			Username: '.$username.'
-			Password: '.$password1.'
-			------------------------
-			Please click this link to activate your account:
-			http://'.$burl.'/verifyaccount/hash/'.$hash.'
-			'; // Our message above including the link				
-					$headers = 'From:'.$settings['site_name'].'' . "\r\n"; // Set from headers
+					$message = sprintf($layout['signupEmail'], $settings['site_name'], $username, $password1, $burl, $hash);				
+					$headers = 'From:'.$bemail.'' . "\r\n"; // Set from headers
 					mail($to, $subject, $message, $headers); // Send our email								
 					$uip = $_SERVER['REMOTE_ADDR'];					
 					$query = "INSERT INTO users (username, password, email, hash, ip, picture) VALUES ('$username', SHA('$password1'), '$email', '$hash', '$uip', 'nopic.png')";
 					mysqli_query($dbc, $query);		
-					echo '<p>Your new account has been successfully created. You now need to verify your account. You signed up with this email: ' .$email . '. Please check your spam folder as there\'s a chance that the email could have ended up in there.';
+					echo '<div class="shadowbar">Your new account has been successfully created. You now need to verify your account. You signed up with this email: ' .$email . '. Please check your spam folder as there\'s a chance that the email could have ended up in there.</div>';
 					
 					exit();
 				}
 				else {
-					echo '<p class="error">An account already exists for this username. Please use a different username.</p>';
+					echo '<div class="shadowbar"><div class="alert alert-warning"><strong>An account already exists for this username. Try another.</strong></div></div>';
 					$username = "";
 				}
 			}
 			else {
-				echo '<p class="error">You must enter all of the sign-up data, including the desired password twice.</p>';
+				echo '<div class="shadowbar"><div class="alert alert-warning"><strong>You must enter all data, including your desired password twice.</strong></div></div>';
 			}
 		
 		}

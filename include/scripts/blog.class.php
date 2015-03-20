@@ -106,23 +106,23 @@ class blog {
 		$arch = mysqli_real_escape_string($dbc, trim($_GET['archive']));
 		$query = "SELECT blog.*, users.* FROM blog INNER JOIN users ON users.uid = blog.user AND blog.arch = '$arch' ORDER BY blog.id DESC";
 		$data = mysqli_query($dbc, $query);
-
+		$row = mysqli_fetch_array($data);
+		if(count($row) == 0){
+			echo '<div class="shadowbar">No blog posts to display.</div>';
+		}
 		while ($row = mysqli_fetch_array($data)) {
-			if(count($row) == 0){
-				echo '<div class="shadowbar">No blog posts to display.</div>';
-			}
 			$parsed = $parser->parse($row['content']);
 			$sig = $parser->parse($row['sig']);
 			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);
 		}		
 	} else {
-		$query = "SELECT blog.*, users.* FROM blog INNER JOIN users ON users.uid = blog.user WHERE display = '1' ORDER BY blog.id DESC";
+		$query = "SELECT blog.*, users.* FROM blog INNER JOIN users ON users.uid = blog.user WHERE hidden = '0' ORDER BY blog.id DESC";
 		$data = mysqli_query($dbc, $query);
-
+		$row = mysqli_fetch_array($data);
+		if(count($row) == 0){
+			echo '<div class="shadowbar">No blog posts to display.</div>';
+		}
 		while ($row = mysqli_fetch_array($data)) {
-			if(count($row) == 0){
-				echo '<div class="shadowbar">No blog posts to display.</div>';
-			}
 			$parsed = $parser->parse($row['content']);
 			$sig = $parser->parse($row['sig']);
 			echo sprintf($layout['blogViewFormat'], $row['title'], $row['picture'], $row['uid'], $row['username'], date('M j Y g:i A', strtotime($row['date'])), $parsed, $sig);

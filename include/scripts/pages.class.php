@@ -170,7 +170,7 @@ EOD
 		global $dbc, $parser, $layout, $main, $settings, $core; 	
 		if(isset($_GET['pagename'])){
 			$pagename = mysqli_real_escape_string($dbc, $_GET['pagename']);
-			$query = "DELETE FROM pages WHERE pagename = '$pagename'";
+			$query = "DELETE FROM pages WHERE pagelink = '$pagename'";
 			mysqli_query($dbc, $query);
 			echo 'Page Deleted. <a href="/pages">Back to pages</a><br>';
 		}	
@@ -178,7 +178,7 @@ EOD
 		$data = mysqli_query($dbc, $query);
 		echo'<div class="shadowbar"><legend>Page Admin</legend><table class="table"><thead><th>Page Name</th><th>Options</th></thead>';
 		while($row = mysqli_fetch_array($data)){
-			echo '<tr><td>'.$row['pagename'].'</td><td><a class="Link LButton" href="/pages/mode/pageadmin/pagename/'.$row['pagename'].'"> Delete Page</a><a class="Link LButton" href="/pages/mode/edit/page/'.$row['page_id'].'"> Edit Page</a></td></tr>';
+			echo '<tr><td>'.$row['pagename'].'</td><td><a class="Link LButton" href="/pages/mode/pageadmin/pagename/'.$row['pagelink'].'"> Delete Page</a><a class="Link LButton" href="/pages/mode/edit/page/'.$row['page_id'].'"> Edit Page</a></td></tr>';
 		}
 		echo '</table></div>';
 		

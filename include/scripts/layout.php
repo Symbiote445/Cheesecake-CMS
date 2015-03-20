@@ -291,7 +291,7 @@ $layout['userGroupsAdmin'] =
 			<tr><td>Group Name: %s</td></tr>
 			<tr><td>Group Perms: %s</td></tr>
 			<tr><td>Group ID: %s</td></tr>
-			<tr><td>Options: <a class="Link LButton" href="/acp/mode/deleteGroup/g/%s">Delete Group</a><a class="Link LButton" href="/acp/mode/editGroupInfo/g/%s">Edit Gorup</a></td></tr>
+			<tr><td>Options: <a class="Link LButton" href="/acp/mode/deleteGroup/g/%s">Delete Group</a><a class="Link LButton" href="/acp/mode/editGroupInfo/g/%s">Edit Group</a></td></tr>
 		</table>
 	</div>
 EOD
@@ -566,6 +566,20 @@ $layout['dlListMid'] =
 			<td><a href="include/files/%s"><span class="glyphicon glyphicon-file"></span>%s</a></td>
 			<td>%s</td>
 			</tr>
+EOD
+);
+
+$layout['signupEmail'] = 
+(
+<<<EOD
+Thanks for signing up at %s
+Your account has been created, however you must activate your account. Your username and password are below, and the link you need to click is below that.
+------------------------
+Username: %s
+Password: %s
+------------------------
+Please click this link to activate your account:
+http://%s/verifyaccount/hash/%s
 EOD
 );
 ?> 
