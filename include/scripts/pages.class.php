@@ -195,11 +195,15 @@ EOD
 		$query = "SELECT * FROM pages LIMIT $f,5";
 		$data = mysqli_query($dbc, $query);
 		echo '<div class="shadowbar">';
-		echo '<h3>Pages</h3><table class="table">';
+		echo '<h3>Pages</h3>
+		<table class="table">
+		<thead>
+		<th>Page Title</th>
+		</th>';
 		while ($row = mysqli_fetch_array($data)) {
 
 			if(!empty($row['pagename'])) {
-				echo'<tr><td><a href="/pages/'.$row['pagelink'].'">'.$row['pagename'].'</a><br><hr style="margin:5px;"></td></tr>';
+				echo'<tr><td><a href="/pages/'.$row['pagelink'].'">'.$row['pagename'].'</a></td></tr>';
 			}
 		}
 		echo '</table><a class="Link LButton" href="/pages/f/'.($f - 5).'">Previous</a><a class="Link LButton" href="/pages/f/'.($f + 5).'">Next</a>';
