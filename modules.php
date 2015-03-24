@@ -1,5 +1,18 @@
 <?php
 $modules = array(
+	'News' => array(
+			'description'=> 'News',
+			'link'=> 'news.class.php',
+			'enabled'=> '1',
+			'class'=>'news',
+			'stats'=>'false',
+			'admin'=>'0',
+			'perms'=>'news.write',
+			'href'=> '/news',
+			'sidebar'=>'/postNews',
+			'sidebarDesc'=>'Post News',
+			'acp'=>''
+	),
 	'Forums' => array(
 			'description'=> 'Forums',
 			'link'=> 'forum.class.php',

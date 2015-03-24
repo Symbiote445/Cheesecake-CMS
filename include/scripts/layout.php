@@ -182,6 +182,27 @@ $layout['blogPostFormat'] =
 EOD
 );
 
+$layout['newsPostFormat'] = 
+(
+<<<EOD
+		<form enctype="multipart/form-data" method="post" action="/postNews"> 
+		<fieldset>
+		<legend>News Article:</legend>
+			<label type="hidden" for="title">Title:</label><br />
+			<input type="text" name="title"><br /><br />
+			<label type="hidden" for="blogPost">News Content:</label><br />
+		<textarea rows="10" name="blogPost" id="editor" style="width:100%;"></textarea><br />
+		<label type="hidden" for="id">Display</label>
+		<select id="display" name="display">
+			<option value="0">Hidden</option>
+			<option value="1">Displayed</option>
+		</select>
+		</fieldset>
+		<input type="submit" value="Save Post" name="submit" />     
+		</form>
+EOD
+);
+
 $layout['login'] = 
 (
 <<<'EOD'
@@ -264,7 +285,7 @@ $layout['adminBlogPostLayout'] =
 		  <table class="table">
 		  <tr><td><div class="col-md-8"><pre>Post:<br/><br />%s</pre></div></td></tr>
 			<tr><td>Post ID: %s<a class="Link LButton" href="/%s/mode/%s/del/%s">Delete Post</a></td></tr>
-			<tr><td>Display Status: %s<a class="Link LButton" href="/%s/mode/hide/del/%s">Hide Post</a><a class="Link LButton" href="/%s/mode/unhide/del/%s">Unhide Post</a></td></tr>
+			<tr><td>Hidden Status: %s<a class="Link LButton" href="/%s/mode/hide/del/%s">Hide Post</a><a class="Link LButton" href="/%s/mode/unhide/del/%s">Unhide Post</a></td></tr>
 		  <tr><td>UserName: %s</td></tr>
 		  <tr><td>Rank: %s</td></tr>
 		</table>
@@ -350,6 +371,22 @@ $layout['adminDeleteLayout'] =
 <<<EOD
 
 	<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/Blog/mode/%s">
+		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
+		<fieldset>
+		<legend>Are you sure?</legend>
+		<input type="hidden" name="postid" value="%s">
+		</fieldset>
+		<input type="submit" value="Yes" name="submit" />   <a class="button" href="/Blog/mode/admin">Cancel</a> 
+	</form>
+	</div>
+EOD
+);
+
+$layout['adminNewsDeleteLayout'] = 
+(
+<<<EOD
+
+	<div class="shadowbar"><form enctype="multipart/form-data" method="post" action="/news/mode/%s">
 		<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
 		<fieldset>
 		<legend>Are you sure?</legend>
@@ -580,6 +617,46 @@ Password: %s
 ------------------------
 Please click this link to activate your account:
 http://%s/verifyaccount/hash/%s
+EOD
+);
+
+$layout['moduleTemplate'] = 
+(
+<<<'EOD'
+<?php
+//Module Name
+//Author: Your Name
+//Dist: Cheesecake CMS
+
+$myClass = new myClass;
+
+if(isset($_GET['action'])){
+	if($_GET['action'] == 'something'){
+		$myClass->func("I'm a module created with the built-in module creator. The second argument value is:");
+	} 
+}
+
+class myClass {
+	public function func($arg1, $arg2 = NULL){
+		echo '<div class="shadowbar">' . $arg1 . $arg2 . '</div>';
+	}
+}
+?>
+EOD
+);
+
+$layout['moduleAddForm'] = 
+(
+<<<EOD
+<div class="shadowbar">
+<form method="post" action="/acp/mode/addmodule">
+<label>Module Name</label><br />
+<input type="text" name="mName">
+<label>Module File</label>
+<input type=text" name="mFile">
+<input class="Link LButton" name="submit" type="submit" value="Create Module">
+</form>
+</div>
 EOD
 );
 ?> 

@@ -230,13 +230,77 @@ class admin {
 		}
 		echo '</div>';
 	}
+	public function addModule(){
+		global $settings, $version, $dbc, $layout, $core, $parser;
+		if($settings['dev'] == '1'){
+		if(isset($_POST['submit'])){
+			$mName = $_POST['mName'];
+			$mFile = $_POST['mFile'];
+			$mLink = str_replace(" ", "", $mName);
+			$moduleFile = file_get_contents("modules.php");
+			$moduleFile = str_replace("?>", "", $moduleFile);
+			$moduleFile .= "\r\n" . '$modules["'.$mName.'"] = array( "description"=> "'.$mName.'","link"=> "'.$mFile.'","enabled"=> "1","admin"=>"","class"=>"","stats"=>"false","href"=>"/'.$mLink.'","sidebar"=>"/'.$mLink.'","sidebarDesc"=>"'.$mName.'","acp"=>""); ' . "\r\n?>";
+			$moduleFilePath = "include/scripts/".$mFile;
+			file_put_contents("modules.php", $moduleFile);
+			file_put_contents($moduleFilePath, $layout['moduleTemplate']);
+		}
+		print($layout['moduleAddForm']);
+	} else {
+		echo '<div class="shadowbar">Please enable developer mode.</div>';
+	}
+	}
+	public function editModule(){
+		global $settings, $version, $dbc, $layout, $core, $parser;
+		if($settings['dev'] == '1'){
+			require("modules.php");
+				if(isset($_POST['submit'])){
+					$module = $_POST['modules'];
+					$file = $_POST['file'];
+					file_put_contents($file, $module);
+					echo '<div class="shadowbar">Module updated</div>';
+				}
+				if(isset($_POST['fileName'])){
+					$mFile = file_get_contents($_POST['moduleFile']);
+					$mFileName = $_POST['moduleFile'];
+					$mFile = htmlspecialchars($mFile);
+				}
+				echo '<div class="shadowbar">
+				<form action="/acp/mode/editModule" method="post">
+				<select name="moduleFile">';
+				foreach($modules as $name => $module) if ($module['enabled']) {
+					echo '<option value="include/scripts/'.$module['link'].'">'.$module['link'].'</option>';
+				}
+				echo '</select><input type="submit" name="fileName" value="Edit File" class="Link LButton" /></div>';
+		if(isset($mFile)){
+				echo '
+					<div class="shadowbar">
+						<form method="post" action="/acp/mode/editModule">
+						<fieldset>
+						<legend>Module</legend>
+						<div class="input-group" style="width:100%">
+						<input type="hidden" value="'.$mFileName.'" name="file" />
+						<textarea style="width:100%" placeholder="Module" name="modules" id="codeEdit" rows="50">'.$mFile.'</textarea><br />
+						</div>
+						</fieldset>
+						<input class="Link LButton" type="submit" value="Submit Edits" name="submit" />
+					</form>
+				</div>
+				';
+		}				
+		} else {
+			echo '<div class="shadowbar">Please enable developer mode.</div>';
+		}
+	}
 	public function acp(){
 		global $settings, $version, $dbc, $layout, $core, $parser;
 		if(!$core->verify("core.*")){
 			die('<div class="shadowbar">You don\'t have significant privilege</div>');
 		}
 		echo '<div class="shadowbar">
-		<a class="Link LButton" href="/acp">Admin </a><a class="Link LButton" href="/acp/mode/users">Users </a><a class="Link LButton" href="/acp/mode/groups">Groups </a><a class="Link LButton" href="/acp/mode/banlist">Banned Users</a><a class="Link LButton" href="/acp/mode/Settings">Settings </a><a class="Link LButton" href="/acp/mode/modules">Module Settings </a><a class="Link LButton" href="/acp/mode/layout">Advanced Layout Editor</a><a class="Link LButton" href="/acp/mode/stats">Record Stats</a><a class="Link LButton" href="/acp/mode/counter">View Counter</a>';
+		<a class="Link LButton" href="/acp">Admin </a><a class="Link LButton" href="/acp/mode/users">Users </a><a class="Link LButton" href="/acp/mode/groups">Groups </a><a class="Link LButton" href="/acp/mode/banlist">Banned Users</a><a class="Link LButton" href="/acp/mode/Settings">Settings </a><a class="Link LButton" href="/acp/mode/stats">Record Stats</a><a class="Link LButton" href="/acp/mode/counter">View Counter</a>';
+		if($settings['dev'] == '1'){
+			echo '<a class="Link LButton" href="/acp/mode/addmodule">Add Module</a><a class="Link LButton" href="/acp/mode/editModule">Edit Module</a><a class="Link LButton" href="/acp/mode/modules">Module Settings </a><a class="Link LButton" href="/acp/mode/layout">Advanced Layout Editor</a>';
+		}
 		echo '</div>
 ';
 		if(isset($_GET['mode'])){
@@ -263,6 +327,12 @@ class admin {
 			}
 			if($_GET['mode'] == 'editgroup'){
 				$this->eug();
+			}
+			if($_GET['mode'] == 'addmodule'){
+				$this->addModule();
+			}
+			if($_GET['mode'] == 'editModule'){
+				$this->editModule();
 			}
 			if($_GET['mode'] == 'banaccount'){
 				if(isset($_POST['submit'])){
@@ -348,6 +418,7 @@ class admin {
 					</table></div>';
 			}
 			if($_GET['mode'] == 'layout'){
+				if($settings['dev'] == '1'){
 				if(isset($_POST['submit'])){
 					$layoutSettings = $_POST['layout'];
 					file_put_contents("include/scripts/layout.php", $layoutSettings);
@@ -369,9 +440,13 @@ echo (
 	</form>
 	</div>
 EOD
-);				
+);	
+				} else {
+					echo '<div class="shadowbar">Please enable developer mode.</div>';
+				}			
 			}
 			if($_GET['mode'] == 'modules'){
+				if($settings['dev'] == '1'){
 				if(isset($_POST['submit'])){
 					$moduleSettings = $_POST['modules'];
 					file_put_contents("modules.php", $moduleSettings);
@@ -389,12 +464,16 @@ EOD
 		</fieldset>
 		<input class="Link LButton" type="submit" value="Submit Edits" name="submit" />
 	</form>
-	</div>
+</div>
 				';
+				} else {
+					echo '<div class="shadowbar">Please enable developer mode.</div>';
+				}
 			}
 			if(($_GET['mode'] === 'Settings')){
 				if(isset($_POST['submit'])){
 					$mySettingsFile = 'include/scripts/settings.php';
+					$dev = $_POST['dev'];
 					$home = $_POST['homepage'];
 					$name = $_POST['name'];
 					$burl = $_POST['url'];
@@ -411,6 +490,7 @@ EOD
 					$newSettings = array (         // the default settings array
 					'home_display'=>''.$home.'',
 					'style'=>''.$style.'',
+					'dev'=>''.$dev.'',
 					'db_host'=>'localhost',
 					'db_user'=>''.$user.'',
 					'db_password'=>''.$pass.'',
@@ -431,7 +511,7 @@ EOD
 				}
 				global $settings;
 				
-				echo'<div class="shadowbar"><div class="alert alert-info">Please refer to the documentation <a href="http://cheesecakebb.org/index.php?action=pages&page=Settings">Here</a> for settings</div>
+				echo'<div class="shadowbar"><div class="alert alert-info">Please refer to the documentation <a href="http://cheesecakecms.org/pages/cheesecake-cms-documentation-1">Here</a> for settings</div>
 		<form method="post" action="/acp/mode/Settings">
 		<fieldset>
 		<legend>Settings</legend>
@@ -442,6 +522,10 @@ EOD
 		<div class="input-group">
 		<span class="input-group-addon">Website Style</span>
 		<input class="form-control" type="text" name="style" value="'.$settings['style'].'" />
+		</div>
+		<div class="input-group">
+		<span class="input-group-addon">Developer Mode</span>
+		<input class="form-control" type="text"  name="dev" value="'.$settings['dev'].'" />
 		</div>
 		<div class="input-group">
 		<span class="input-group-addon">DB Host</span>
@@ -741,6 +825,11 @@ class core {
 					require_once('include/scripts/'.$module['link']);
 				}
 			}
+			if($option === 'editModule'){
+				foreach($modules as $name => $module) if ($module['enabled']) {
+					return '<option value="include/scripts/'.$module['link'].'">'.$module['link'].'</option>';
+				}
+			}
 			if($option === 'sidebar'){
 				foreach($modules as $name => $module) if ($module['enabled'] && ($module['admin'] == '0')) {
 					echo '<a class="btn btn-default width100" href="'.$module['sidebar'].'">'.$module['sidebarDesc'].'</a>';
@@ -748,7 +837,7 @@ class core {
 			}
 			if($option === 'acp'){
 				foreach($modules as $name => $module) if ($module['enabled'] && ($module['admin'] == '1')) {
-					if($this->verify("core.*") ||  $this->verify($module['perms']))
+					if($this->verify("core.*") || $this->verify($module['perms']))
 					echo '<a class="btn btn-default width100" href="'.$module['acp'].'">'.$module['sidebarDesc'].'</a>';
 				}
 			}
@@ -1034,9 +1123,14 @@ class core {
 		if (mysqli_num_rows($data) == 1) {
 			$row = mysqli_fetch_array($data);
 			echo '<div class="shadowbar">';
-			echo '<table class="table">';
+			echo '<table class="table">
+				  <th>User Info</th>';
 			echo '<tr><td>Username:</td><td>' . $row['username'] . '</td></tr>';
-			echo '</td></tr>';
+			$uGID = $row['group'];
+			$q = "SELECT * FROM `groups` WHERE `groupID` = '$uGID'";
+			$d = mysqli_query($dbc, $q);
+			$r = mysqli_fetch_array($d);
+			echo '<tr><td>User Group:</td><td>'.$r['groupName'].'</td></tr>';
 			echo '<tr><td>Email:</td><td>' . $row['email'] . '</td></tr>';
 			echo '<tr><td>Picture:</td><td><img style="max-height:100px;" class="img-square" src="/include/images/profile/' . $row['picture'] .
 			'" alt="Profile Picture" /></td></tr>';
