@@ -231,10 +231,10 @@ class admin {
 		echo '</div>';
 	}
 	public function addModule(){
+		global $settings, $version, $dbc, $layout, $core, $parser;
 		if(!$core->verify("core.*")){
 			die('<div class="shadowbar">You don\'t have significant privilege</div>');
 		}
-		global $settings, $version, $dbc, $layout, $core, $parser;
 		if($settings['dev'] == '1'){
 		if(isset($_POST['submit'])){
 			$mName = $_POST['mName'];
@@ -253,10 +253,10 @@ class admin {
 	}
 	}
 	public function editModule(){
+		global $settings, $version, $dbc, $layout, $core, $parser;
 		if(!$core->verify("core.*")){
 			die('<div class="shadowbar">You don\'t have significant privilege</div>');
 		}
-		global $settings, $version, $dbc, $layout, $core, $parser;
 		if($settings['dev'] == '1'){
 			require("modules.php");
 				if(isset($_POST['submit'])){
@@ -786,21 +786,25 @@ class core {
 	}
 	public function verify($permName){
 		global $dbc;
-		if(isset($_SESSION['uid'])){	
-			$query = "SELECT `group` FROM users WHERE uid = '" . $_SESSION['uid'] . "'";
-			$data = mysqli_query($dbc, $query);
-			$row = mysqli_fetch_array($data);
-			$groupID = $row['group'];
-			$query = "SELECT groupPerms FROM groups WHERE groupID = '$groupID'";
-			$data = mysqli_query($dbc, $query);
-			$row = mysqli_fetch_array($data);
-			$perms = $row['groupPerms'];
-			$perms = explode(";", $perms);
-			if(in_array($permName, $perms)){
-				return true;
-			} else {
-				return false;
+		if(!empty($permName)){
+			if(isset($_SESSION['uid'])){	
+				$query = "SELECT `group` FROM users WHERE uid = '" . $_SESSION['uid'] . "'";
+				$data = mysqli_query($dbc, $query);
+				$row = mysqli_fetch_array($data);
+				$groupID = $row['group'];
+				$query = "SELECT groupPerms FROM groups WHERE groupID = '$groupID'";
+				$data = mysqli_query($dbc, $query);
+				$row = mysqli_fetch_array($data);
+				$perms = $row['groupPerms'];
+				$perms = explode(";", $perms);
+				if(in_array($permName, $perms)){
+					return true;
+				} else {
+					return false;
+				}
 			}
+		} else {
+			return true;
 		}
 	}
 	
@@ -820,7 +824,9 @@ class core {
 			$option = $operator;
 			if($option === 'nav'){
 				foreach($modules as $name => $module) if ($module['enabled']) {
-					echo '<li><a href="'.$module['href'].'">'.$module['description'].'</a></li>';
+					if($module['nav'] == 1){
+						echo '<li><a href="'.$module['href'].'">'.$module['description'].'</a></li>';
+					}
 				}
 			}
 			if($option === 'initialLoad'){

@@ -815,10 +815,10 @@ class Forums{
 			$data = mysqli_query($dbc, $query);
 			$row = mysqli_fetch_array($data);
 			$perm = $row['perm'];
-			$query = "SELECT `adminlevel` FROM `users` WHERE `uid` = '" . $_SESSION['uid'] . "'";
+			$query = "SELECT `group` FROM `users` WHERE `uid` = '" . $_SESSION['uid'] . "'";
 			$data = mysqli_query($dbc, $query);
 			$row = mysqli_fetch_array($data);
-			$uPerm = $row['adminlevel'];
+			$uPerm = $row['group'];
 			if($perm <= $uPerm){
 			// Update the post data in the database
 			if (!empty($post1) && !empty($title)) {
