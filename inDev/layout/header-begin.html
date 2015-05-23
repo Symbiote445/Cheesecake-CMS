@@ -1,0 +1,116 @@
+		<!DOCTYPE html>
+		<html><head>
+		<meta name="viewport" content="width=device-width, user-scalable=no">
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
+			<title><?=$settings['site_name']?></title>
+			<link rel="stylesheet" type="text/css" href="/include/style/<?=$settings['style']?>/style.css">
+			<link rel="stylesheet" type="text/css" href="/include/style/<?=$settings['style']?>/template.css">
+			<script type="text/javascript" src="/include/scripts/js/ed.js"></script>
+			<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?autoload=true&skin=sunburst"></script>			
+			<script src="/include/style/<?=$settings['style']?>/jquery.js"></script>
+			<script src="/include/style/<?=$settings['style']?>/bootstrap.js"></script>
+			<script src="/include/scripts/js/iframeResizer.contentWindow.min.js"></script>
+			<script src="/include/scripts/js/iframeResizer.min.js"></script>
+			<script language="javascript" type="text/javascript" src="/include/scripts/codeEdit/edit_area_full.js"></script>
+			<script src="/include/scripts/js/jquery.form.js"></script>
+			<script src="/include/scripts/js/jquery.validate.js"></script>
+<!-- Load WysiBB JS and Theme -->
+<script src="http://cdn.wysibb.com/js/jquery.wysibb.min.js"></script>
+<link rel="stylesheet" href="http://cdn.wysibb.com/css/default/wbbtheme.css" />
+
+<!-- Init WysiBB BBCode editor -->
+<script>
+$(function() {
+  $("#editor").wysibb();
+})
+</script>
+			<script language="javascript" type="text/javascript">
+			editAreaLoader.init({
+				id : "codeEdit"		// textarea id
+				,syntax: "php"			// syntax to be uses for highgliting
+				,start_highlight: true		// to display with highlight mode on start-up
+		                ,toolbar: "search, go_to_line, |, undo, redo, |, select_font, |, syntax_selection, |, change_smooth_selection, highlight, reset_highlight, |, help"
+			        ,syntax_selection_allow: "css,html,js,php,python,vb,xml,c,cpp,sql,basic,pas,brainfuck"
+			});
+			</script>
+			<script>
+			$(function () {
+			  $('[data-toggle="tooltip"]').tooltip()
+			})
+			function Redirect()
+		{
+			window.location="index.php";
+		}
+			</script>
+<style type="text/css">
+#rs {
+    border: 0 none white;
+    overflow: hidden;
+    padding: 0;
+    outline: none;
+    resize: none;
+}
+</style>
+<script type="text/javascript">
+var observe;
+if (window.attachEvent) {
+    observe = function (element, event, handler) {
+        element.attachEvent('on'+event, handler);
+    };
+}
+else {
+    observe = function (element, event, handler) {
+        element.addEventListener(event, handler, false);
+    };
+}
+function init () {
+    var text = document.getElementById('rs');
+    function resize () {
+        text.style.height = 'auto';
+        text.style.height = text.scrollHeight+'px';
+    }
+    /* 0-timeout to get the already changed text */
+    function delayedResize () {
+        window.setTimeout(resize, 0);
+    }
+    observe(text, 'change',  resize);
+    observe(text, 'cut',     delayedResize);
+    observe(text, 'paste',   delayedResize);
+    observe(text, 'drop',    delayedResize);
+    observe(text, 'keydown', delayedResize);
+
+    text.focus();
+    text.select();
+    resize();
+}
+</script>
+		</head>
+<noscript>
+    <style type="text/css">
+        .pagecontainer {display:none;}
+    </style>
+    <div class="noscriptmsg">
+    Javascript is required for this site to work properly.
+    </div>
+</noscript>
+		<body onload="init();">
+		<div class="pagecontainer">
+			<div class="row header">
+				<div class="col-md-1"></div>
+   <div class="navbar-wrapper">
+      <div class="container">
+
+        <div class="navbar navbar-inverse navbar-static-top" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#"><?=$settings['site_name']?></a>
+            </div>
+            <div class="navbar-collapse collapse">
+              <ul class="nav navbar-nav">
+                <li><a href="/index.php">Home</a></li>

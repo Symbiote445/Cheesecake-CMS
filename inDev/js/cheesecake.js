@@ -1,3 +1,4 @@
+//Sliding panel
 function collapse(target) {
 	if($(target).is(":visible")){
 		$(target).slideUp();
@@ -9,40 +10,89 @@ function collapse(target) {
 		return false;
 	}
 }
+//Tabs
 $(document).ready(function() {
   $('ul.tabs').each(function(){
-    // For each set of tabs, we want to keep track of
-    // which tab is active and it's associated content
     var $active, $content, $links = $(this).find('a');
-
-    // If the location.hash matches one of the links, use that as the active tab.
-    // If no match is found, use the first link as the initial active tab.
     $active = $($links.filter('[href="'+location.hash+'"]')[0] || $links[0]);
     $active.addClass('active');
-
     $content = $($active[0].hash);
-
-    // Hide the remaining content
     $links.not($active).each(function () {
       $(this.hash).hide();
     });
-
-    // Bind the click event handler
     $(this).on('click', 'a', function(e){
-      // Make the old tab inactive.
       $active.removeClass('active');
       $content.hide();
-
-      // Update the variables with the new link and content
       $active = $(this);
       $content = $(this.hash);
-
-      // Make the tab active.
       $active.addClass('active');
       $content.show();
-
-      // Prevent the anchor's default click action
       e.preventDefault();
     });
   });	
+});
+//Div toggle for single page website or
+//multiple divs of information on one page
+function toggleDiv(divId, navCaret) {
+    if($('div.collapse.visible').is(":visible")){
+    console.log($('div.collapse.visible').data("expanded"));
+    if($('div.collapse.visible').data("expanded") == true){
+        $('div.collapse.visible').slideUp();
+        $('div.collapse.visible').attr("data-expanded", "false");
+		$('div.collapse.visible').removeClass("visible");
+    }
+        $(".collapse#"+divId).slideDown("fast");
+        $(".collapse#"+divId).attr("data-expanded", "true");
+		$(".collapse#"+divId).addClass("visible");
+		if(navCaret == true){
+			$(".chevLink").hide();
+			$(".chevLink#"+divId).show();
+		}
+		
+        return false;
+    }
+}
+
+//Carousel
+//Done with ID's (#) to avoid
+//Issues when having two carousels
+//one one page
+$(window).ready(function() {
+    $("#slide-next").click(function() {
+        // instead of fadeout use `hide` instead to immediately hide 
+        $(".carousel-item.visible").hide();
+      
+        var current = $(".carousel-item.visible");
+        // if last child then you are clicking next
+        if ( current.is( ".carousel-list li:last-child" ) ) {
+          $(".carousel-item:first-child").fadeIn("fast", function() {
+              $(".carousel-item.visible").removeClass("visible");
+              $(".carousel-item:first-child").addClass("visible");
+          });
+        }
+        else {
+          $(".carousel-item.visible").next().fadeIn("fast", function() {
+              $(".carousel-item.visible").removeClass("visible");
+              $(this).addClass("visible");
+          });
+        }
+    });
+    $("#slide-prev").click(function() {
+        // instead of fadeout use `hide` instead to immediately hide
+        $(".carousel-item.visible").hide();
+        var current = $(".carousel-item.visible");
+        // if you're on first element then you clicked on prev
+        if ( current.is( ".carousel-list li:first-child" ) ) {
+          $(".carousel-item:last-child").fadeIn("fast", function() {
+              $(".carousel-item.visible").removeClass("visible");
+              $(".carousel-item:last-child").addClass("visible");
+          });
+        }
+        else {
+          $(".carousel-item.visible").prev().fadeIn("fast", function() {
+              $(".carousel-item.visible").removeClass("visible");
+              $(this).addClass("visible");
+          });
+        }
+    });
 });

@@ -18,22 +18,11 @@ class pageGeneration {
 	}
 		$parser->SetSmileyURL("http://".$settings['b_url']."/include/images/smileys");
 		$core->checkLogin();
-		echo sprintf($layout['header-begin'], $settings['site_name'], $settings['style'], $settings['style'], $settings['style'], $settings['style'], $settings['site_name']);
+		echo sprintf($layout['header-begin'], $settings['site_name'], $settings['style'], $settings['style'], $settings['style'], $settings['site_name']);
 		$core->loadModule("nav");
 		print($layout['header-end']);
 		$core->counter();
-		print($layout['col-3-empty-begin']);
-		print($layout['div-end']);
-		if($settings['sidebarDisp'] == "true"){
-		if(!isset($_SESSION['uid'])){
-			print($layout['userbarLoggedOut']);
-		} else {
-			print($layout['userbarLoggedIn']);
-		}
-		} else {
-			echo '<div class="col-6">';
-		}
-		//$core->sidebar();
+		$core->sidebar();
 		$core->securityAgent("check");
 			if(!isset($_GET['action'])){
 				if($settings['home_display'] == 'none' || $settings['home_display'] == 'about'){
@@ -82,7 +71,6 @@ class pageGeneration {
 			$core->deactivateAndReset();
 			}
 		}
-		$core->onlineList();
 		$core->loadModule("initialLoad");
 		$core->notifBar();
 		echo sprintf($layout['footer'], $settings['b_url'], $settings['site_name'], $version['core']);

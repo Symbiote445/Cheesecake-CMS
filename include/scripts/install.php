@@ -3,7 +3,7 @@
 class cheeseInstall {
 
 	public function array2php($arr){
-		$out = '<? $settings = array(';
+		$out = '<?php $settings = array(';
 		foreach( $arr as $k => $v ){
 			if( is_bool($v) ){
 				$v = ( $v ) ? 'true' : 'false';
@@ -37,9 +37,10 @@ class cheeseInstall {
 		'b_url'=>''.$burl.'',
 		'b_email'=>''.$bemail.'',
 		'board_enabled'=>false,
-		'about' => ''.$about.''
+		'about' => ''.$about.'',
+		'sidebarDisp'=>true
 		);
-		$end = '<?
+		$end = '<?php
 define(\'MM_UPLOADPATH\', \'include/images/profile/\');
 define(\'MM_MAXFILESIZE\', 32768);
 define(\'MM_MAXIMGWIDTH\', 120);

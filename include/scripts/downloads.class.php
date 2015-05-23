@@ -62,27 +62,13 @@ class dLoad {
 	</div>';
 		echo (<<<EOL
 		<script>
-    $(function upload() {
-    $("#fUP").validate({ // initialize the plugin
-        // any other options,
-        onkeyup: false,
-        rules: {
-            name: {
-                required: true,
-                minlength: 3
-            },
-			file: {
-				required: true
-			}
-        }
-    });
+	$('#fUP').on("submit", function(event) {
     var bar = $('.bar');
     var percent = $('.percent');
     var status = $('#status');
 
-    $('form').ajaxForm({
+    $('#fUP').ajaxForm({
         beforeSend: function() {
-			return $("#fUP").valid();
             status.empty();
             var percentVal = '0%';
             bar.width(percentVal);
@@ -97,7 +83,7 @@ class dLoad {
 			document.getElementById("fUP").reset();
 		}
     });
-    }); 
+	});
 </script>
 EOL
 		);

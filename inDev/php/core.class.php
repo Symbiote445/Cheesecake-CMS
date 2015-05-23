@@ -299,6 +299,9 @@ class admin {
 	}
 	public function acp(){
 		global $settings, $version, $dbc, $layout, $core, $parser;
+		if(!$core->verify("core.*")){
+			die("<div class='shadowbar'>Insufficient Permission</div>");
+		}
 		echo '<div class="shadowbar">
 		<a class="Link LButton" href="/acp">Admin </a><a class="Link LButton" href="/acp/mode/users">Users </a><a class="Link LButton" href="/acp/mode/groups">Groups </a><a class="Link LButton" href="/acp/mode/banlist">Banned Users</a><a class="Link LButton" href="/acp/mode/Settings">Settings </a><a class="Link LButton" href="/acp/mode/stats">Record Stats</a><a class="Link LButton" href="/acp/mode/counter">View Counter</a>';
 		if($settings['dev'] == '1'){

@@ -489,6 +489,7 @@ EOD
 					$user = $settings['db_user'];
 					$about = str_replace("'", "", $about);
 					$about = str_replace('"', "", $about);
+					$sidebarDisp = $_POST['sideDisp'];
 					
 					$newSettings = array (         // the default settings array
 					'home_display'=>''.$home.'',
@@ -504,7 +505,8 @@ EOD
 					'b_url'=>''.$burl.'',
 					'b_email'=>''.$bemail.'',
 					'board_enabled'=>false,
-					'about' => "".$about.""
+					'about' => "".$about."",
+					'sidebarDisp' => "".$sidebarDisp.""
 					);
 					$end = '<?php $dbc=mysqli_connect($settings[\'db_host\'],$settings[\'db_user\'],$settings[\'db_password\'],$settings[\'db\']); ?>';
 					file_put_contents($mySettingsFile, $this->array2php($newSettings, "settings"));
@@ -559,7 +561,11 @@ EOD
 		<input class="form-control" type="text" name="email" value="'.$settings['b_email'].'" />
 		</div>
 		<div class="input-group">
-		<textarea rows="8" placeholder="about" name="about" id="about" cols="100">'.$settings['about'].'</textarea><br />
+		<span class="input-group-addon">Sidebar Display (True/False no caps)</span>
+		<input class="form-control" type="text" name="sideDisp" value="'.$settings['sidebarDisp'].'" />
+		</div>
+		<div class="input-group">
+		<textarea rows="8" placeholder="about" name="about" id="about">'.$settings['about'].'</textarea><br />
 		</div>
 		<div class="input-group">
 		<span class="input-group-addon">Signup Settings</span>
@@ -671,7 +677,7 @@ class core {
 	public function notifBar(){
 		global $layout, $dbc;
 		if(isset($_SESSION['uid'])){
-			echo '</div><div class="col-md-3"><div class="shadowbar">';
+			echo '</div><div class="col-3"><div class="shadowbar">';
 			if(isset($_GET['action']) && ($_GET['action'] == 'markasread')){
 				$query = "UPDATE notifications SET `read` = '1' WHERE `user` = ".$_SESSION['uid']." ";
 				$data = mysqli_query($dbc, $query);
@@ -717,8 +723,8 @@ class core {
 		}
 	}
 	public function sidebar() {
-		global $dbc, $layout;
-			print($layout['sidebarBegin']);
+		global $settings, $dbc, $layout;
+			//print($layout['sidebarBegin']);
 				// Generate the navigation menu
 				if (isset($_SESSION['uid'])) {
 				$query = "SELECT * FROM users WHERE `uid` = ".$_SESSION['uid']."";
@@ -733,29 +739,26 @@ class core {
 					if($this->verify("core.*") || $this->verify("core.mod")){
 						$this->loadModule("acp");
 					}
-					echo '</div>';
+					//echo '</div>';
 				}
-				else {
-					echo sprintf($layout['sidebarLink'], "/login", "Log In");
-					echo sprintf($layout['sidebarLink'], "/signup", "Sign Up");
-				}
-				print($layout['sidebarMid']);
-			if(isset($_SESSION['uid'])){
-				$time = time();
-				$query = "UPDATE users SET `active` = '$time' WHERE `uid` = ".$_SESSION['uid']."";
-				mysqli_query($dbc, $query);	
-				}
-				print($layout['onlineUsersPanel']);
-				$query = "SELECT * FROM users";
-				$data = mysqli_query($dbc, $query);
-				while ($row = mysqli_fetch_array($data)){
-				if(time() - 300 < $row['active']){
-				echo '<a href="/ucp/uid/'.$row['uid'].'">'.$row['username'].'</a>, ';
-				}
-				}
-				print($layout['onlineUsersEnd']);
-		print($layout['sidebarEnd']);
 }
+	public function onlineList(){		
+		global $settings, $dbc, $layout;
+		if(isset($_SESSION['uid'])){
+			$time = time();
+			$query = "UPDATE users SET `active` = '$time' WHERE `uid` = ".$_SESSION['uid']."";
+			mysqli_query($dbc, $query);	
+			}
+			print($layout['onlineUsersPanel']);
+			$query = "SELECT * FROM users";
+			$data = mysqli_query($dbc, $query);
+			while ($row = mysqli_fetch_array($data)){
+			if(time() - 300 < $row['active']){
+			echo '<a href="/ucp/uid/'.$row['uid'].'">'.$row['username'].'</a>, ';
+			}
+			}
+			print($layout['onlineUsersEnd']);
+	}
 
 	public function checkLogin(){
 		if(!isset($_SESSION['uid']) && isset($_COOKIE['ID'])){
@@ -841,13 +844,13 @@ class core {
 			}
 			if($option === 'sidebar'){
 				foreach($modules as $name => $module) if ($module['enabled'] && ($module['admin'] == '0')) {
-					echo '<a class="btn btn-default width100" href="'.$module['sidebar'].'">'.$module['sidebarDesc'].'</a>';
+					echo '<li class="navList-item"><a class="btn btn-default width100" href="'.$module['sidebar'].'">'.$module['sidebarDesc'].'</a></li>';
 				}
 			}
 			if($option === 'acp'){
 				foreach($modules as $name => $module) if ($module['enabled'] && ($module['admin'] == '1')) {
 					if($this->verify("core.*") || $this->verify($module['perms']))
-					echo '<a class="btn btn-default width100" href="'.$module['acp'].'">'.$module['sidebarDesc'].'</a>';
+					echo '<li class="navList-item"><a class="btn btn-default width100" href="'.$module['acp'].'">'.$module['sidebarDesc'].'</a></li>';
 				}
 			}
 		}
@@ -1152,6 +1155,7 @@ class core {
 		else {
 			echo '<p class="error">There was a problem accessing your profile.</p>';
 		}
+		$this->sidebar();
 		echo'</div>';
 
 	}

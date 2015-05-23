@@ -14,7 +14,7 @@ $layout['header-begin'] =
 			<script type="text/javascript" src="/include/scripts/js/ed.js"></script>
 			<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?autoload=true&skin=sunburst"></script>			
 			<script src="/include/style/%s/jquery.js"></script>
-			<script src="/include/style/%s/bootstrap.js"></script>
+			<script src="/include/style/%s/cheesecake.js"></script>
 			<script src="/include/scripts/js/iframeResizer.contentWindow.min.js"></script>
 			<script src="/include/scripts/js/iframeResizer.min.js"></script>
 			<script language="javascript" type="text/javascript" src="/include/scripts/codeEdit/edit_area_full.js"></script>
@@ -102,23 +102,17 @@ function init () {
 		<body onload="init();">
 		<div class="pagecontainer">
 			<div class="row header">
-				<div class="col-md-1"></div>
+				<div class="col-1"></div>
    <div class="navbar-wrapper">
       <div class="container">
 
         <div class="navbar navbar-inverse navbar-static-top" role="navigation">
           <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-              <a class="navbar-brand" href="#">%s</a>
-            </div>
-            <div class="navbar-collapse collapse">
-              <ul class="nav navbar-nav">
+		  <div class="col-1">
+              <a class="headBrand" href="#">%s</a>
+			</div>
+			<div class="col-9">
+              <ul class="nav-list-hz">
                 <li><a href="/index.php">Home</a></li>
 EOD
 );									
@@ -127,13 +121,13 @@ $layout['header-end'] =
 (
 <<<EOD
               </ul>
+			  </div>
             </div>
           </div>
         </div>
 
       </div>
-    </div>
-				<div class="col-md-1"></div>
+				<div class="col-1"></div>
 			</div>
 			<div class="row content">	
 EOD
@@ -145,14 +139,14 @@ $layout['blogViewFormat'] =
 		<div class="shadowbar">
 		<h3>%s</h3>
 		<div class="row">
-		<div class="col-md-12">
+		<div class="col-12">
 		<img style="max-height:100px;" class="img-square" src="/include/images/profile/%s" /> By <a href="/ucp/uid/%s">%s</a> On <a href="">%s</a>
 		<hr />
 		</div>
-		<div class="col-md-10">
+		<div class="col-10">
 		%s
 		</div>
-		<div class="col-md-10" style="font-size:7pt;">
+		<div class="col-10" style="font-size:7pt;">
 		<hr />
 		%s
 		</div>
@@ -228,39 +222,27 @@ $layout['login'] =
 
 	</form></div>
 	<script>
-    $(function login() {
-    $("#login").validate({ // initialize the plugin
-        // any other options,
-        onkeyup: false,
-        rules: {
-            email: {
-                required: true,
-                email: true
-            },
-			password: {
-				required: true
-			}
-        }
-    });
+$('#login').on("submit", function(event) {
+  event.preventDefault();
 
-    $('#login').ajaxForm({
-        beforeSend: function() {
-			return $("#login").valid();
-        },
-				success : function(result) {
-					var res = $.trim(result);
-					console.log(res);
-					if(res == "success"){
-						window.location = "/index.php";
-					}else if(res == "failure"){
-						$("#alert").html("<div class='alert alert-warning'>Either you're username or password are incorrect, or you've not activated your account.</div>");
-						//$("#alert").show();
-					}else if(res == "banned"){
-						$("#alert").html("<div class='alert alert-warning'>You are banned from this website.</div>");						
-					}
-			   }
-    });
-    }); 
+
+  $.ajax({
+    type: "post",
+    url: this.action,
+    data: $(this).serialize(),
+    success: function(result) {
+		console.log(result);
+      if (result == " success") {
+        window.location = "/index.php";
+      } else if (result == " failure") {
+        $("#alert").html("<div class='alert alert-warning'>Either your username or password are incorrect, or you've not activated your account.</div>");
+        //$("#alert").show();
+      }
+    }
+  });
+
+});
+</sc
 </script>
 EOD
 );	
@@ -270,7 +252,7 @@ $layout['adminPostLayout'] =
 <<<EOD
 		  <table class="table">
 			<tr><td>Title: %s<a class="Link LButton" href="/markAs/p/%s">Mark As...</a></td></tr>
-		  <tr><td><div class="col-md-8"><pre>Post:<br/><br />%s</pre></div></td></tr>
+		  <tr><td><div class="col-8"><pre>Post:<br/><br />%s</pre></div></td></tr>
 			<tr><td>Post ID: %s<a class="Link LButton" href="/%s/mode/%s/del/%s">Delete Post</a></td></tr>
 			<tr><td>Display Status: %s<a class="Link LButton" href="/%s/del/%s">Hide Post</a><a class="Link LButton" href="/%s/del/%s">Unhide Post</a></td></tr>
 		  <tr><td>UserName: %s</td></tr>
@@ -283,7 +265,7 @@ $layout['adminBlogPostLayout'] =
 (
 <<<EOD
 		  <table class="table">
-		  <tr><td><div class="col-md-8"><pre>Post:<br/><br />%s</pre></div></td></tr>
+		  <tr><td><div class="col-8"><pre>Post:<br/><br />%s</pre></div></td></tr>
 			<tr><td>Post ID: %s<a class="Link LButton" href="/%s/mode/%s/del/%s">Delete Post</a></td></tr>
 			<tr><td>Hidden Status: %s<a class="Link LButton" href="/%s/mode/hide/del/%s">Hide Post</a><a class="Link LButton" href="/%s/mode/unhide/del/%s">Unhide Post</a></td></tr>
 		  <tr><td>UserName: %s</td></tr>
@@ -296,7 +278,7 @@ $layout['adminReplyLayout'] =
 <<<EOD
 		  <table class="table">
 			<tr><td>Title: %s</td></tr>
-		  <tr><td><div class="col-md-8"><pre>Post:<br/><br />%s</pre></div></td></tr>
+		  <tr><td><div class="col-8"><pre>Post:<br/><br />%s</pre></div></td></tr>
 			<tr><td>Post ID: %s<a class="Link LButton" href="/%s/mode/%s/del/%s">Delete Post</a></td></tr>
 			<tr><td>Display Status: %s<a class="Link LButton" href="/%s/mode/hide/del/%s">Hide Post</a><a class="Link LButton" href="index.php?action=%s&mode=unhide&del=%s">Unhide Post</a></td></tr>
 		  <tr><td>UserName: %s</td></tr>
@@ -420,11 +402,46 @@ $layout['pollChoices'] =
 EOD
 );
 
+$layout['col-3-empty-begin'] = 
+(
+<<<EOD
+<div class="col-3">
+EOD
+);
+
+$layout['div-end'] = 
+(
+<<<EOD
+</div>
+EOD
+);
+
 $layout['sidebarBegin'] = 
 (
 <<<EOD
-<div class="col-md-3">
+<div class="col-3">
 	<div class="shadowbar">
+EOD
+);
+
+$layout['userbarLoggedOut'] = 
+(
+<<<EOD
+<div class="col-6">
+<div class="shadowbar">
+	<a class="Link LButton" href="/login">Login</a>
+	<a class="Link LButton" href="/signup">Signup</a>
+</div>
+EOD
+);
+
+$layout['userbarLoggedIn'] = 
+(
+<<<EOD
+<div class="col-6">
+<div class="shadowbar">
+	<a class="Link LButton" href="/ucp">User Area</a>
+</div>
 EOD
 );
 
@@ -433,18 +450,32 @@ $layout['sidebar-core'] =
 <<<EOD
 <h3>%s</h3>
 <img style="max-height:120px;" class="postedBy" src="/include/images/profile/%s">
-<div class="btn-group-vertical width100">
-	<a class="btn btn-default width100" href="/ucp">View Profile</a>
-	<a class="btn btn-default width100" href="/messages">Messages</a>
-	<a class="btn btn-default width100" href="/sendmessage">Send Message</a>
-	<a class="btn btn-default width100" href="/logout">Log Out (%s)</a>
+<ul class="navList">
+	<li class="navList-item"><a href="/ucp">View Profile</a></li>
+	<li class="navList-item"><a href="/messages">Messages</a></li>
+	<li class="navList-item"><a href="/sendmessage">Send Message</a></li>
+	<li class="navList-item"><a href="/logout">Log Out (%s)</a></li>
+EOD
+);
+
+$layout['nav-list'] = 
+(
+<<<EOD
+<ul class="navList">
+EOD
+);
+
+$layout['ul-end'] = 
+(
+<<<EOD
+</ul>
 EOD
 );
 
 $layout['sidebarLink'] = 
 (
 <<<EOD
-<a class="btn btn-default width100" href="%s">%s</a>
+<li class="navList-item"><a href="%s">%s</a></li>
 EOD
 );
 
@@ -452,23 +483,21 @@ $layout['sidebarMid'] =
 (
 <<<EOD
 </div>
-<div class="shadowbar">
 EOD
 );
 
 $layout['onlineUsersPanel'] = 
 (
 <<<EOD
+		<div class="shadowbar">
 			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 			  <div class="panel panel-default">
 				<div class="panel-heading" role="tab" id="headingOne">
-				  <h4 class="panel-title">
-				  <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+				  <h3 class="panel-title" onclick="collapse('#collapseOne');">
 				  Online Users
-				  </a>
-				  </h4>
+				  </h3>
 				  </div>
-				  <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+				  <div id="collapseOne" class="collapse" data-expanded="true">
 				  <div class="panel-body">
 EOD
 );
@@ -481,7 +510,15 @@ $layout['onlineUsersEnd'] =
 			</div>
 			</div>
 			</div>
+			</div>
+EOD
+);
 
+$layout['sidebarEnd'] = 
+(
+<<<EOD
+</div>
+<div class="col-6">
 EOD
 );
 
@@ -491,16 +528,14 @@ $layout['sidebarNotif'] =
 <div class="panel-group" id="notifAccordion" role="tablist" aria-multiselectable="true">
 			  <div class="panel panel-default">
 				<div class="panel-heading" role="tab" id="notifOne">
-				  <h4 class="panel-title">
-				  <a data-toggle="collapse" data-parent="#notifAccordion" href="#notifCollapse" aria-expanded="false" aria-controls="notifCollapse">
+				  <h3 class="panel-title" onclick="collapse('#notifCollapse');">
 				  Notifications
-				  </a>
-				  </h4>
+				  </h3>
 				  </div>
-				      <div id="notifCollapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="notifOne">
+				      <div id="notifCollapse" class="panel-collapse collapse in" data-expanded="true">
       <div class="panel-body"><div role="tabpanel">
 
-  <ul class="nav nav-tabs" role="tablist">
+  <ul class="tabs" role="tablist">
     <li role="presentation" class="active"><a href="#unread" aria-controls="home" role="tab" data-toggle="tab">Unread</a></li>
     <li role="presentation"><a href="#read" aria-controls="profile" role="tab" data-toggle="tab">Read</a></li>
   </ul>
@@ -521,15 +556,6 @@ $layout['notifEnd'] =
 EOD
 );
 
-$layout['sidebarEnd'] = 
-(
-<<<EOD
-</div>
-</div>
-<div class="col-md-6">
-EOD
-);
-
 $layout['footer'] = 
 (
 <<<EOD
@@ -537,14 +563,14 @@ $layout['footer'] =
 </div>
 	</div>
 	<div class="row footer">
-		<div class="col-md-12">
-			<div class="bottom-right">
+		<div class="col-12">
+			<div class="col-4">
 				Template designed by <a href="http://cheesecakebb.org/">Cheesecake Productions</a>
 			</div>
-			<div class="col-md-5">
+			<div class="col-4">
 			Copyright <a href="http://%s">%s</a> - All Rights Reserved<br>
 			</div>
-			<div class="col-md-4">
+			<div class="col-4">
 			Cheesecake CMS Version: %s
 			</div>
 		</div>
