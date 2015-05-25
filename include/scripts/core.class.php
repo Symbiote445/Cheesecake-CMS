@@ -45,6 +45,9 @@ class admin {
 	}
 	public function groupEdit(){
 		global $settings, $version, $dbc, $layout, $core, $parser;
+		if(!$core->verify("core.*")){
+			die('Insignificant Permission');
+		}
 		if(isset($_POST['submit'])){
 			$groupID = mysqli_real_escape_string($dbc, trim($_POST['gID']));
 			$perms = mysqli_real_escape_string($dbc, trim($_POST['perms']));
@@ -299,6 +302,9 @@ class admin {
 	}
 	public function acp(){
 		global $settings, $version, $dbc, $layout, $core, $parser;
+		if(!$core->verify("core.*") || $core->verify("core.mod")){
+			die("Insufficient Permissions");
+		}
 		echo '<div class="shadowbar">
 		<a class="Link LButton" href="/acp">Admin </a><a class="Link LButton" href="/acp/mode/users">Users </a><a class="Link LButton" href="/acp/mode/groups">Groups </a><a class="Link LButton" href="/acp/mode/banlist">Banned Users</a><a class="Link LButton" href="/acp/mode/Settings">Settings </a><a class="Link LButton" href="/acp/mode/stats">Record Stats</a><a class="Link LButton" href="/acp/mode/counter">View Counter</a>';
 		if($settings['dev'] == '1'){
@@ -306,6 +312,7 @@ class admin {
 		}
 		echo '</div>
 ';
+		
 		if(isset($_GET['mode'])){
 			if($_GET['mode'] == 'users'){
 				$this->usr();
@@ -731,7 +738,7 @@ class core {
 				$data = mysqli_query($dbc, $query);
 				$row = mysqli_fetch_array($data);
 				$uid = $_SESSION['uid'];
-				echo sprintf($layout['sidebar-core'], $row['username'], $row['picture'], $row['username']);
+				echo sprintf($layout['sidebar-core'], $row['username'], $row['username']);
 					$this->loadModule("sidebar");
 					if($this->verify("core.*")){
 						echo sprintf($layout['sidebarLink'], "/acp", "Admin Panel");
@@ -994,19 +1001,48 @@ class core {
 						mysqli_query($dbc, $query);
 						$query = "UPDATE `users` SET `ip`='$ip' WHERE `uid` = '$user'";
 						mysqli_query($dbc, $query);
-						echo 'success';
+						echo '
+						<script type="text/javascript">
+						function Redirect()
+						{
+							window.location="/index.php";
+						}
+
+						setTimeout("Redirect()", 1);
+						</script>	
+						';
 						exit();
 					} else {
 						//$error = '<div class="shadowbar">It seems we have run into a problem... Either your username or password are incorrect or you haven\'t activated your account yet.</div>' ;
 						//return $error;
-					$err = 'failure';
+						echo '
+						<script type="text/javascript">
+						function Redirect()
+						{
+							window.location="/login";
+						}
+
+						document.write("You will be redirected to main page in 10 sec.");
+						setTimeout("Redirect()", 10000);
+						</script>	
+						';
 					echo($err);
 					exit();
 					}
 				} else {
 					//$error = '<div class="shadowbar">You must enter both your username AND password.</div>';
 					//return $error;
-					$err = "{\"result\":\"failure\"}";
+						echo '
+						<script type="text/javascript">
+						function Redirect()
+						{
+							window.location="/login";
+						}
+
+						document.write("You will be redirected to main page in 10 sec.");
+						setTimeout("Redirect()", 10000);
+						</script>	
+						';
 					echo json_encode($err);
 					exit();
 				}

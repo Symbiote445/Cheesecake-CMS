@@ -101,6 +101,7 @@ class blog {
 	while($row = mysqli_fetch_array($data)){
 		echo '<a class="Link LButton" href="/Blog/archive/'.$row['arch'].'">'.$row['arch'].'</a>';
 	}
+	echo '<br /><a class="Link LButton" href="/Blog/mode/archive">Check archive and add as needed</a>';
 	echo '</div>';
 	if(isset($_GET['archive'])){
 		$arch = mysqli_real_escape_string($dbc, trim($_GET['archive']));
@@ -185,12 +186,8 @@ class blog {
 	public function blogPostAdmin(){
 		global $settings, $version, $dbc, $layout, $core, $parser;
 		$core->isLoggedIn();
+		if($core->verify("blog.*")){
 		echo '<div class="shadowbar">';		
-		echo '<a class="Link LButton" href="/Blog/mode/archive">Check archive and add as needed</a>';
-		if(!$core->verify("blog.*")){
-			exit();
-		}
-
 		$query = "SELECT blog.*, users.* FROM blog JOIN users ON users.uid = blog.user ORDER BY blog.id DESC ";
 		$data = mysqli_query($dbc, $query);
 		while ($row = mysqli_fetch_array($data)) {
@@ -198,6 +195,7 @@ class blog {
 			echo sprintf($layout['adminBlogPostLayout'], $parsed, $row['id'], 'Blog', 'delete', $row['id'], $row['display'], 'Blog', $row['id'], 'Blog', $row['id'], $row['username'], $row['adminlevel']);
 		}
 		echo '</div>';
+		}
 	}
 	public function blogHideAdmin(){
 		global $settings, $version, $dbc, $layout, $core, $parser;

@@ -20,6 +20,7 @@ $layout['header-begin'] =
 			<script language="javascript" type="text/javascript" src="/include/scripts/codeEdit/edit_area_full.js"></script>
 			<script src="/include/scripts/js/jquery.form.js"></script>
 			<script src="/include/scripts/js/jquery.validate.js"></script>
+			<script src="/include/scripts/js/grid.js"></script>
 <!-- Load WysiBB JS and Theme -->
 <script src="http://cdn.wysibb.com/js/jquery.wysibb.min.js"></script>
 <link rel="stylesheet" href="http://cdn.wysibb.com/css/default/wbbtheme.css" />
@@ -40,9 +41,6 @@ $(function() {
 			});
 			</script>
 			<script>
-			$(function () {
-			  $('[data-toggle="tooltip"]').tooltip()
-			})
 			function Redirect()
 		{
 			window.location="index.php";
@@ -398,7 +396,7 @@ $layout['pollChoices'] =
 (
 <<<EOD
 
-		<li class="list-group-item"><a href="/pollvote/poll/%s/choice/%s">%s</a></li>
+		<li><a href="/pollvote/poll/%s/choice/%s">%s</a></li>
 EOD
 );
 
@@ -449,7 +447,6 @@ $layout['sidebar-core'] =
 (
 <<<EOD
 <h3>%s</h3>
-<img style="max-height:120px;" class="postedBy" src="/include/images/profile/%s">
 <ul class="navList">
 	<li class="navList-item"><a href="/ucp">View Profile</a></li>
 	<li class="navList-item"><a href="/messages">Messages</a></li>
@@ -497,7 +494,7 @@ $layout['onlineUsersPanel'] =
 				  Online Users
 				  </h3>
 				  </div>
-				  <div id="collapseOne" class="collapse" data-expanded="true">
+				  <div id="collapseOne" class="collapse inset" data-expanded="true">
 				  <div class="panel-body">
 EOD
 );
@@ -532,7 +529,7 @@ $layout['sidebarNotif'] =
 				  Notifications
 				  </h3>
 				  </div>
-				      <div id="notifCollapse" class="panel-collapse collapse in" data-expanded="true">
+				      <div id="notifCollapse" class="collapse inset" data-expanded="true">
       <div class="panel-body"><div role="tabpanel">
 
   <ul class="tabs" role="tablist">

@@ -327,7 +327,7 @@ class Forums{
 		echo'
       <div id="transp" class="panel-body"><div role="tabpanel">
 
-  <ul class="nav nav-tabs" role="tablist">
+  <ul class="tabs" role="tablist">
     <li role="presentation" class="active"><a href="#categories" aria-controls="home" role="tab" data-toggle="tab">Forums</a></li>
     <li role="presentation"><a href="#polls" aria-controls="profile" role="tab" data-toggle="tab">Polls</a></li>
 	<li role="presentation"><a href="#important" aria-controls="profile" role="tab" data-toggle="tab">Announcements/Important</a></li>
@@ -361,8 +361,8 @@ class Forums{
 				$count = mysqli_query($dbc, $query2);
 				$rc = mysqli_fetch_array($count);
 				echo'<tr>';
-				echo'<td><a class="nav" href="/f/'.$row1['cat_id'].'">' .$row1['name']. '<span class="badge">' . mysqli_num_rows($count) . ' Post(s)</span></a>';
-				echo'<div class="col-md-6">'.$row1['desc'].'</div>';
+				echo'<td><a class="col-7" href="/f/'.$row1['cat_id'].'">' .$row1['name']. '<span class="badge">' . mysqli_num_rows($count) . ' Post(s)</span></a>';
+				echo'<div class="col-6">'.$row1['desc'].'</div>';
 				echo'</td>';
 				echo'<td>';
 				if((mysqli_num_rows($count) > 0)){ 
@@ -403,8 +403,8 @@ class Forums{
 			<table class="table cgBox">
 			<tr>
 			<td>
-			<a href="/post/'.$row['postlink'].'">'.$row['tag'].' '.$row['title'].'</a>
-			<div class="col=md=6">'.$parsed.'</div>
+			<a class="col-7" href="/post/'.$row['postlink'].'">'.$row['tag'].' '.$row['title'].'</a>
+			<div class="col-6">'.$parsed.'</div>
 			</td>
 			</tr>
 			</table>
@@ -470,7 +470,7 @@ class Forums{
 			echo '
 			<div class="shadowbar">
 			<h3>Poll Choices</h3>
-			<ul class="list-group">
+			<ul class="navList">
 			';
 			$choices = explode(",", $row['choices']);
 			foreach($choices as $choice){
@@ -479,7 +479,7 @@ class Forums{
 			$choiceO = strtolower($choiceO);
 			$query = "SELECT * FROM `votes` WHERE `poll` = '$ID' AND `choice` = '$choiceO'";
 			$data = mysqli_query($dbc, $query);
-			echo $choice.': '.mysqli_num_rows($data);
+			echo '<h4>'.$choice.': '.mysqli_num_rows($data). '</h4>';
 			echo sprintf($layout['pollChoices'], $ID, $choiceO, $choice);
 			}
 			echo '
