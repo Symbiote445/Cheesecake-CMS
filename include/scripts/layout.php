@@ -199,25 +199,17 @@ $layout['login'] =
 (
 <<<'EOD'
 	<div class="shadowbar"><form id="login" method="post" action="/doLogin">
-	<div id="alert"></div>
-    <fieldset>
-
      <legend>Log In</legend>
-	<div class="input-group">
+	 <label>
       <span class="input-group-addon">E-Mail</span>
-
-      <input type="email" class="form-control" name="email" value="" /><br />
-	</div>
-	<div class="input-group">
+      <input type="email" class="form-control" name="email" value="" />
+	 </label>
+	 <label>
       <span class="input-group-addon">Password</span>
-
       <input type="password" class="form-control" name="password" />
-	  </div>
-
-    </fieldset>
-
+	  </label>
     <input type="submit"  class="btn btn-primary" value="Log In" name="submit" />
-
+	
 	</form></div>
 	<script>
 $('#login').on("submit", function(event) {
